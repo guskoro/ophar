@@ -21,7 +21,11 @@ const UserSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'roles'
   },
-  date: {
+  division: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'divisions'
+  },
+  created_at: {
     type: Date,
     default: Date.now
   },

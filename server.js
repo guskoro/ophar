@@ -8,8 +8,9 @@ require('dotenv').config();
 const users = require('./routes/api/users');
 const roles = require('./routes/api/roles');
 const workingOrders = require('./routes/api/workingOrders');
-const types = require('./routes/api/types');
+const divisions = require('./routes/api/divisions');
 const priorities = require('./routes/api/priorities');
+const types = require('./routes/api/types');
 
 const app = express();
 
@@ -31,8 +32,9 @@ require('./config/passport')(passport);
 app.use('/api/user', users);
 app.use('/api/role', roles);
 app.use('/api/working-order', workingOrders);
-app.use('/api/type', types);
+app.use('/api/division', divisions);
 app.use('/api/priority', priorities);
+app.use('/api/type', types);
 
 const port = process.env.PORT || 5000;
 

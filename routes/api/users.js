@@ -7,49 +7,66 @@ const passport = require('passport');
 
 require('dotenv').config();
 
+const validateRegisterInput = require('../../validations/register');
+const validateLoginInput = require('../../validations/login');
+
 const User = require('../../models/User');
 const Role = require('../../models/Role');
+const Division = require('../../models/Division');
 
 router.get('/', (req, res) => {
   User.find()
     .populate('role', 'name-_id')
+    .populate('division', 'name-_id')
     .then(users => res.status(200).json(users))
     .catch(err => console.log(err));
 });
 
 router.post('/register', (req, res) => {
+  const {
+    errors,
+    isValid
+  } = validateRegisterInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   User.findOne({
     email: req.body.email
   }).then(user => {
     if (user) {
-      return res.status(400).json({
-        email: "Email sudah terdaftar"
-      });
+      errors.email = 'Email sudah terdaftar';
+
+      return res.status(400).json(errors);
     }
 
     Role.findById(req.body.role_id)
       .then(role => {
-        const avatar = gravatar.url(req.body.email, {
-          s: '200',
-          r: 'pg',
-          d: 'mm'
-        });
+        Division.findById(req.body.division_id).then(division => {
+          const avatar = gravatar.url(req.body.email, {
+            s: '200',
+            r: 'pg',
+            d: 'mm'
+          });
 
-        const newUser = new User({
-          name: req.body.name,
-          email: req.body.email,
-          avatar,
-          role,
-          password: req.body.password
-        });
+          const newUser = new User({
+            name: req.body.name,
+            email: req.body.email,
+            avatar,
+            role,
+            division,
+            password: req.body.password
+          });
 
-        bcrypt.genSalt(10, (err, salt) => {
-          bcrypt.hash(newUser.password, salt, (err, hash) => {
-            if (err) console.log(err);
-            newUser.password = hash;
-            newUser.save()
-              .then(user => res.status(200).json(user))
-              .catch(err => console.log(err));
+          bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(newUser.password, salt, (err, hash) => {
+              if (err) console.log(err);
+              newUser.password = hash;
+              newUser.save()
+                .then(user => res.status(200).json(user))
+                .catch(err => console.log(err));
+            });
           });
         });
       })
@@ -59,6 +76,15 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
+  const {
+    errors,
+    isValid
+  } = validateLoginInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   const email = req.body.email;
   const password = req.body.password;
 
@@ -67,9 +93,8 @@ router.post('/login', (req, res) => {
     })
     .then(user => {
       if (!user) {
-        return res.status(404).json({
-          email: "User tidak ditemukan"
-        });
+        errors.email = 'User tidak ditemukan'
+        return res.status(404).json(errors);
       }
 
       bcrypt.compare(password, user.password)
@@ -90,9 +115,9 @@ router.post('/login', (req, res) => {
               });
           }
 
-          return res.status(400).json({
-            password: "Password salah"
-          });
+          errors.password = 'Kata sandi salah';
+
+          return res.status(400).json(errors);
         })
         .catch(err => console.log(err));
     })
@@ -106,7 +131,9 @@ router.get('/current', passport.authenticate('jwt', {
     _id: req.user.id,
     name: req.user.name,
     email: req.user.email,
-    avatar: req.user.avatar
+    avatar: req.user.avatar,
+    role: req.user.role.name,
+    division: req.user.division.name
   });
 });
 
