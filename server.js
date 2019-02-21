@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const passport = require('passport');
+
+require('dotenv').config();
 
 const users = require('./routes/api/users');
 const roles = require('./routes/api/roles');
@@ -11,19 +14,19 @@ const priorities = require('./routes/api/priorities');
 const app = express();
 
 app.use(bodyParser.urlencoded({
-    extended: false
+  extended: false
 }));
 app.use(bodyParser.json());
 
-require('dotenv').config();
 const db = process.env.MONGO_URI;
 
 mongoose
-    .connect(db)
-    .then(() => console.log('MongoDB Connected'))
-    .catch(err => console.log(err));
+  .connect(db)
+  .then(() => console.log('MongoDB Connected'))
+  .catch(err => console.log(err));
 
-app.get('/', (req, res) => res.send('Hello'));
+app.use(passport.initialize());
+require('./config/passport')(passport);
 
 app.use('/api/user', users);
 app.use('/api/role', roles);
