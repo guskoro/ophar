@@ -6,9 +6,15 @@ const workingOrderSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'users'
   },
+  type: {
+    type: Schema.Types.ObjectId,
+    ref: 'types',
+    required: true
+  },
   priority: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'priorities'
+    type: Schema.Types.ObjectId,
+    ref: 'priorities',
+    required: true
   },
   jobs: [{
     type: String
@@ -18,7 +24,7 @@ const workingOrderSchema = new Schema({
     required: true
   },
   users: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'users'
   }],
   approved_by_spv: {

@@ -5,29 +5,24 @@ const passport = require('passport');
 const validateWorkingOrderInput = require('../../validations/working-order');
 
 const WorkingOrder = require('../../models/WorkingOrder');
-const Division = require('../../models/Division');
 const Priority = require('../../models/Priority');
 const User = require('../../models/User');
+const Type = require('../../models/Type');
 
 router.get('/', (req, res) => {
   let query = {};
 
-  if (req.query.approved_by_manager) {
-    query.approved_by_manager = req.query.approved_by_manager;
-  }
-  if (req.query.approved_by_spv) {
-    query.approved_by_spv = req.query.approved_by_spv;
-  }
-  if (req.query.done) {
-    query.done = req.query.done;
-  }
+  if (req.query.approved_by_manager) query.approved_by_manager = req.query.approved_by_manager;
+  if (req.query.approved_by_spv) query.approved_by_spv = req.query.approved_by_spv;
+  if (req.query.done) query.done = req.query.done;
 
   WorkingOrder.find(query)
     .populate('pic', 'name-_id')
+    .populate('type', 'name-_id')
     .populate('priority', 'name-_id')
     .populate('users', 'name-_id')
     .then(workingOrders => res.json(workingOrders))
-    .catch(err => console.log(err));
+    .catch(err => res.status(404).json(err));
 });
 
 router.post('/', passport.authenticate('jwt', {
@@ -44,7 +39,7 @@ router.post('/', passport.authenticate('jwt', {
 
   User.findById(req.user.id)
     .then(pic => {
-      Priority.findById(req.body.priority_id)
+      Priority.findById(req.body.priority)
         .then(priority => {
           const users = req.body.users.split(',');
 
@@ -54,38 +49,43 @@ router.post('/', passport.authenticate('jwt', {
               }
             })
             .then(users => {
-              const newWorkingOrder = new WorkingOrder({
-                pic,
-                priority,
-                description: req.body.description,
-                start: req.body.start
-              });
+              Type.findById(req.body.type)
+                .then(type => {
+                  const newWorkingOrder = new WorkingOrder({
+                    pic,
+                    type,
+                    priority,
+                    description: req.body.description,
+                    start: req.body.start
+                  });
 
-              if (req.body.jobs) {
-                const jobs = req.body.jobs.split(',');
+                  if (req.body.jobs) {
+                    const jobs = req.body.jobs.split(',');
 
-                jobs.map(job => {
-                  newWorkingOrder.jobs.push(job);
-                });
-              }
+                    jobs.map(job => {
+                      newWorkingOrder.jobs.push(job);
+                    });
+                  }
 
-              if (req.body.end) {
-                newWorkingOrder.end = req.body.end;
-              }
+                  if (req.body.end) {
+                    newWorkingOrder.end = req.body.end;
+                  }
 
-              users.map(user => {
-                newWorkingOrder.users.push(user);
-              });
+                  users.map(user => {
+                    newWorkingOrder.users.push(user);
+                  });
 
-              newWorkingOrder.save()
-                .then(newWorkingOrder => res.status(201).json(newWorkingOrder))
-                .catch(err => console.log(err));
+                  newWorkingOrder.save()
+                    .then(newWorkingOrder => res.status(201).json(newWorkingOrder))
+                    .catch(err => res.status(400).json(err));
+                })
+                .catch(err => res.status(404).json(err));
             })
-            .catch(err => console.log(err));
+            .catch(err => res.status(404).json(err));
         })
-        .catch(err => console.log(err))
+        .catch(err => res.status(404).json(err))
     })
-    .catch(err => console.log(err));
+    .catch(err => res.status(404).json(err));
 });
 
 router.get('/:id', (req, res) => {
@@ -94,7 +94,25 @@ router.get('/:id', (req, res) => {
     .populate('priority', 'name-_id')
     .populate('users', 'name-_id')
     .then(workingOrder => res.status(200).json(workingOrder))
-    .catch(err => console.log(err));
+    .catch(err => res.status(404).json(err));
+});
+
+router.patch('/:id', (req, res) => {
+  WorkingOrder.findById(req.params.id)
+    .then(workingOrder => {
+      if (req.body._id) {
+        delete req.body._id
+      }
+      for (let i in req.body) {
+        workingOrder[i] = req.body[i]
+      }
+      workingOrder.save()
+        .then(updatedWorkingOrder => {
+          res.json(updatedWorkingOrder);
+        })
+        .catch(err => res.status(400).json(err));
+    })
+    .catch(err => res.status(404).json(err));
 });
 
 router.post('/approve/:id', passport.authenticate('jwt', {
@@ -112,11 +130,11 @@ router.post('/approve/:id', passport.authenticate('jwt', {
           }
           workingOrder.save()
             .then(newWorkingOrder => res.status(200).json(newWorkingOrder))
-            .catch(err => console.log(err));
+            .catch(err => res.status(400).json(err));
         })
-        .catch(err => console.log(err));
+        .catch(err => res.status(404).json(err));
     })
-    .catch(err => console.log(err));
+    .catch(err => res.status(404).json(err));
 });
 
 router.post('/done/:id', (req, res) => {
@@ -131,9 +149,9 @@ router.post('/done/:id', (req, res) => {
       workingOrder.done = !workingOrder.done;
       workingOrder.save()
         .then(newWorkingOrder => res.status(200).json(newWorkingOrder))
-        .catch(err => console.log(err));
+        .catch(err => res.status(400).json(err));
     })
-    .catch(err => console.log(err));
+    .catch(err => res.status(404).json(err));
 });
 
 module.exports = router;

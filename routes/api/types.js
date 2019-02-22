@@ -8,7 +8,7 @@ const validateTypeInput = require('../../validations/type');
 router.get('/', (req, res) => {
   Type.find()
     .then(types => res.status(200).json(types))
-    .catch(err => console.log(err));
+    .catch(err => res.status(400).json(err));
 });
 
 router.post('/', (req, res) => {
@@ -27,7 +27,7 @@ router.post('/', (req, res) => {
 
   newType.save()
     .then(type => res.status(200).json(type))
-    .catch(err => console.log(err));
+    .catch(err => res.status(400).json(err));
 });
 
 module.exports = router;

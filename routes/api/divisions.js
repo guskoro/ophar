@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
   Division.find()
     .populate('types', 'name-_id')
     .then(divisions => res.status(200).json(divisions))
-    .catch(err => console.log(err));
+    .catch(err => res.status(400).json(err));
 });
 
 router.post('/', (req, res) => {
@@ -35,7 +35,7 @@ router.post('/', (req, res) => {
 
   newDivision.save()
     .then(division => res.status(200).json(division))
-    .catch(err => console.log(err));
+    .catch(err => res.status(400).json(err));
 });
 
 module.exports = router;

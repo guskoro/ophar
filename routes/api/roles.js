@@ -8,7 +8,7 @@ const validateRoleInput = require('../../validations/role');
 router.get('/', (req, res) => {
   Role.find()
     .then(roles => res.status(200).json(roles))
-    .catch(err => console.log(err));
+    .catch(err => res.status(400).json(err));
 });
 
 router.post('/', (req, res) => {
@@ -27,7 +27,7 @@ router.post('/', (req, res) => {
 
   newRole.save()
     .then(role => res.status(200).json(role))
-    .catch(err => console.log(err));
+    .catch(err => res.status(400).json(err));
 });
 
 module.exports = router;

@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
     .populate('role', 'name-_id')
     .populate('division', 'name-_id')
     .then(users => res.status(200).json(users))
-    .catch(err => console.log(err));
+    .catch(err => res.status(400).json(err));
 });
 
 router.post('/register', (req, res) => {
@@ -41,9 +41,9 @@ router.post('/register', (req, res) => {
       return res.status(400).json(errors);
     }
 
-    Role.findById(req.body.role_id)
+    Role.findById(req.body.role)
       .then(role => {
-        Division.findById(req.body.division_id).then(division => {
+        Division.findById(req.body.division).then(division => {
           const avatar = gravatar.url(req.body.email, {
             s: '200',
             r: 'pg',
@@ -60,19 +60,20 @@ router.post('/register', (req, res) => {
           });
 
           bcrypt.genSalt(10, (err, salt) => {
+            if (err) res.status(400).json(err);
             bcrypt.hash(newUser.password, salt, (err, hash) => {
-              if (err) console.log(err);
+              if (err) res.status(400).json(err);
               newUser.password = hash;
               newUser.save()
                 .then(user => res.status(200).json(user))
-                .catch(err => console.log(err));
+                .catch(err => res.status(400).json(err));
             });
           });
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => res.status(400).json(err));
 
-  }).catch(err => console.log(err));
+  }).catch(err => res.status(400).json(err));
 });
 
 router.post('/login', (req, res) => {
@@ -119,9 +120,9 @@ router.post('/login', (req, res) => {
 
           return res.status(400).json(errors);
         })
-        .catch(err => console.log(err));
+        .catch(err => res.status(400).json(err));
     })
-    .catch(err => console.log(err));
+    .catch(err => res.status(400).json(err));
 });
 
 router.get('/current', passport.authenticate('jwt', {

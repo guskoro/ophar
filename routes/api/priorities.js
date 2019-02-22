@@ -8,7 +8,7 @@ const Priority = require('../../models/Priority');
 router.get('/', (req, res) => {
   Priority.find()
     .then(priorities => res.status(200).json(priorities))
-    .catch(err => console.log(err));
+    .catch(err => res.status(400).json(err));
 });
 
 router.post('/', (req, res) => {
@@ -27,7 +27,7 @@ router.post('/', (req, res) => {
 
   newPriority.save()
     .then(priority => res.status(200).json(priority))
-    .catch(err => console.log(err));
+    .catch(err => res.status(400).json(err));
 });
 
 module.exports = router;
