@@ -15,7 +15,12 @@ const Role = require('../../models/Role');
 const Division = require('../../models/Division');
 
 router.get('/', (req, res) => {
-  User.find()
+  let query = {};
+
+  if (req.query.division) query.division = req.query.division;
+  if (req.query.role) query.role = req.query.role;
+
+  User.find(query)
     .populate('role', 'name-_id')
     .populate('division', 'name-_id')
     .then(users => res.status(200).json(users))
@@ -60,7 +65,7 @@ router.post('/register', (req, res) => {
           });
 
           bcrypt.genSalt(10, (err, salt) => {
-            if (err) res.status(400).json(err);
+            if (err) return res.status(400).json(err);
             bcrypt.hash(newUser.password, salt, (err, hash) => {
               if (err) res.status(400).json(err);
               newUser.password = hash;
@@ -128,14 +133,30 @@ router.post('/login', (req, res) => {
 router.get('/current', passport.authenticate('jwt', {
   session: false
 }), (req, res) => {
-  res.json({
-    _id: req.user.id,
-    name: req.user.name,
-    email: req.user.email,
-    avatar: req.user.avatar,
-    role: req.user.role.name,
-    division: req.user.division.name
-  });
+  let user = {};
+
+  Role.findById(req.user.role)
+    .then(role => {
+      user.role = role
+
+      Division.findById(req.user.division)
+        .then(division => {
+          user.division = division
+
+          res.json({
+            _id: req.user.id,
+            name: req.user.name,
+            email: req.user.email,
+            avatar: req.user.avatar,
+            role: user.role.name,
+            division: user.division.name
+          });
+        })
+        .catch(err => res.status(404).json(err));
+    })
+    .catch(err => res.status(404).json(err));
+
+  console.log(user);
 });
 
 module.exports = router;

@@ -29,13 +29,49 @@ router.post('/', (req, res) => {
     name: req.body.name
   });
 
-  types.map(type => {
-    newDivision.types.push(type);
-  });
+  Type.find({
+      _id: {
+        $in: types
+      }
+    })
+    .then(types => {
+      types.map(type => {
+        newDivision.types.push(type);
+      });
 
-  newDivision.save()
-    .then(division => res.status(200).json(division))
-    .catch(err => res.status(400).json(err));
+      newDivision.save()
+        .then(division => res.status(200).json(division))
+        .catch(err => res.status(400).json(err));
+    })
+    .catch(err => res.status(404).json(err));
+});
+
+router.patch('/type/:id', (req, res) => {
+  Division.findById(req.params.id)
+    .then(division => {
+      if (!division) res.status(404).json({
+        message: 'Tidak ditemukan divisi yang akan di-update'
+      })
+
+      const types = req.body.types.split(',');
+
+      Type.find({
+          _id: {
+            $in: types
+          }
+        })
+        .then(types => {
+          types.map(type => {
+            division.types.push(type);
+          });
+
+          division.save()
+            .then(division => res.status(200).json(division))
+            .catch(err => res.status(400).json(err));
+        })
+        .catch(err => res.status(404).json(err));
+    })
+    .catch(err => res.status(404).json(err));
 });
 
 module.exports = router;

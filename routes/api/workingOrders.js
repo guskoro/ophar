@@ -38,7 +38,13 @@ router.post('/', passport.authenticate('jwt', {
   }
 
   User.findById(req.user.id)
+    .populate('role', 'name-_id')
     .then(pic => {
+      if (pic.role.name !== 'pic') {
+        errors.pic = 'Maaf, anda bukan PIC'
+
+        res.status(403).json(errors);
+      }
       Priority.findById(req.body.priority)
         .then(priority => {
           const users = req.body.users.split(',');
@@ -67,8 +73,8 @@ router.post('/', passport.authenticate('jwt', {
                     });
                   }
 
-                  if (req.body.end) {
-                    newWorkingOrder.end = req.body.end;
+                  if (req.body.expected_done) {
+                    newWorkingOrder.expected_done = req.body.expected_done;
                   }
 
                   users.map(user => {
@@ -125,8 +131,12 @@ router.post('/approve/:id', passport.authenticate('jwt', {
         .then(user => {
           if (user.role.name === 'manager') {
             workingOrder.approved_by_manager = !workingOrder.approved_by_manager;
-          } else {
+          } else if (user.role.name === 'supervisor') {
             workingOrder.approved_by_spv = !workingOrder.approved_by_spv;
+          } else {
+            return res.status(403).json({
+              message: 'Maaf, anda tidak mempunyai otoritas untuk approve working order'
+            });
           }
           workingOrder.save()
             .then(newWorkingOrder => res.status(200).json(newWorkingOrder))
@@ -137,19 +147,33 @@ router.post('/approve/:id', passport.authenticate('jwt', {
     .catch(err => res.status(404).json(err));
 });
 
-router.post('/done/:id', (req, res) => {
+router.post('/done/:id', passport.authenticate('jwt', {
+  session: false
+}), (req, res) => {
   WorkingOrder.findById(req.params.id)
+    .populate('pic', 'division-_id')
     .then(workingOrder => {
-      if (!(workingOrder.approved_by_manager && workingOrder.approved_by_spv)) {
-        return res.status(400).json({
-          message: 'Maaf, working order anda belum di-approve'
-        });
-      }
+      User.findById(req.user.id)
+        .then(pic => {
+          if (pic.division.name !== workingOrder.pic.division.name) {
+            return res.status(403).json({
+              message: 'Maaf, anda bukan PIC untuk working order ini'
+            });
+          }
 
-      workingOrder.done = !workingOrder.done;
-      workingOrder.save()
-        .then(newWorkingOrder => res.status(200).json(newWorkingOrder))
-        .catch(err => res.status(400).json(err));
+          if (!(workingOrder.approved_by_manager && workingOrder.approved_by_spv)) {
+            return res.status(400).json({
+              message: 'Maaf, working order anda belum di-approve'
+            });
+          }
+
+          workingOrder.done = !workingOrder.done;
+          workingOrder.end = new Date();
+          workingOrder.save()
+            .then(newWorkingOrder => res.status(200).json(newWorkingOrder))
+            .catch(err => res.status(400).json(err));
+        })
+        .catch(err => res.status(404).json(err));
     })
     .catch(err => res.status(404).json(err));
 });

@@ -43,6 +43,9 @@ const workingOrderSchema = new Schema({
     type: Date,
     required: true
   },
+  expected_done: {
+    type: Date
+  },
   end: {
     type: Date
   },
