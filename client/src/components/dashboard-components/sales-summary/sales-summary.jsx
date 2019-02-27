@@ -7,7 +7,7 @@ import {
 	Col,
 	Row
 } from 'reactstrap';
-import { Line } from 'react-chartjs-2';
+import { Line, Doughnut } from 'react-chartjs-2';
 
 //Line chart
 let lineData = {
@@ -31,6 +31,20 @@ let lineData = {
 	}]
 };
 
+let doughnutData = {
+  datasets: [{
+    backgroundColor: ['rgba(255,0,0,.7)', 'rgba(255,255,0,.7)', 'rgba(0,0,255,.7)'],
+    data: [10, 20, 30]
+  }],
+
+  // These labels appear in the legend and in the tooltips when hovering different arcs
+  labels: [
+      'Red',
+      'Yellow',
+      'Blue'
+  ]
+};
+
 class SalesSummary extends React.Component {
 	render() {
 		return (
@@ -52,11 +66,20 @@ class SalesSummary extends React.Component {
 							</ul>
 						</div>
 					</div>
-					<Row>
+					{/* <Row>
 						<Col lg="12">
 							<div className="campaign ct-charts">
 								<div className="chart-wrapper" style={{ width: '100%', margin: '0 auto', height: 250 }}>
 									<Line data={lineData} options={{ maintainAspectRatio: false, legend: { display: false, labels: { fontFamily: "Nunito Sans" } }, scales: { yAxes: [{ stacked: true, gridLines: { display: false }, ticks: { fontFamily: "Nunito Sans" } }], xAxes: [{ gridLines: { display: false }, ticks: { fontFamily: "Nunito Sans" } }] } }} />
+								</div>
+							</div>
+						</Col>
+					</Row> */}
+          <Row>
+						<Col lg="12">
+							<div className="campaign ct-charts">
+								<div className="chart-wrapper" style={{ width: '100%', margin: '0 auto', height: 250 }}>
+									<Doughnut data={doughnutData} options={{ maintainAspectRatio: false, legend: { display: false, labels: { fontFamily: "Nunito Sans" } } }} />
 								</div>
 							</div>
 						</Col>
