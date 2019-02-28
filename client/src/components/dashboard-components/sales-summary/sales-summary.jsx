@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Input,
 	Card,
 	CardBody,
 	CardTitle,
@@ -31,17 +32,29 @@ let lineData = {
 	}]
 };
 
-let doughnutData = {
+let completeWO = {
   datasets: [{
-    backgroundColor: ['rgba(255,0,0,.7)', 'rgba(255,255,0,.7)', 'rgba(0,0,255,.7)'],
-    data: [10, 20, 30]
+    backgroundColor: ['rgba(255,255,0,.7)', 'rgba(255,0,0,.7)'],
+    data: [10, 20]
   }],
 
   // These labels appear in the legend and in the tooltips when hovering different arcs
   labels: [
-      'Red',
-      'Yellow',
-      'Blue'
+      'Complete',
+      'Incomplete'
+  ]
+};
+
+let approvedWO = {
+  datasets: [{
+    backgroundColor: ['rgba(255,255,0,.7)', 'rgba(255,127,0,.7)'],
+    data: [18, 12]
+  }],
+
+  // These labels appear in the legend and in the tooltips when hovering different arcs
+  labels: [
+      'Approved',
+      'Pending'
   ]
 };
 
@@ -52,18 +65,17 @@ class SalesSummary extends React.Component {
 				<CardBody>
 					<div className="d-flex align-items-center">
 						<div>
-							<CardTitle>Sales Summary</CardTitle>
-							<CardSubtitle>summary of the month</CardSubtitle>
+							<CardTitle>Work Orders Summary</CardTitle>
+							<CardSubtitle>{10 + '/' + (10+20)} Complete</CardSubtitle>
 						</div>
-						<div className="ml-auto d-flex align-items-center">
-							<ul className="list-inline font-12 dl mr-3 mb-0">
-								<li className="border-0 p-0 text-info list-inline-item">
-									<i className="fa fa-circle"></i> Iphone
-								</li>
-								<li className="border-0 p-0 text-primary list-inline-item">
-									<i className="fa fa-circle"></i> Ipad
-								</li>
-							</ul>
+						<div className="ml-auto d-flex no-block align-items-center">
+							<div className="dl">
+								<Input type="select" className="custom-select">
+									<option value="0">Weekly</option>
+									<option value="1">Monthly</option>
+									<option value="2">Yearly</option>
+								</Input>
+							</div>
 						</div>
 					</div>
 					{/* <Row>
@@ -76,10 +88,17 @@ class SalesSummary extends React.Component {
 						</Col>
 					</Row> */}
           <Row>
-						<Col lg="12">
+						<Col lg="6">
 							<div className="campaign ct-charts">
 								<div className="chart-wrapper" style={{ width: '100%', margin: '0 auto', height: 250 }}>
-									<Doughnut data={doughnutData} options={{ maintainAspectRatio: false, legend: { display: false, labels: { fontFamily: "Nunito Sans" } } }} />
+									<Doughnut data={completeWO} options={{ maintainAspectRatio: false, legend: { display: true, labels: { fontFamily: "Nunito Sans" } } }} />
+								</div>
+							</div>
+						</Col>
+            <Col lg="6">
+							<div className="campaign ct-charts">
+								<div className="chart-wrapper" style={{ width: '100%', margin: '0 auto', height: 250 }}>
+									<Doughnut data={approvedWO} options={{ maintainAspectRatio: false, legend: { display: true, labels: { fontFamily: "Nunito Sans" } } }} />
 								</div>
 							</div>
 						</Col>
