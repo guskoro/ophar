@@ -8,6 +8,11 @@ import LayoutComponent from '../views/ui-components/layout.jsx';
 import PaginationComponent from '../views/ui-components/pagination.jsx';
 import PopoverComponent from '../views/ui-components/popover.jsx';
 import TooltipComponent from '../views/ui-components/tooltip.jsx';
+// menu har
+import Asset from '../views/HAR/asset.jsx';
+import Cm from '../views/HAR/cm.jsx';
+import Pm from '../views/HAR/pm.jsx';
+import P3ak from '../views/HAR/p3ak.jsx';
 
 var ThemeRoutes = [
   { 
@@ -15,6 +20,30 @@ var ThemeRoutes = [
     name: 'Dashboard', 
     icon: 'ti-loop', 
     component: Starter 
+  },
+  {
+    path: '/asset',
+    name: 'Asset',
+    icon: 'mdi mdi-database',
+    component: Asset
+  },
+  {
+    path: '/cm',
+    name: 'Corrective Maintenance',
+    icon: 'mdi mdi-comment-processing-outline',
+    component: Cm
+  },
+  {
+    path: '/pm',
+    name: 'Preventive Maintance',
+    icon: 'mdi mdi-comment-processing-outline',
+    component: Pm
+  },
+  {
+    path: '/p3ak',
+    name: 'Patrol and Control',
+    icon: 'mdi mdi-comment-processing-outline',
+    component: P3ak
   },
   {
     path: '/alert',
