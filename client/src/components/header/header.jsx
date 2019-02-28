@@ -17,8 +17,7 @@ import profilephoto from '../../assets/images/users/1.jpg';
 /*--------------------------------------------------------------------------------*/
 /* Import images which are need for the HEADER                                    */
 /*--------------------------------------------------------------------------------*/
-import logodarkicon from '../../assets/images/logo-icon.png';
-import logolighticon from '../../assets/images/logo-light-icon.png';
+import logodarkicon from '../../assets/images/logo_icon+.png';
 
 class Header extends React.Component {
 	constructor(props) {
@@ -54,11 +53,11 @@ class Header extends React.Component {
 						{/*--------------------------------------------------------------------------------*/}
 						<NavbarBrand href="/">
 							<b className="logo-icon">
-								<img src={logodarkicon} alt="homepage" className="dark-logo" />
-								<img
-									src={logolighticon}
-									alt="homepage"
-									className="light-logo"
+								<img 
+									src={logodarkicon} 
+									width="50px"
+									alt="homepage" 
+									className="dark-logo" 
 								/>
 							</b>
 						</NavbarBrand>

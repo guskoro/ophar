@@ -72,7 +72,7 @@ class Projects extends React.Component {
 	render() {
 		return (
 			/*--------------------------------------------------------------------------------*/
-			/* Used In Dashboard-4 [General]                                                  */
+			/* Menampilkan semua WO untuk semua USER                                          */
 			/*--------------------------------------------------------------------------------*/
 
 			<Card>
