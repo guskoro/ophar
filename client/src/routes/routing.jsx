@@ -13,6 +13,7 @@ import Asset from '../views/HAR/asset.jsx';
 import Cm from '../views/HAR/cm.jsx';
 import Pm from '../views/HAR/pm.jsx';
 import P3ak from '../views/HAR/p3ak.jsx';
+import UploadWO from '../views/HAR/uploadwo.jsx';
 
 var ThemeRoutes = [
   { 
@@ -20,6 +21,12 @@ var ThemeRoutes = [
     name: 'Dashboard', 
     icon: 'ti-loop', 
     component: Starter 
+  },
+  {
+    path: '/uploadWO',
+    name: 'Upload Workorders',
+    icon: 'mdi mdi-database',
+    component: UploadWO
   },
   {
     path: '/asset',
@@ -30,19 +37,19 @@ var ThemeRoutes = [
   {
     path: '/cm',
     name: 'Corrective Maintenance',
-    icon: 'mdi mdi-comment-processing-outline',
+    icon: 'mdi mdi-settings',
     component: Cm
   },
   {
     path: '/pm',
     name: 'Preventive Maintance',
-    icon: 'mdi mdi-comment-processing-outline',
+    icon: 'mdi mdi-verified',
     component: Pm
   },
   {
     path: '/p3ak',
     name: 'Patrol and Control',
-    icon: 'mdi mdi-comment-processing-outline',
+    icon: 'mdi mdi-bullhorn',
     component: P3ak
   },
   {
