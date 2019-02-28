@@ -14,6 +14,7 @@ import Cm from '../views/HAR/cm.jsx';
 import Pm from '../views/HAR/pm.jsx';
 import P3ak from '../views/HAR/p3ak.jsx';
 import UploadWO from '../views/HAR/uploadwo.jsx';
+import AllWO from '../views/HAR/allwo.jsx';
 
 var ThemeRoutes = [
   { 
@@ -21,6 +22,12 @@ var ThemeRoutes = [
     name: 'Dashboard', 
     icon: 'ti-loop', 
     component: Starter 
+  },
+  {
+    path: '/allWO',
+    name: 'All Workorders',
+    icon: 'mdi mdi-database',
+    component: AllWO
   },
   {
     path: '/uploadWO',

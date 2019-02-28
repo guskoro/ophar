@@ -10,7 +10,7 @@ export default class Example extends React.Component {
                     <FormGroup>
                         <Label for="exampleEmail">Work Title</Label>
                         <Input />
-                        </FormGroup>
+                    </FormGroup>
                     <FormGroup>
                         <Label for="exampleText">Work Detail</Label>
                         <Input type="textarea" name="text" id="exampleText" />
@@ -54,6 +54,10 @@ export default class Example extends React.Component {
                         <option>Rutin</option>
                         <option>Non Rutin</option>
                     </Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="exampleEmail">Work Program</Label>
+                        <Input />
                     </FormGroup>
                     <Button>Submit</Button>
                 </Form>

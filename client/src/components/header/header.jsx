@@ -19,8 +19,6 @@ import profilephoto from '../../assets/images/users/1.jpg';
 /*--------------------------------------------------------------------------------*/
 import logodarkicon from '../../assets/images/logo-icon.png';
 import logolighticon from '../../assets/images/logo-light-icon.png';
-import logodarktext from '../../assets/images/logo-text.png';
-import logolighttext from '../../assets/images/logo-light-text.png';
 
 class Header extends React.Component {
 	constructor(props) {
@@ -63,14 +61,6 @@ class Header extends React.Component {
 									className="light-logo"
 								/>
 							</b>
-							<span className="logo-text">
-								<img src={logodarktext} alt="homepage" className="dark-logo" />
-								<img
-									src={logolighttext}
-									className="light-logo"
-									alt="homepage"
-								/>
-							</span>
 						</NavbarBrand>
 						{/*--------------------------------------------------------------------------------*/}
 						{/* Mobile View Toggler  [visible only after 768px screen]                         */}
@@ -99,28 +89,28 @@ class Header extends React.Component {
 								<DropdownMenu right className="user-dd">
 									<DropdownItem>
 										<i className="ti-user mr-1 ml-1" /> My Account
-                  </DropdownItem>
+                  					</DropdownItem>
 									<DropdownItem>
 										<i className="ti-wallet mr-1 ml-1" /> My Balance
-                  </DropdownItem>
+                 					</DropdownItem>
 									<DropdownItem>
 										<i className="ti-email mr-1 ml-1" /> Inbox
-                  </DropdownItem>
+                  					</DropdownItem>
 									<DropdownItem divider />
 									<DropdownItem>
 										<i className="ti-settings mr-1 ml-1" /> Account Settings
-                  </DropdownItem>
+                  					</DropdownItem>
 									<DropdownItem divider />
 									<DropdownItem href="/pages/login">
 										<i className="fa fa-power-off mr-1 ml-1" /> Logout
-                  </DropdownItem>
+                  					</DropdownItem>
 									<DropdownItem divider />
 									<Button
 										color="success"
 										className="btn-rounded ml-3 mb-2 mt-2"
 									>
 										View Profile
-                  </Button>
+                  					</Button>
 								</DropdownMenu>
 							</UncontrolledDropdown>
 							{/*--------------------------------------------------------------------------------*/}
