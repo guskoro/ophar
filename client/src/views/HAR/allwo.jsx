@@ -72,15 +72,15 @@ class Projects extends React.Component {
 	render() {
 		return (
 			/*--------------------------------------------------------------------------------*/
-			/* Used In Dashboard-4 [General]                                                  */
+			/* Menampilkan semua WO untuk semua USER                                          */
 			/*--------------------------------------------------------------------------------*/
 
 			<Card>
 				<CardBody>
 					<div className="d-flex align-items-center">
 						<div>
-							<CardTitle>Workorders</CardTitle>
-							<CardSubtitle>HAR | Asset</CardSubtitle>
+							<CardTitle>All Workorders</CardTitle>
+							<CardSubtitle>HAR</CardSubtitle>
 						</div>
 						<div className="ml-auto d-flex no-block align-items-center">
 							<div className="dl">
@@ -90,19 +90,11 @@ class Projects extends React.Component {
 								</InputGroup>
 							</div>
 							<div className="dl">
-								<NavLink to="/uploadWO">
-									<Button className="btn" color="success">Upload</Button>{' '}
-								</NavLink>
-							</div>
-							<div className="dl">
-								<Button className="btn" outline color="danger">Delete</Button>{' '}
-							</div>
-							<div className="dl">
 								<Input type="select" className="custom-select">
-									<option value="0">Monthly</option>
-									<option value="1">Daily</option>
-									<option value="2">Weekly</option>
-									<option value="3">Yearly</option>
+									<option value="0">Approved</option>
+									<option value="1">Pending</option>
+									<option value="2">Rejected</option>
+									<option value="3">Done</option>
 								</Input>
 							</div>
 						</div>
@@ -110,12 +102,6 @@ class Projects extends React.Component {
 					<Table className="no-wrap v-middle" responsive>
 						<thead>
 							<tr className="border-0">
-								<th className="border-0">
-									<CustomInput 
-									type="checkbox" 
-									id="exampleCustomCheckbox" 
-									label="" />
-								</th>
 								<th className="border-0">Code</th>
 								<th className="border-0">PIC</th>
 								<th className="border-0">Type</th>
@@ -124,17 +110,10 @@ class Projects extends React.Component {
 								<th className="border-0">Assigned User</th>
 								<th className="border-0">Target Date</th>
 								<th className="border-0">Status</th>
-								<th className="border-0">Action</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>
-									<CustomInput 
-									type="checkbox" 
-									id="exampleCustomCheckbox" 
-									label="" />
-								</td>
+							<tr>								
 								<td>012SAKX</td>
 								<td>
 									<div className="d-flex no-block align-items-center">
@@ -151,18 +130,8 @@ class Projects extends React.Component {
 									<i className="fa fa-circle text-danger" id="tlp1"></i>
 									<Tooltip placement="top" isOpen={this.state.tooltipOpen10} target="tlp1" toggle={this.toggle10}>Rejected</Tooltip>
 								</td>
-								<td>
-									<Button className="btn" outline color="primary" disabled>Edit</Button>{' '}
-									<Button className="btn" outline color="danger" disabled>Delete</Button>{' '}
-								</td>
 							</tr>
 							<tr>
-								<td>
-									<CustomInput 
-									type="checkbox" 
-									id="exampleCustomCheckbox" 
-									label="" />
-								</td>
 								<td>012SAKX</td>
 								<td>
 									<div className="d-flex no-block align-items-center">
@@ -179,18 +148,8 @@ class Projects extends React.Component {
 									<i className="fa fa-circle text-success" id="tlp2"></i>
 									<Tooltip placement="top" isOpen={this.state.tooltipOpen20} target="tlp2" toggle={this.toggle20}>In Progress</Tooltip>
 								</td>
-								<td>
-									<Button className="btn" outline color="primary">Edit</Button>{' '}
-									<Button className="btn" outline color="danger">Delete</Button>{' '}
-								</td>
 							</tr>
 							<tr>
-								<td>
-									<CustomInput 
-									type="checkbox" 
-									id="exampleCustomCheckbox" 
-									label="" />
-								</td>
 								<td>012SAKX</td>
 								<td>
 									<div className="d-flex no-block align-items-center">
@@ -207,18 +166,8 @@ class Projects extends React.Component {
 									<i className="fa fa-circle text-warning" id="tlp3"></i>
 									<Tooltip placement="top" isOpen={this.state.tooltipOpen30} target="tlp3" toggle={this.toggle30}>Pending Approval</Tooltip>
 								</td>
-								<td>
-									<Button className="btn" outline color="primary">Edit</Button>{' '}
-									<Button className="btn" outline color="danger">Delete</Button>{' '}
-								</td>
 							</tr>
 							<tr>
-								<td>
-									<CustomInput 
-									type="checkbox" 
-									id="exampleCustomCheckbox" 
-									label="" />
-								</td>
 								<td>012SAKX</td>
 								<td>
 									<div className="d-flex no-block align-items-center">
@@ -234,10 +183,6 @@ class Projects extends React.Component {
 								<td>
 									<i className="fa fa-circle text-muted" id="tlp4"></i>
 									<Tooltip placement="top" isOpen={this.state.tooltipOpen40} target="tlp4" toggle={this.toggle40}>WO Done</Tooltip>
-								</td>
-								<td>
-									<Button className="btn" outline color="primary" disabled="false">Edit</Button>{' '}
-									<Button className="btn" outline color="danger" disabled={false}>Delete</Button>{' '}
 								</td>
 							</tr>
 						</tbody>
