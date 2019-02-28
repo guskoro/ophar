@@ -17,12 +17,12 @@ class Starter extends React.Component {
                         <Feeds />
                     </Col>
                 </Row>
-                <Divisions />
                 <Row>
                   <Col sm={12} lg={12}>
                     <DivisionProgress />
                   </Col>
                 </Row>
+                <Divisions />
                 {/* <Row>
                     <Col sm={12}>
                         <Projects />

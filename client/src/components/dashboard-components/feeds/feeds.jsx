@@ -15,16 +15,16 @@ class Feeds extends React.Component {
 					<div className="feed-widget">
 						<ul className="list-style-none feed-body m-0 pb-3">
 							<li className="feed-item">
-								<div className="feed-icon bg-info"><i className="far fa-bell"></i></div> Hi, you have 4 Working Order requests. 
+								<div className="feed-icon bg-info"><i className="far fa-envelope"></i></div> Hi, you have 4 Work Order requests. 
 							</li>
 							<li className="feed-item">
-								<div className="feed-icon bg-success"><i className="ti-server"></i></div> Wow, there are 9 Working Orders.
+								<div className="feed-icon bg-info"><i className="ti-server"></i></div> Wow, there are 9 Work Orders.
 							</li>
 							<li className="feed-item">
-								<div className="feed-icon bg-warning"><i className="ti-shopping-cart"></i></div> Ohh, there are 4 Working Order overdue.
+								<div className="feed-icon bg-info"><i className="far fa-thumbs-down"></i></div> Ohh, there are 4 Work Orders overdue.
 							</li>
 							<li className="feed-item">
-								<div className="feed-icon bg-danger"><i className="ti-user"></i></div> Good job, 5 Working Order complete.
+								<div className="feed-icon bg-info"><i className="far fa-thumbs-up"></i></div> Good job, 5 Work Orders complete.
 							</li>
 						</ul>
 					</div>

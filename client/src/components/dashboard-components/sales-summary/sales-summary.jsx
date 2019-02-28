@@ -10,31 +10,9 @@ import {
 } from 'reactstrap';
 import { Line, Doughnut } from 'react-chartjs-2';
 
-//Line chart
-let lineData = {
-	labels: [1, 2, 3, 4, 5, 6, 7, 8],
-	datasets: [{
-		label: 'Income',
-		borderWidth: 1,
-		backgroundColor: 'rgba(94,114,228,.1)',
-		borderColor: 'rgb(94,114,228)',
-		pointBorderColor: 'rgb(94,114,228)',
-		pointBackgroundColor: 'rgb(94,114,228)',
-		data: [0, 15, 6, 11, 25, 9, 18, 24]
-	}, {
-		label: 'Outcome',
-		borderWidth: 1,
-		backgroundColor: 'rgba(79,195,247,.1)',
-		borderColor: 'rgb(79,195,247)',
-		pointBorderColor: 'rgb(79,195,247)',
-		pointBackgroundColor: 'rgb(79,195,247)',
-		data: [0, 8, 11, 22, 8, 10, 5, 21]
-	}]
-};
-
 let completeWO = {
   datasets: [{
-    backgroundColor: ['rgba(255,255,0,.7)', 'rgba(255,0,0,.7)'],
+    backgroundColor: ['rgba(144,200,249,.7)', 'rgba(66,134,244,.7)'],
     data: [10, 20]
   }],
 
@@ -47,7 +25,7 @@ let completeWO = {
 
 let approvedWO = {
   datasets: [{
-    backgroundColor: ['rgba(255,255,0,.7)', 'rgba(255,127,0,.7)'],
+    backgroundColor: ['rgba(118,172,219,.7)', 'rgba(0,55,104,.7)'],
     data: [18, 12]
   }],
 

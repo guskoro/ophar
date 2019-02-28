@@ -21,11 +21,66 @@ class DivisionProgress extends Component {
     this.controlsToggle = this.controlsToggle.bind(this);
     
     this.state = {
+      cmValue: 0,
+      cmMax: 72,
+      pmValue: 0,
+      pmMax: 63,
+      assetsValue: 0,
+      assetsMax: 90,
+      controlsValue: 0,
+      controlsMax: 36,
       cmTooltip: false,
       pmTooltip: false,
       assetsTooltip: false,
       controlsTooltip: false
     };
+  }
+
+  componentDidMount() {
+    this.cmProgressUp();
+    this.pmProgressUp();
+    this.assetsProgressUp();
+    this.controlsProgressUp();
+  }
+
+  cmProgressUp() {
+    let percent = this.state.cmValue;
+    let max = this.state.cmMax;
+    for (; percent < max; percent++) {
+      this.setState({
+        cmValue: percent
+      });
+    }
+  }
+
+  pmProgressUp() {
+    let percent = this.state.pmValue;
+    let max = this.state.pmMax;
+    for (; percent < max; percent++) {
+      this.setState({
+        pmValue: percent
+      });
+    }
+  }
+
+  assetsProgressUp() {
+    let percent = this.state.assetsValue;
+    let max = this.state.assetsMax;
+    for (; percent < max; percent++) {
+      this.setState({
+        assetsValue: percent
+      });
+    }
+  }
+
+  controlsProgressUp() {
+    let percent = this.state.controlsValue;
+    let max = this.state.controlsMax;
+    for (; percent < max; percent++) {
+      this.setState({
+        controlsValue: percent
+      });
+    }
   }
 
   cmToggle() {
@@ -68,8 +123,8 @@ controlsToggle() {
                 <CardText>Corrective Maintenance</CardText>
               </Col>
               <Col xs="9" md="9">
-                <Progress id="cmProgress" animated color="warning" value={72} />
-                <Tooltip placement="top" isOpen={this.state.cmTooltip} autohide={false} target="cmProgress" toggle={this.cmToggle}>72%</Tooltip>
+                <Progress id="cmProgress" animated color="primary" value={this.state.cmValue} />
+                <Tooltip placement="top" isOpen={this.state.cmTooltip} autohide={false} target="cmProgress" toggle={this.cmToggle}>{this.state.cmMax}%</Tooltip>
               </Col>
             </Row>
             <Row>
@@ -77,8 +132,8 @@ controlsToggle() {
                 <CardText>Preventive Maintenance</CardText>
               </Col>
               <Col xs="9" md="9">
-              <Progress id="pmProgress" animated color="info" value={63} />
-              <Tooltip placement="top" isOpen={this.state.pmTooltip} autohide={false} target="pmProgress" toggle={this.pmToggle}>63%</Tooltip>
+              <Progress id="pmProgress" animated color="primary" value={this.state.pmValue} />
+              <Tooltip placement="top" isOpen={this.state.pmTooltip} autohide={false} target="pmProgress" toggle={this.pmToggle}>{this.state.pmMax}%</Tooltip>
               </Col>
             </Row>
             <Row>
@@ -86,8 +141,8 @@ controlsToggle() {
                 <CardText>Assets</CardText>
               </Col>
               <Col xs="9" md="9">
-              <Progress id="assetsProgress" animated color="success" value={90} />
-              <Tooltip placement="top" isOpen={this.state.assetsTooltip} autohide={false} target="assetsProgress" toggle={this.assetsToggle}>90%</Tooltip>
+              <Progress id="assetsProgress" animated color="primary" value={this.state.assetsValue} />
+              <Tooltip placement="top" isOpen={this.state.assetsTooltip} autohide={false} target="assetsProgress" toggle={this.assetsToggle}>{this.state.assetsMax}%</Tooltip>
               </Col>
             </Row>
             <Row>
@@ -95,8 +150,8 @@ controlsToggle() {
                 <CardText>Controls</CardText>
               </Col>
               <Col xs="9" md="9">
-              <Progress id="controlsProgress" animated color="danger" value={35} />
-              <Tooltip placement="top" isOpen={this.state.controlsTooltip} autohide={false} target="controlsProgress" toggle={this.controlsToggle}>35%</Tooltip>
+              <Progress id="controlsProgress" animated color="primary" value={this.state.controlsValue} />
+              <Tooltip placement="top" isOpen={this.state.controlsTooltip} autohide={false} target="controlsProgress" toggle={this.controlsToggle}>{this.state.controlsMax}%</Tooltip>
               </Col>
             </Row>
             </div>

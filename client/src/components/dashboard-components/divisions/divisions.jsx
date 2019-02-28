@@ -10,6 +10,7 @@ import {
   Row,
   Col
 } from 'reactstrap';
+import Countup from 'react-countup';
 
 import img1 from '../../../assets/images/division/1.png';
 import img2 from '../../../assets/images/division/2.png';
@@ -23,44 +24,50 @@ class Divisions extends Component {
         <Row>
             <Col xs="12" md="3">
               <Card>
-                <CardImg top width="100%" src={img1} />
+                {/* <CardImg top width="100%" src={img1} /> */}
                 <CardBody>
                   <CardTitle>Corrective Maintenance</CardTitle>
                   <CardSubtitle>Dian Katro</CardSubtitle>
-                  <CardText>Total Work Orders : 40</CardText>
+                  <h1 className="display-3"><Countup end={72} duration={1} /></h1>
+                  <CardText>Total Work Orders</CardText>
                   <Button color="info">Let me in</Button>
                 </CardBody>
               </Card>
             </Col>
             <Col xs="12" md="3">
               <Card>
-                <CardImg top width="100%" src={img2} />
+                {/* <CardImg top width="100%" src={img2} /> */}
                 <CardBody>
                   <CardTitle>Preventive Maintenance</CardTitle>
                   <CardSubtitle>Dian Katro</CardSubtitle>
-                  <CardText>Total Work Orders : 40</CardText>
+                  <h1 className="display-3"><Countup end={63} duration={1} /></h1>
+                  <CardText>Total Work Orders</CardText>
                   <Button color="info">Let me in</Button>
                 </CardBody>
               </Card>
             </Col>
             <Col xs="12" md="3">
               <Card>
-                <CardImg top width="100%" src={img3} />
+                {/* <CardImg top width="100%" src={img3} /> */}
                 <CardBody>
                   <CardTitle>Assets</CardTitle>
                   <CardSubtitle>Dian Katro</CardSubtitle>
-                  <CardText>Total Work Orders : 40</CardText>
+                  <CardText>
+                    <h1 className="display-3"><Countup end={45} duration={1} /></h1>
+                  </CardText>
+                  <CardText>Total Work Orders</CardText>
                   <Button color="info">Let me in</Button>
                 </CardBody>
               </Card>
             </Col>
             <Col xs="12" md="3">
               <Card>
-                <CardImg top width="100%" src={img4} />
+                {/* <CardImg top width="100%" src={img4} /> */}
                 <CardBody>
-                  <CardTitle>Controls</CardTitle>
+                  <CardTitle>Patrols and Controls</CardTitle>
                   <CardSubtitle>Dian Katro</CardSubtitle>
-                  <CardText>Total Work Orders : 40</CardText>
+                  <h1 className="display-3"><Countup end={36} duration={1} /></h1>
+                  <CardText>Total Work Orders</CardText>
                   <Button color="info">Let me in</Button>
                 </CardBody>
               </Card>
