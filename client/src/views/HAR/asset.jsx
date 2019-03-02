@@ -3,13 +3,12 @@ import React from "react";
 import img1 from '../../assets/images/users/1.jpg';
 import {
 	Button,
-    ButtonGroup,
 	Card,
 	CardBody,
+	CardText,
 	CardTitle,
 	CardSubtitle,
 	Col,
-	CustomInput,
 	Form,
 	FormGroup,
 	Input,
@@ -21,13 +20,18 @@ import {
 	ModalFooter,
 	ModalHeader,
 	Nav,
+	NavItem,
 	Pagination,
 	PaginationItem,
 	PaginationLink,
 	Row,
 	Table,
+	TabContent,
+	TabPane,
 	Tooltip
 } from 'reactstrap';
+
+import classnames from 'classnames';
 
 import { NavLink } from 'react-router-dom';
 
@@ -53,7 +57,7 @@ class Projects extends React.Component {
         this.setState(prevState => ({
             modal: !prevState.modal
         }));
-    }
+	}
 
 	toggle10() {
 		this.setState({
@@ -204,7 +208,9 @@ class Projects extends React.Component {
 									<Tooltip placement="top" isOpen={this.state.tooltipOpen10} target="tlp1" toggle={this.toggle10}>Rejected</Tooltip>
 								</td>
 								<td>
-									<Button className="btn" outline color="success">Show</Button>
+									<NavLink to="/detailWO">
+										<Button className="btn" outline color="success">Show</Button>
+									</NavLink>
 								</td>
 								<td>
 									<Button className="btn" outline color="primary" disabled>Edit</Button>{' '}

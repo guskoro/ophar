@@ -16,7 +16,7 @@ import P3ak from '../views/HAR/p3ak.jsx';
 import AllWO from '../views/HAR/allwo.jsx';
 import RegisterM from '../views/user/registermanajer.jsx';
 import RegisterA from '../views/user/registeradmin.jsx';
-import DetailWo from '../views/HAR/detailwo.jsx';
+import DetailWo from '../views/HAR/detailWO/detailwo.jsx';
 
 var ThemeRoutes = [
   { 
