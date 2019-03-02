@@ -1,16 +1,26 @@
 import React from 'react';
 import {
+	Button,
+	Collapse,
+	DropdownToggle,
+	DropdownMenu,
+	DropdownItem,
+	Form,
+	FormGroup,
+	Input,
+	Label,
+	Modal,
+	ModalBody,
+	ModalFooter,
+	ModalHeader,
 	Nav,
 	NavItem,
 	Navbar,
 	NavbarBrand,
-	Collapse,
-	DropdownItem,
-	Button,
 	UncontrolledDropdown,
-	DropdownToggle,
-	DropdownMenu
 } from 'reactstrap';
+
+import { NavLink } from 'react-router-dom';
 
 import profilephoto from '../../assets/images/users/1.jpg';
 
@@ -22,6 +32,9 @@ import logodarkicon from '../../assets/images/logo_icon+.png';
 class Header extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.toggleLogin = this.toggleLogin.bind(this)
+
 		this.toggle = this.toggle.bind(this);
 		this.showMobilemenu = this.showMobilemenu.bind(this);
 		this.state = {
@@ -31,6 +44,12 @@ class Header extends React.Component {
 	/*--------------------------------------------------------------------------------*/
 	/*To open NAVBAR in MOBILE VIEW                                                   */
 	/*--------------------------------------------------------------------------------*/
+	toggleLogin() {
+        this.setState(prevState => ({
+            modal: !prevState.modal
+        }));
+    }
+	
 	toggle() {
 		this.setState({
 			isOpen: !this.state.isOpen
@@ -86,28 +105,43 @@ class Header extends React.Component {
 									/>
 								</DropdownToggle>
 								<DropdownMenu right className="user-dd">
+										<DropdownItem href="/pages/login">
+											<Button color="light" onClick={this.toggle}>{this.props.buttonLabel}Login</Button>
+												<Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+												<ModalHeader toggle={this.toggle}>Workorders</ModalHeader>
+												<ModalBody>
+													<Form inline>
+														<Label for="exampleEmail" sm={2} size="lg">Login</Label>
+														<FormGroup>
+														<Label for="exampleEmail" hidden>Email</Label>
+														<Input type="email" name="email" id="exampleEmail" placeholder="Email" />
+														</FormGroup>
+														{' '}
+														<FormGroup>
+														<Label for="examplePassword" hidden>Password</Label>
+														<Input type="password" name="password" id="examplePassword" placeholder="Password" />
+														</FormGroup>
+														{' '}
+													</Form>
+												</ModalBody>
+												<ModalFooter>
+												<Button color="primary" onClick={this.toggle}>Submit</Button>{' '}
+												<Button color="secondary" onClick={this.toggle}>Cancel</Button>
+												</ModalFooter>
+												</Modal>
+										</DropdownItem>
+										<DropdownItem divider />										
 									<DropdownItem>
 										<i className="ti-user mr-1 ml-1" /> My Account
                   					</DropdownItem>
-									<DropdownItem>
-										<i className="ti-wallet mr-1 ml-1" /> My Balance
-                 					</DropdownItem>
-									<DropdownItem>
-										<i className="ti-email mr-1 ml-1" /> Inbox
-                  					</DropdownItem>
-									<DropdownItem divider />
-									<DropdownItem>
-										<i className="ti-settings mr-1 ml-1" /> Account Settings
-                  					</DropdownItem>
-									<DropdownItem divider />
-									<DropdownItem href="/pages/login">
+										<DropdownItem divider />
+									<DropdownItem href="/login">
 										<i className="fa fa-power-off mr-1 ml-1" /> Logout
                   					</DropdownItem>
-									<DropdownItem divider />
+										<DropdownItem divider />
 									<Button
 										color="success"
-										className="btn-rounded ml-3 mb-2 mt-2"
-									>
+										className="btn-rounded ml-3 mb-2 mt-2">
 										View Profile
                   					</Button>
 								</DropdownMenu>

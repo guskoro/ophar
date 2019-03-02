@@ -1,6 +1,7 @@
 import React from "react";
 import {
-  Input,
+	Input,
+	Button,
 	Card,
 	CardBody,
 	CardTitle,
@@ -9,6 +10,7 @@ import {
 	Row
 } from 'reactstrap';
 import { Line, Doughnut } from 'react-chartjs-2';
+import { Link } from 'react-router-dom';
 
 let completeWO = {
   datasets: [{
@@ -66,13 +68,19 @@ class SalesSummary extends React.Component {
 						</Col>
 					</Row> */}
           <Row>
+						
 						<Col lg="6">
 							<div className="campaign ct-charts">
 								<div className="chart-wrapper" style={{ width: '100%', margin: '0 auto', height: 250 }}>
+								<Link to="/allWO">
+									<Button block className="btn" color="white">
 									<Doughnut data={completeWO} options={{ maintainAspectRatio: false, legend: { display: true, labels: { fontFamily: "Nunito Sans" } } }} />
+									</Button>
+								</Link>
 								</div>
 							</div>
 						</Col>
+						
             <Col lg="6">
 							<div className="campaign ct-charts">
 								<div className="chart-wrapper" style={{ width: '100%', margin: '0 auto', height: 250 }}>

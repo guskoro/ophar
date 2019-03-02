@@ -14,10 +14,16 @@ import {
 	CardSubtitle,
 	Col,
 	CustomInput,
+	Form,
+	FormGroup,
 	Input,
 	InputGroup,
 	InputGroupAddon,
 	Label,
+	Modal,
+	ModalBody,
+	ModalFooter,
+	ModalHeader,
 	Nav,
 	Pagination,
 	PaginationItem,
@@ -33,6 +39,8 @@ class Projects extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.toggle = this.toggle.bind(this);
+
 		this.toggle10 = this.toggle10.bind(this);
 		this.toggle20 = this.toggle20.bind(this);
 		this.toggle30 = this.toggle30.bind(this);
@@ -44,6 +52,12 @@ class Projects extends React.Component {
 			tooltipOpen40: false
 		};
 	}
+
+	toggle() {
+        this.setState(prevState => ({
+            modal: !prevState.modal
+        }));
+    }
 
 	toggle10() {
 		this.setState({
@@ -84,20 +98,6 @@ class Projects extends React.Component {
 						</div>
 						<div className="ml-auto d-flex no-block align-items-center">
 							<div className="dl">
-								<InputGroup>
-									<InputGroupAddon addonType="append"><Button color="primary">Search</Button></InputGroupAddon>
-									<Input placeholder="Search.." />
-								</InputGroup>
-							</div>
-							<div className="dl">
-								<NavLink to="/uploadWO">
-									<Button className="btn" color="success">Upload</Button>{' '}
-								</NavLink>
-							</div>
-							<div className="dl">
-								<Button className="btn" outline color="danger">Delete</Button>{' '}
-							</div>
-							<div className="dl">
 								<Input type="select" className="custom-select">
 									<option value="0">Monthly</option>
 									<option value="1">Daily</option>
@@ -105,17 +105,78 @@ class Projects extends React.Component {
 									<option value="3">Yearly</option>
 								</Input>
 							</div>
+							<div className="dl">
+								{/* <NavLink to="/uploadWO">
+									<Button className="btn" color="success">Upload</Button>{' '}
+								</NavLink> */}
+								<Button color="success" onClick={this.toggle}>{this.props.buttonLabel}Upload WO</Button>
+                                    <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                                    <ModalHeader toggle={this.toggle}>Workorders</ModalHeader>
+                                    <ModalBody>
+									<Form>
+										<FormGroup>
+											<Label for="exampleEmail">Work Title</Label>
+											<Input />
+										</FormGroup>
+										<FormGroup>
+											<Label for="exampleText">Work Detail Description</Label>
+											<Input type="textarea" name="text" id="exampleText" />
+										</FormGroup>
+										<FormGroup>
+											<Label for="exampleEmail">Work Plan</Label>
+											<Input />
+										</FormGroup>
+										<FormGroup>
+										<Label for="exampleSelect">Priority</Label>
+										<Input type="select" name="select" id="exampleSelect">
+											<option>Critical</option>
+											<option>High</option>
+											<option>Medium</option>
+											<option>Low</option>
+										</Input>
+										</FormGroup>
+										<FormGroup>
+										<Label for="exampleSelect">Work Type</Label>
+										<Input type="select" name="select" id="exampleSelect">
+											<option>FOC</option>
+											<option>FOT</option>
+											<option>PS</option>
+										</Input>
+										</FormGroup>
+										<FormGroup>
+										<Label for="exampleSelect">Work Program Type</Label>
+										<Input type="select" name="select" id="exampleSelect">
+											<option>Rutin</option>
+											<option>Non Rutin</option>
+										</Input>
+										</FormGroup>
+										<FormGroup>
+											<Label for="exampleDate">Done Target</Label>
+											<Input
+												type="date"
+												name="date"
+												id="exampleDate"
+												placeholder="date placeholder"/>
+										</FormGroup>
+									</Form>
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <Button color="primary" onClick={this.toggle}>Submit</Button>{' '}
+                                        <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                                    </ModalFooter>
+                                    </Modal>
+							</div>
+							<div className="dl">
+								<InputGroup>
+									<InputGroupAddon addonType="append"><Button color="primary">Search</Button></InputGroupAddon>
+									<Input placeholder="Search.." />
+								</InputGroup>
+							</div>
 						</div>
 					</div>
 					<Table className="no-wrap v-middle" responsive>
 						<thead>
 							<tr className="border-0">
-								<th className="border-0">
-									<CustomInput 
-									type="checkbox" 
-									id="exampleCustomCheckbox" 
-									label="" />
-								</th>
 								<th className="border-0">Code</th>
 								<th className="border-0">PIC</th>
 								<th className="border-0">Type</th>
@@ -129,12 +190,6 @@ class Projects extends React.Component {
 						</thead>
 						<tbody>
 							<tr>
-								<td>
-									<CustomInput 
-									type="checkbox" 
-									id="exampleCustomCheckbox" 
-									label="" />
-								</td>
 								<td>012SAKX</td>
 								<td>
 									<div className="d-flex no-block align-items-center">
@@ -157,12 +212,6 @@ class Projects extends React.Component {
 								</td>
 							</tr>
 							<tr>
-								<td>
-									<CustomInput 
-									type="checkbox" 
-									id="exampleCustomCheckbox" 
-									label="" />
-								</td>
 								<td>012SAKX</td>
 								<td>
 									<div className="d-flex no-block align-items-center">
@@ -185,12 +234,6 @@ class Projects extends React.Component {
 								</td>
 							</tr>
 							<tr>
-								<td>
-									<CustomInput 
-									type="checkbox" 
-									id="exampleCustomCheckbox" 
-									label="" />
-								</td>
 								<td>012SAKX</td>
 								<td>
 									<div className="d-flex no-block align-items-center">
@@ -213,12 +256,6 @@ class Projects extends React.Component {
 								</td>
 							</tr>
 							<tr>
-								<td>
-									<CustomInput 
-									type="checkbox" 
-									id="exampleCustomCheckbox" 
-									label="" />
-								</td>
 								<td>012SAKX</td>
 								<td>
 									<div className="d-flex no-block align-items-center">
