@@ -8,6 +8,10 @@ import {
     CardTitle,
     Col,
     CustomInput,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
     Nav,
     NavItem,
     NavLink,
@@ -15,7 +19,6 @@ import {
     TabContent,
     TabPane,
     Table,
-    Tooltip
 } from 'reactstrap';
 
 import classnames from 'classnames';
@@ -32,9 +35,11 @@ export default class Example extends React.Component {
     this.toggleTab = this.toggleTab.bind(this);
 
     this.toggle = this.toggle.bind(this);
+
     this.state = {
       isOpen: false,
-      activeTab: '1'
+      activeTab: '1',
+      modal: false
     };
   }
 
@@ -47,10 +52,11 @@ export default class Example extends React.Component {
   }
 
   toggle() {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
+    this.setState(prevState => ({
+      modal: !prevState.modal
+    }));
   }
+
   render() {
     return (
         <Card>
@@ -64,8 +70,34 @@ export default class Example extends React.Component {
                             </div>
                         </div>
                         <div className="profile">
+                            <h1 className="mb-1 font-20 font-medium">Work Title</h1>
+                        </div>
+                        <div className="profile">
                             <Badge color="success" className="ml-0" pill>Approved</Badge>
                             <span className="profile-time-approved">At January, 12th - 2019</span>
+                        </div>
+                        <div className="profile">
+                            <Badge color="warning" className="ml-0" pill>Pending</Badge>
+                        </div>
+                        <div className="profile">
+                            <h1 className="mb-0 font-16 font-medium">Remaining Time : <span className="profile-time-approved">50 Hours</span></h1>
+                        </div>
+                        <div className="profile">
+                            <h1 className="mb-0 font-16 font-medium" color="info">Done Target : <span className="profile-time-approved">March, 12th - 2019</span></h1>
+                        </div>
+                        <div className="profile">
+                            <Button outline color="danger" onClick={this.toggle}>{this.props.buttonLabel}Done</Button>
+                                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                                    <ModalHeader toggle={this.toggle}>Done Work</ModalHeader>
+                                    <ModalBody>
+                                        Are you sure to end this work?    
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <Button color="primary" onClick={this.toggle}>Yes</Button>{' '}
+                                        <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                                    </ModalFooter>
+                                </Modal>
+                            <Button outline color="info" className="profile-time-approved">Edit</Button>
                         </div>
                     </Col>
                     

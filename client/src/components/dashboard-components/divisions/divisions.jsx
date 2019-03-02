@@ -10,7 +10,10 @@ import {
   Row,
   Col
 } from 'reactstrap';
+
 import Countup from 'react-countup';
+
+import { NavLink } from 'react-router-dom';
 
 import img1 from '../../../assets/images/division/1.png';
 import img2 from '../../../assets/images/division/2.png';
@@ -30,7 +33,9 @@ class Divisions extends Component {
                   <CardSubtitle>Dian Katro</CardSubtitle>
                   <h1 className="display-3"><Countup end={72} duration={1} /></h1>
                   <CardText>Total Work Orders</CardText>
-                  <Button color="danger">Let me in</Button>
+                    <NavLink to="/cm">
+                      <Button color="danger">Let me in</Button>
+                    </NavLink>
                 </CardBody>
               </Card>
             </Col>
@@ -68,7 +73,9 @@ class Divisions extends Component {
                   <CardSubtitle>Dian Katro</CardSubtitle>
                   <h1 className="display-3"><Countup end={36} duration={1} /></h1>
                   <CardText>Total Work Orders</CardText>
-                  <Button color="danger">Let me in</Button>
+                  <NavLink>
+                    <Button color="danger">Let me in</Button>
+                  </NavLink>
                 </CardBody>
               </Card>
             </Col>
