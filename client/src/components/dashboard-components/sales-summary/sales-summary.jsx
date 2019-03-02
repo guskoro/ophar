@@ -72,12 +72,13 @@ class SalesSummary extends React.Component {
 						<Col lg="6">
 							<div className="campaign ct-charts">
 								<div className="chart-wrapper" style={{ width: '100%', margin: '0 auto', height: 250 }}>
-								<Link to="/allWO">
-									<Button block className="btn" color="white">
 									<Doughnut data={completeWO} options={{ maintainAspectRatio: false, legend: { display: true, labels: { fontFamily: "Nunito Sans" } } }} />
-									</Button>
-								</Link>
 								</div>
+							</div>
+							<div>
+							<Link to="/allWO">
+									<Button block className="btn" color="danger">Detail</Button>
+							</Link>
 							</div>
 						</Col>
 						
@@ -87,6 +88,9 @@ class SalesSummary extends React.Component {
 									<Doughnut data={approvedWO} options={{ maintainAspectRatio: false, legend: { display: true, labels: { fontFamily: "Nunito Sans" } } }} />
 								</div>
 							</div>
+							<Link to="/allWO">
+									<Button block className="btn" color="danger">Detail</Button>
+							</Link>
 						</Col>
 					</Row>
 				</CardBody>

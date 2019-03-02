@@ -16,6 +16,7 @@ import P3ak from '../views/HAR/p3ak.jsx';
 import AllWO from '../views/HAR/allwo.jsx';
 import RegisterM from '../views/user/registermanajer.jsx';
 import RegisterA from '../views/user/registeradmin.jsx';
+import DetailWo from '../views/HAR/detailwo.jsx';
 
 var ThemeRoutes = [
   { 
@@ -23,6 +24,12 @@ var ThemeRoutes = [
     name: 'Dashboard', 
     icon: 'ti-loop', 
     component: Starter 
+  },
+  {
+    path: '/detailWO',
+    name: 'Detail WO',
+    icon: 'mdi mdi-database',
+    component: DetailWo
   },
   {
     path: '/registerM',

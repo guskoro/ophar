@@ -14,13 +14,10 @@ import {
 	ModalFooter,
 	ModalHeader,
 	Nav,
-	NavItem,
 	Navbar,
 	NavbarBrand,
 	UncontrolledDropdown,
 } from 'reactstrap';
-
-import { NavLink } from 'react-router-dom';
 
 import profilephoto from '../../assets/images/users/1.jpg';
 
@@ -105,10 +102,10 @@ class Header extends React.Component {
 									/>
 								</DropdownToggle>
 								<DropdownMenu right className="user-dd">
-										<DropdownItem href="/pages/login">
-											<Button color="light" onClick={this.toggle}>{this.props.buttonLabel}Login</Button>
-												<Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-												<ModalHeader toggle={this.toggle}>Workorders</ModalHeader>
+									<DropdownItem>
+											<Button color="light" onClick={this.toggleLogin}>{this.props.buttonLabel}Login</Button>
+												<Modal isOpen={this.state.modal} toggle={this.toggleLogin} className={this.props.className}>
+												<ModalHeader toggle={this.toggleLogin}></ModalHeader>
 												<ModalBody>
 													<Form inline>
 														<Label for="exampleEmail" sm={2} size="lg">Login</Label>
@@ -125,12 +122,12 @@ class Header extends React.Component {
 													</Form>
 												</ModalBody>
 												<ModalFooter>
-												<Button color="primary" onClick={this.toggle}>Submit</Button>{' '}
-												<Button color="secondary" onClick={this.toggle}>Cancel</Button>
+												<Button color="primary" onClick={this.toggleLogin}>Submit</Button>{' '}
+												<Button color="secondary" onClick={this.toggleLogin}>Cancel</Button>
 												</ModalFooter>
 												</Modal>
 										</DropdownItem>
-										<DropdownItem divider />										
+									<DropdownItem divider />										
 									<DropdownItem>
 										<i className="ti-user mr-1 ml-1" /> My Account
                   					</DropdownItem>

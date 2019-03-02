@@ -30,7 +30,7 @@ class Divisions extends Component {
                   <CardSubtitle>Dian Katro</CardSubtitle>
                   <h1 className="display-3"><Countup end={72} duration={1} /></h1>
                   <CardText>Total Work Orders</CardText>
-                  <Button color="info">Let me in</Button>
+                  <Button color="danger">Let me in</Button>
                 </CardBody>
               </Card>
             </Col>
@@ -42,7 +42,7 @@ class Divisions extends Component {
                   <CardSubtitle>Dian Katro</CardSubtitle>
                   <h1 className="display-3"><Countup end={63} duration={1} /></h1>
                   <CardText>Total Work Orders</CardText>
-                  <Button color="info">Let me in</Button>
+                  <Button color="danger">Let me in</Button>
                 </CardBody>
               </Card>
             </Col>
@@ -56,7 +56,7 @@ class Divisions extends Component {
                     <h1 className="display-3"><Countup end={45} duration={1} /></h1>
                   </CardText>
                   <CardText>Total Work Orders</CardText>
-                  <Button color="info">Let me in</Button>
+                  <Button color="danger">Let me in</Button>
                 </CardBody>
               </Card>
             </Col>
@@ -68,7 +68,7 @@ class Divisions extends Component {
                   <CardSubtitle>Dian Katro</CardSubtitle>
                   <h1 className="display-3"><Countup end={36} duration={1} /></h1>
                   <CardText>Total Work Orders</CardText>
-                  <Button color="info">Let me in</Button>
+                  <Button color="danger">Let me in</Button>
                 </CardBody>
               </Card>
             </Col>
