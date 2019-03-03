@@ -6,6 +6,9 @@ const workingOrderSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'users'
   },
+  division: {
+    type: String
+  },
   type: {
     type: Schema.Types.ObjectId,
     ref: 'types',
@@ -16,17 +19,26 @@ const workingOrderSchema = new Schema({
     ref: 'priorities',
     required: true
   },
-  jobs: [{
-    type: String
-  }],
+  plans: [
+    {
+      type: String
+    }
+  ],
+  title: {
+    type: String,
+    required: true
+  },
   description: {
     type: String,
     required: true
   },
-  users: [{
-    type: Schema.Types.ObjectId,
-    ref: 'users'
-  }],
+  program: {
+    type: String,
+    required: true
+  },
+  note: {
+    type: String
+  },
   approved_by_spv: {
     type: Boolean,
     default: false
@@ -40,11 +52,11 @@ const workingOrderSchema = new Schema({
     default: false
   },
   start: {
+    type: Date
+  },
+  deadline: {
     type: Date,
     required: true
-  },
-  expected_done: {
-    type: Date
   },
   end: {
     type: Date
@@ -55,4 +67,7 @@ const workingOrderSchema = new Schema({
   }
 });
 
-module.exports = WorkingOrder = mongoose.model('working_orders', workingOrderSchema);
+module.exports = WorkingOrder = mongoose.model(
+  'working_orders',
+  workingOrderSchema
+);

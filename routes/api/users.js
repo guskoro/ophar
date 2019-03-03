@@ -27,65 +27,76 @@ router.get('/', (req, res) => {
     .catch(err => res.status(400).json(err));
 });
 
-router.post('/register', (req, res) => {
-  const {
-    errors,
-    isValid
-  } = validateRegisterInput(req.body);
+router.post(
+  '/register',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    User.findById(req.user.id)
+      .populate('role', 'name-_id')
+      .then(user => {
+        if (user.role.name != 'admin')
+          return res
+            .status(403)
+            .json({ access: 'Maaf, anda tidak mempunyai access untuk ini' });
 
-  if (!isValid) {
-    return res.status(400).json(errors);
-  }
+        const { errors, isValid } = validateRegisterInput(req.body);
 
-  User.findOne({
-    email: req.body.email
-  }).then(user => {
-    if (user) {
-      errors.email = 'Email sudah terdaftar';
+        if (!isValid) {
+          return res.status(400).json(errors);
+        }
 
-      return res.status(400).json(errors);
-    }
+        User.findOne({
+          email: req.body.email
+        })
+          .then(user => {
+            if (user) {
+              errors.email = 'Email sudah terdaftar';
 
-    Role.findById(req.body.role)
-      .then(role => {
-        Division.findById(req.body.division).then(division => {
-          const avatar = gravatar.url(req.body.email, {
-            s: '200',
-            r: 'pg',
-            d: 'mm'
-          });
+              return res.status(400).json(errors);
+            }
 
-          const newUser = new User({
-            name: req.body.name,
-            email: req.body.email,
-            avatar,
-            role,
-            division,
-            password: req.body.password
-          });
+            Role.findById(req.body.role)
+              .then(role => {
+                const avatar = gravatar.url(req.body.email, {
+                  s: '200',
+                  r: 'pg',
+                  d: 'mm'
+                });
 
-          bcrypt.genSalt(10, (err, salt) => {
-            if (err) return res.status(400).json(err);
-            bcrypt.hash(newUser.password, salt, (err, hash) => {
-              if (err) res.status(400).json(err);
-              newUser.password = hash;
-              newUser.save()
-                .then(user => res.status(200).json(user))
-                .catch(err => res.status(400).json(err));
-            });
-          });
-        });
+                const newUser = new User({
+                  name: req.body.name,
+                  email: req.body.email,
+                  avatar,
+                  role,
+                  password: req.body.password
+                });
+
+                if (req.body.division) {
+                  newUser.division = req.body.division;
+                }
+
+                bcrypt.genSalt(10, (err, salt) => {
+                  if (err) return res.status(400).json(err);
+                  bcrypt.hash(newUser.password, salt, (err, hash) => {
+                    if (err) res.status(400).json(err);
+                    newUser.password = hash;
+                    newUser
+                      .save()
+                      .then(user => res.status(200).json(user))
+                      .catch(err => res.status(400).json(err));
+                  });
+                });
+              })
+              .catch(err => res.status(400).json(err));
+          })
+          .catch(err => res.status(400).json(err));
       })
-      .catch(err => res.status(400).json(err));
-
-  }).catch(err => res.status(400).json(err));
-});
+      .catch(err => res.status(404).json(err));
+  }
+);
 
 router.post('/login', (req, res) => {
-  const {
-    errors,
-    isValid
-  } = validateLoginInput(req.body);
+  const { errors, isValid } = validateLoginInput(req.body);
 
   if (!isValid) {
     return res.status(400).json(errors);
@@ -95,15 +106,16 @@ router.post('/login', (req, res) => {
   const password = req.body.password;
 
   User.findOne({
-      email
-    })
+    email
+  })
     .then(user => {
       if (!user) {
-        errors.email = 'User tidak ditemukan'
+        errors.email = 'User tidak ditemukan';
         return res.status(404).json(errors);
       }
 
-      bcrypt.compare(password, user.password)
+      bcrypt
+        .compare(password, user.password)
         .then(isMatch => {
           if (isMatch) {
             const payload = {
@@ -112,13 +124,12 @@ router.post('/login', (req, res) => {
               avatar: user.avatar
             };
 
-            return jwt.sign(payload, process.env.JWT_KEY,
-              (err, token) => {
-                return res.json({
-                  user: user,
-                  token: `Bearer ${token}`
-                });
+            return jwt.sign(payload, process.env.JWT_KEY, (err, token) => {
+              return res.json({
+                user: user,
+                token: `Bearer ${token}`
               });
+            });
           }
 
           errors.password = 'Kata sandi salah';
@@ -130,33 +141,98 @@ router.post('/login', (req, res) => {
     .catch(err => res.status(400).json(err));
 });
 
-router.get('/current', passport.authenticate('jwt', {
-  session: false
-}), (req, res) => {
-  let user = {};
+router.get(
+  '/current',
+  passport.authenticate('jwt', {
+    session: false
+  }),
+  (req, res) => {
+    let user = {};
 
-  Role.findById(req.user.role)
-    .then(role => {
-      user.role = role
+    Role.findById(req.user.role)
+      .then(role => {
+        user.role = role;
 
-      Division.findById(req.user.division)
-        .then(division => {
-          user.division = division
+        Division.findById(req.user.division)
+          .then(division => {
+            user.division = division;
 
-          res.json({
-            _id: req.user.id,
-            name: req.user.name,
-            email: req.user.email,
-            avatar: req.user.avatar,
-            role: user.role.name,
-            division: user.division.name
-          });
-        })
-        .catch(err => res.status(404).json(err));
-    })
+            res.json({
+              _id: req.user.id,
+              name: req.user.name,
+              email: req.user.email,
+              avatar: req.user.avatar,
+              role: user.role.name,
+              division: user.division.name
+            });
+          })
+          .catch(err => res.status(404).json(err));
+      })
+      .catch(err => res.status(404).json(err));
+
+    console.log(user);
+  }
+);
+
+router.get('/:id', (req, res) => {
+  User.findById(req.params.id)
+    .then(user => res.status(200).json(user))
     .catch(err => res.status(404).json(err));
-
-  console.log(user);
 });
+
+router.patch(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    User.findById(req.user.id)
+      .populate('role', 'name-_id')
+      .then(user => {
+        if (user.role.name != 'admin')
+          return res
+            .status(403)
+            .json({ access: 'Maaf, anda tidak mempunyai access untuk ini' });
+
+        User.findById(req.params.id)
+          .then(user => {
+            if (req.body._id) {
+              delete req.body._id;
+            }
+            for (let i in req.body) {
+              user[i] = req.body[i];
+            }
+            user
+              .save()
+              .then(updatedUser => {
+                res.json(updatedUser);
+              })
+              .catch(err => res.status(400).json(err));
+          })
+          .catch(err => res.status(404).json(err));
+      })
+      .catch(err => res.status(404).json(err));
+  }
+);
+
+router.delete(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    User.findById(req.user.id)
+      .populate('role', 'name-_id')
+      .then(user => {
+        if (user.role.name != 'admin')
+          return res
+            .status(403)
+            .json({ access: 'Maaf, anda tidak mempunyai access untuk ini' });
+
+        User.findByIdAndDelete(req.params.id)
+          .then(user => {
+            res.json(user);
+          })
+          .catch(err => res.status(404).json(err));
+      })
+      .catch(err => res.status(404).json(err));
+  }
+);
 
 module.exports = router;

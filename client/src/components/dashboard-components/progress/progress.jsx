@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   Card,
-  Input,
   CardBody,
   CardTitle,
   CardText,
@@ -10,6 +9,7 @@ import {
   Progress,
   Tooltip
 } from 'reactstrap';
+import axios from 'axios';
 
 class DivisionProgress extends Component {
   constructor(props) {
@@ -19,146 +19,366 @@ class DivisionProgress extends Component {
     this.pmToggle = this.pmToggle.bind(this);
     this.assetsToggle = this.assetsToggle.bind(this);
     this.controlsToggle = this.controlsToggle.bind(this);
-    
+
     this.state = {
-      cmValue: 0,
-      cmMax: 72,
-      pmValue: 0,
-      pmMax: 63,
-      assetsValue: 0,
-      assetsMax: 90,
-      controlsValue: 0,
-      controlsMax: 36,
-      cmTooltip: false,
-      pmTooltip: false,
-      assetsTooltip: false,
-      controlsTooltip: false
+      cmData: {
+        done: 0,
+        all: 0,
+        value: 0,
+        max: 0,
+        tooltip: false
+      },
+      pmData: {
+        done: 0,
+        all: 0,
+        value: 0,
+        max: 0,
+        tooltip: false
+      },
+      assetsData: {
+        done: 0,
+        all: 0,
+        value: 0,
+        max: 0,
+        tooltip: false
+      },
+      controlsData: {
+        done: 0,
+        all: 0,
+        value: 0,
+        max: 0,
+        tooltip: false
+      }
     };
   }
 
-  componentDidMount() {
-    this.cmProgressUp();
-    this.pmProgressUp();
-    this.assetsProgressUp();
-    this.controlsProgressUp();
+  async componentDidMount() {
+    await this.getCMProgress();
+    await this.getPMProgress();
+    await this.getAssetsProgress();
+    await this.getControlsProgress();
+    await this.cmProgressUp();
+    await this.pmProgressUp();
+    await this.assetsProgressUp();
+    await this.controlsProgressUp();
+  }
+
+  async getCMProgress() {
+    let newData = JSON.parse(JSON.stringify(this.state.cmData));
+
+    await axios
+      .get('/api/working-order?division=corrective+maintenance')
+      .then(cmWOs => {
+        newData.all = cmWOs.data.length;
+        this.setState({
+          cmData: newData
+        });
+      })
+      .catch(err => console.log(err));
+
+    await axios
+      .get('/api/working-order?division=corrective+maintenance&done=true')
+      .then(cmWOs => {
+        newData.done = cmWOs.data.length;
+        this.setState({
+          cmData: newData
+        });
+      })
+      .catch(err => console.log(err));
+
+    let done = this.state.cmData.done;
+    let all = this.state.cmData.all;
+
+    if (done !== 0) {
+      newData.max = (done / all) * 100;
+      this.setState({
+        cmData: newData
+      });
+    }
+  }
+
+  async getPMProgress() {
+    let newData = JSON.parse(JSON.stringify(this.state.pmData));
+
+    await axios
+      .get('/api/working-order?division=preventive+maintenance')
+      .then(pmWOs => {
+        newData.all = pmWOs.data.length;
+        this.setState({
+          pmData: newData
+        });
+      })
+      .catch(err => console.log(err));
+
+    await axios
+      .get('/api/working-order?division=preventive+maintenance&done=true')
+      .then(pmWOs => {
+        newData.done = pmWOs.data.length;
+        this.setState({
+          pmData: newData
+        });
+      })
+      .catch(err => console.log(err));
+
+    let done = this.state.pmData.done;
+    let all = this.state.pmData.all;
+
+    if (done !== 0) {
+      newData.max = (done / all) * 100;
+      this.setState({
+        pmData: newData
+      });
+    }
+  }
+
+  async getAssetsProgress() {
+    let newData = JSON.parse(JSON.stringify(this.state.assetsData));
+
+    await axios
+      .get('/api/working-order?division=assets')
+      .then(assetsWOs => {
+        newData.all = assetsWOs.data.length;
+        this.setState({
+          assetsData: newData
+        });
+      })
+      .catch(err => console.log(err));
+
+    await axios
+      .get('/api/working-order?division=patrols+and+controls&done=true')
+      .then(assetsWOs => {
+        newData.done = assetsWOs.data.length;
+        this.setState({
+          assetsData: newData
+        });
+      })
+      .catch(err => console.log(err));
+
+    let done = this.state.assetsData.done;
+    let all = this.state.assetsData.all;
+
+    if (done !== 0) {
+      newData.max = (done / all) * 100;
+      this.setState({
+        assetsData: newData
+      });
+    }
+  }
+
+  async getControlsProgress() {
+    let newData = JSON.parse(JSON.stringify(this.state.controlsData));
+
+    await axios
+      .get('/api/working-order?division=patrols+and+controls')
+      .then(controlsWOs => {
+        newData.all = controlsWOs.data.length;
+        this.setState({
+          controlsData: newData
+        });
+      })
+      .catch(err => console.log(err));
+
+    await axios
+      .get('/api/working-order?division=patrols+and+controls&done=true')
+      .then(controlsWOs => {
+        newData.done = controlsWOs.data.length;
+        this.setState({
+          controlsData: newData
+        });
+      })
+      .catch(err => console.log(err));
+
+    let done = this.state.controlsData.done;
+    let all = this.state.controlsData.all;
+
+    if (done !== 0) {
+      newData.max = (done / all) * 100;
+      this.setState({
+        controlsData: newData
+      });
+    }
   }
 
   cmProgressUp() {
-    let percent = this.state.cmValue;
-    let max = this.state.cmMax;
+    let percent = this.state.cmData.value;
+    let max = this.state.cmData.max;
     for (; percent < max; percent++) {
+      let newData = JSON.parse(JSON.stringify(this.state.cmData));
+      newData.value = percent;
       this.setState({
-        cmValue: percent
+        cmData: newData
       });
     }
   }
 
   pmProgressUp() {
-    let percent = this.state.pmValue;
-    let max = this.state.pmMax;
+    let percent = this.state.pmData.value;
+    let max = this.state.pmData.max;
     for (; percent < max; percent++) {
+      let newData = JSON.parse(JSON.stringify(this.state.pmData));
+      newData.value = percent;
       this.setState({
-        pmValue: percent
+        pmData: newData
       });
     }
   }
 
   assetsProgressUp() {
-    let percent = this.state.assetsValue;
-    let max = this.state.assetsMax;
+    let percent = this.state.assetsData.value;
+    let max = this.state.assetsData.max;
     for (; percent < max; percent++) {
+      let newData = JSON.parse(JSON.stringify(this.state.assetsData));
+      newData.value = percent;
       this.setState({
-        assetsValue: percent
+        assetsData: newData
       });
     }
   }
 
   controlsProgressUp() {
-    let percent = this.state.controlsValue;
-    let max = this.state.controlsMax;
+    let percent = this.state.controlsData.value;
+    let max = this.state.controlsData.max;
     for (; percent < max; percent++) {
+      let newData = JSON.parse(JSON.stringify(this.state.controlsData));
+      newData.value = percent;
       this.setState({
-        controlsValue: percent
+        controlsData: newData
       });
     }
   }
 
   cmToggle() {
-      this.setState({
-        cmTooltip: !this.state.cmTooltip
-      });
+    let newData = JSON.parse(JSON.stringify(this.state.cmData));
+    newData.tooltip = !this.state.cmData.tooltip;
+    this.setState({
+      cmData: newData
+    });
   }
 
   pmToggle() {
+    let newData = JSON.parse(JSON.stringify(this.state.pmData));
+    newData.tooltip = !this.state.pmData.tooltip;
     this.setState({
-      pmTooltip: !this.state.pmTooltip
+      pmData: newData
     });
-}
+  }
 
-assetsToggle() {
-  this.setState({
-    assetsTooltip: !this.state.assetsTooltip
-  });
-}
+  assetsToggle() {
+    let newData = JSON.parse(JSON.stringify(this.state.assetsData));
+    newData.tooltip = !this.state.assetsData.tooltip;
+    this.setState({
+      assetsData: newData
+    });
+  }
 
-controlsToggle() {
-  this.setState({
-    controlsTooltip: !this.state.controlsTooltip
-  });
-}
-  
+  controlsToggle() {
+    let newData = JSON.parse(JSON.stringify(this.state.controlsData));
+    newData.tooltip = !this.state.controlsData.tooltip;
+    this.setState({
+      controlsData: newData
+    });
+  }
+
   render() {
     return (
       <div>
         <Card>
-				<CardBody>
-					<div className="d-flex align-items-center">
-						<div>
-							<CardTitle>Division Progress</CardTitle>
-						</div>
-					</div>
-          <div className="progress-area">
-            <Row>
-              <Col xs="3" md="3">
-                <CardText>Corrective Maintenance</CardText>
-              </Col>
-              <Col xs="9" md="9">
-                <Progress id="cmProgress" animated color="primary" value={this.state.cmValue} />
-                <Tooltip placement="top" isOpen={this.state.cmTooltip} autohide={false} target="cmProgress" toggle={this.cmToggle}>{this.state.cmMax}%</Tooltip>
-              </Col>
-            </Row>
-            <Row>
-            <Col xs="3" md="3">
-                <CardText>Preventive Maintenance</CardText>
-              </Col>
-              <Col xs="9" md="9">
-              <Progress id="pmProgress" animated color="primary" value={this.state.pmValue} />
-              <Tooltip placement="top" isOpen={this.state.pmTooltip} autohide={false} target="pmProgress" toggle={this.pmToggle}>{this.state.pmMax}%</Tooltip>
-              </Col>
-            </Row>
-            <Row>
-            <Col xs="3" md="3">
-                <CardText>Assets</CardText>
-              </Col>
-              <Col xs="9" md="9">
-              <Progress id="assetsProgress" animated color="primary" value={this.state.assetsValue} />
-              <Tooltip placement="top" isOpen={this.state.assetsTooltip} autohide={false} target="assetsProgress" toggle={this.assetsToggle}>{this.state.assetsMax}%</Tooltip>
-              </Col>
-            </Row>
-            <Row>
-            <Col xs="3" md="3">
-                <CardText>Controls</CardText>
-              </Col>
-              <Col xs="9" md="9">
-              <Progress id="controlsProgress" animated color="primary" value={this.state.controlsValue} />
-              <Tooltip placement="top" isOpen={this.state.controlsTooltip} autohide={false} target="controlsProgress" toggle={this.controlsToggle}>{this.state.controlsMax}%</Tooltip>
-              </Col>
-            </Row>
+          <CardBody>
+            <div className='d-flex align-items-center'>
+              <div>
+                <CardTitle>Division Progress</CardTitle>
+              </div>
+            </div>
+            <div className='progress-area'>
+              <Row>
+                <Col xs='3' md='3'>
+                  <CardText>Corrective Maintenance</CardText>
+                </Col>
+                <Col xs='9' md='9'>
+                  <Progress
+                    id='cmProgress'
+                    animated
+                    color='primary'
+                    value={this.state.cmData.value}
+                  />
+                  <Tooltip
+                    placement='top'
+                    isOpen={this.state.cmData.tooltip}
+                    autohide={false}
+                    target='cmProgress'
+                    toggle={this.cmToggle}>
+                    {this.state.cmData.done}/{this.state.cmData.all}
+                  </Tooltip>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs='3' md='3'>
+                  <CardText>Preventive Maintenance</CardText>
+                </Col>
+                <Col xs='9' md='9'>
+                  <Progress
+                    id='pmProgress'
+                    animated
+                    color='primary'
+                    value={this.state.pmData.value}
+                  />
+                  <Tooltip
+                    placement='top'
+                    isOpen={this.state.pmData.tooltip}
+                    autohide={false}
+                    target='pmProgress'
+                    toggle={this.pmToggle}>
+                    {this.state.pmData.done}/{this.state.pmData.all}
+                  </Tooltip>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs='3' md='3'>
+                  <CardText>Assets</CardText>
+                </Col>
+                <Col xs='9' md='9'>
+                  <Progress
+                    id='assetsProgress'
+                    animated
+                    color='primary'
+                    value={this.state.assetsData.value}
+                  />
+                  <Tooltip
+                    placement='top'
+                    isOpen={this.state.assetsData.tooltip}
+                    autohide={false}
+                    target='assetsProgress'
+                    toggle={this.assetsToggle}>
+                    {this.state.assetsData.done}/{this.state.assetsData.all}
+                  </Tooltip>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs='3' md='3'>
+                  <CardText>Patrols and Controls</CardText>
+                </Col>
+                <Col xs='9' md='9'>
+                  <Progress
+                    id='controlsProgress'
+                    animated
+                    color='primary'
+                    value={this.state.controlsData.value}
+                  />
+                  <Tooltip
+                    placement='top'
+                    isOpen={this.state.controlsData.tooltip}
+                    autohide={false}
+                    target='controlsProgress'
+                    toggle={this.controlsToggle}>
+                    {this.state.controlsData.done}/{this.state.controlsData.all}
+                  </Tooltip>
+                </Col>
+              </Row>
             </div>
           </CardBody>
         </Card>
       </div>
-    )
+    );
   }
 }
 

@@ -9,13 +9,14 @@ module.exports = validateRegisterInput = data => {
   data.password = !isEmpty(data.password) ? data.password : '';
   data.password2 = !isEmpty(data.password2) ? data.password2 : '';
   data.role = !isEmpty(data.role) ? data.role : '';
-  data.division = !isEmpty(data.division) ? data.division : '';
+  // data.division = !isEmpty(data.division) ? data.division : '';
 
-
-  if (!Validator.isLength(data.name, {
+  if (
+    !Validator.isLength(data.name, {
       min: 2,
       max: 45
-    })) {
+    })
+  ) {
     errors.name = 'Nama harus lebih dari 2 karakter';
   }
 
@@ -31,9 +32,11 @@ module.exports = validateRegisterInput = data => {
     errors.email = 'Email harus diisi';
   }
 
-  if (!Validator.isLength(data.password, {
+  if (
+    !Validator.isLength(data.password, {
       min: 8
-    })) {
+    })
+  ) {
     errors.password = 'Kata sandi harus lebih dari 8 karakter';
   }
 
@@ -53,12 +56,12 @@ module.exports = validateRegisterInput = data => {
     errors.role = 'Role user harus diisi';
   }
 
-  if (Validator.isEmpty(data.division)) {
-    errors.division = 'Divisi user harus diisi';
-  }
+  // if (Validator.isEmpty(data.division)) {
+  //   errors.division = 'Divisi user harus diisi';
+  // }
 
   return {
     errors,
     isValid: isEmpty(errors)
-  }
-}
+  };
+};

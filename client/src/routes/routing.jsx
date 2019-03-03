@@ -17,11 +17,11 @@ import UploadWO from '../views/HAR/uploadwo.jsx';
 import AllWO from '../views/HAR/allwo.jsx';
 
 var ThemeRoutes = [
-  { 
-    path: '/dashboard', 
-    name: 'Dashboard', 
-    icon: 'ti-loop', 
-    component: Starter 
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    icon: 'ti-loop',
+    component: Starter
   },
   {
     path: '/allWO',
@@ -36,12 +36,6 @@ var ThemeRoutes = [
     component: UploadWO
   },
   {
-    path: '/asset',
-    name: 'Asset',
-    icon: 'mdi mdi-database',
-    component: Asset
-  },
-  {
     path: '/cm',
     name: 'Corrective Maintenance',
     icon: 'mdi mdi-settings',
@@ -52,6 +46,12 @@ var ThemeRoutes = [
     name: 'Preventive Maintance',
     icon: 'mdi mdi-verified',
     component: Pm
+  },
+  {
+    path: '/asset',
+    name: 'Asset',
+    icon: 'mdi mdi-database',
+    component: Asset
   },
   {
     path: '/p3ak',
