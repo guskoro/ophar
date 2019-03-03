@@ -1,12 +1,12 @@
 import React from 'react';
 
-
 class Footer extends React.Component {
   render() {
     return (
-      <footer className="footer text-center">
+      <footer className='footer text-center'>
         HAR | ICON+ SBU Semarang by{' '}
-        <a href="https://wrappixel.com">PuGus</a>.
+        <a href='https://github.com/dinopuguh'>Dino Puguh</a> {' and '}{' '}
+        <a href='https://github.com/guskoro'>Guskoro</a>.
       </footer>
     );
   }

@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const pretty = require('express-prettify');
+const cors = require('cors');
 
 require('dotenv').config();
 
@@ -14,15 +16,19 @@ const types = require('./routes/api/types');
 
 const app = express();
 
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
+app.use(cors());
+app.use(
+  bodyParser.urlencoded({
+    extended: false
+  })
+);
 app.use(bodyParser.json());
+app.use(pretty({ query: 'pretty', always: true }));
 
 const db = process.env.MONGO_URI;
 
 mongoose
-  .connect(db)
+  .connect(db, { useNewUrlParser: true })
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
