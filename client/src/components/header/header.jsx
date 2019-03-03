@@ -86,6 +86,28 @@ class Header extends React.Component {
 					</div>
 					<Collapse className="navbarbg" isOpen={this.state.isOpen} navbar data-navbarbg="skin1" >
 						<Nav className="ml-auto float-right" navbar>
+							<Button color="info" onClick={this.toggleLogin}>{this.props.buttonLabel}Login</Button>
+							<Modal isOpen={this.state.modal} toggle={this.toggleLogin} className={this.props.className}>
+							<ModalHeader toggle={this.toggleLogin}>Login</ModalHeader>
+							<ModalBody>
+								<Form inline>
+									<FormGroup>
+									<Label for="exampleEmail" hidden>Email</Label>
+									<Input type="email" name="email" id="exampleEmail" placeholder="Email" />
+									</FormGroup>
+									{' '}
+									<FormGroup>
+									<Label for="examplePassword" hidden>Password</Label>
+									<Input type="password" name="password" id="examplePassword" placeholder="Password" />
+									</FormGroup>
+									{' '}
+								</Form>
+							</ModalBody>
+							<ModalFooter>
+							<Button color="primary" onClick={this.toggleLogin}>Submit</Button>{' '}
+							<Button color="secondary" onClick={this.toggleLogin}>Cancel</Button>
+							</ModalFooter>
+							</Modal>
 							{/* <NavItem>
 								<a href="" className="btn btn-danger mr-2" style={{ marginTop: '15px' }}>Upgrade to Pro</a>
 							</NavItem> */}
@@ -102,44 +124,11 @@ class Header extends React.Component {
 									/>
 								</DropdownToggle>
 								<DropdownMenu right className="user-dd">
-									<DropdownItem>
-											<Button color="light" onClick={this.toggleLogin}>{this.props.buttonLabel}Login</Button>
-												<Modal isOpen={this.state.modal} toggle={this.toggleLogin} className={this.props.className}>
-												<ModalHeader toggle={this.toggleLogin}></ModalHeader>
-												<ModalBody>
-													<Form inline>
-														<Label for="exampleEmail" sm={2} size="lg">Login</Label>
-														<FormGroup>
-														<Label for="exampleEmail" hidden>Email</Label>
-														<Input type="email" name="email" id="exampleEmail" placeholder="Email" />
-														</FormGroup>
-														{' '}
-														<FormGroup>
-														<Label for="examplePassword" hidden>Password</Label>
-														<Input type="password" name="password" id="examplePassword" placeholder="Password" />
-														</FormGroup>
-														{' '}
-													</Form>
-												</ModalBody>
-												<ModalFooter>
-												<Button color="primary" onClick={this.toggleLogin}>Submit</Button>{' '}
-												<Button color="secondary" onClick={this.toggleLogin}>Cancel</Button>
-												</ModalFooter>
-												</Modal>
-										</DropdownItem>
-									<DropdownItem divider />										
-									<DropdownItem>
-										<i className="ti-user mr-1 ml-1" /> My Account
-                  					</DropdownItem>
-										<DropdownItem divider />
-									<DropdownItem href="/login">
-										<i className="fa fa-power-off mr-1 ml-1" /> Logout
-                  					</DropdownItem>
-										<DropdownItem divider />
+									<DropdownItem divider />
 									<Button
-										color="success"
+										color="danger"
 										className="btn-rounded ml-3 mb-2 mt-2">
-										View Profile
+										Logout
                   					</Button>
 								</DropdownMenu>
 							</UncontrolledDropdown>

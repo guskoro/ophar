@@ -14,8 +14,7 @@ import Cm from '../views/HAR/cm.jsx';
 import Pm from '../views/HAR/pm.jsx';
 import P3ak from '../views/HAR/p3ak.jsx';
 import AllWO from '../views/HAR/allwo.jsx';
-import RegisterM from '../views/user/registermanajer.jsx';
-import RegisterA from '../views/user/registeradmin.jsx';
+import Register from '../views/user/registermanajer.jsx';
 import DetailWo from '../views/HAR/detailWO/detailwo.jsx';
 
 var ThemeRoutes = [
@@ -32,16 +31,10 @@ var ThemeRoutes = [
     component: DetailWo
   },
   {
-    path: '/registerM',
-    name: 'Register Manajer',
+    path: '/register',
+    name: 'Register',
     icon: 'mdi mdi-database',
-    component: RegisterM
-  },
-  {
-    path: '/registerA',
-    name: 'Register Admin',
-    icon: 'mdi mdi-database',
-    component: RegisterA
+    component: Register
   },
   {
     path: '/allWO',

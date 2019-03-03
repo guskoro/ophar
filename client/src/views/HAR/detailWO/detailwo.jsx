@@ -97,7 +97,7 @@ export default class Example extends React.Component {
                                         <Button color="secondary" onClick={this.toggle}>Cancel</Button>
                                     </ModalFooter>
                                 </Modal>
-                            <Button outline color="info" className="profile-time-approved">Edit</Button>
+                            <Button outline color="info" className="profile-time-approved">Save</Button>
                         </div>
                     </Col>
                     
@@ -152,19 +152,31 @@ export default class Example extends React.Component {
                                 
                                 <TabPane tabId="2">
                                     <Row>
-                                    <Col sm="6">
-                                        <Card body>
-                                        <CardTitle>Special Title Treatment</CardTitle>
-                                        <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-                                        <Button>Go somewhere</Button>
-                                        </Card>
-                                    </Col>
-                                    <Col sm="6">
-                                        <Card body>
-                                        <CardTitle>Special Title Treatment</CardTitle>
-                                        <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-                                        <Button>Go somewhere</Button>
-                                        </Card>
+                                    <Col sm="12">
+                                        <Table borderless className="no-wrap v-middle" responsive>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Work Type</td>
+                                                    <td>FOC</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Work Program Type</td>
+                                                    <td>Rutin</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Priority</td>
+                                                    <td>Ciritcal</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Work Description</td>
+                                                    <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Work Plan</td>
+                                                    <td>1. lorem, 2. Ipsum</td>
+                                                </tr>
+                                            </tbody>
+                                        </Table>
                                     </Col>
                                     </Row>
                                 </TabPane>

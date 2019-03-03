@@ -196,7 +196,7 @@ class Projects extends React.Component {
 									</div>
 								</td>
 								<td>
-                                    <Badge color="success" className="ml-0" pill>Admin</Badge>
+                                    <Badge color="primary" className="ml-0" pill>Manager</Badge>
 								</td>
                                 <td>
 									<Button className="btn" outline color="danger">Delete</Button>{' '}
@@ -212,7 +212,7 @@ class Projects extends React.Component {
 									</div>
 								</td>
 								<td>
-                                    <Badge color="light" className="ml-0" pill>User</Badge>
+                                    <Badge color="secondary" className="ml-0" pill>Supervisor</Badge>
 								</td>
                                 <td>
 									<Button className="btn" outline color="danger">Delete</Button>{' '}
@@ -228,7 +228,7 @@ class Projects extends React.Component {
 									</div>
 								</td>
 								<td>
-                                    <Badge color="success" className="ml-0" pill>Admin</Badge>
+                                    <Badge color="light" className="ml-0" pill>Engineer</Badge>
 								</td>
                                 <td>
 									<Button className="btn" outline color="danger">Delete</Button>{' '}

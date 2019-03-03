@@ -241,12 +241,16 @@ class Projects extends React.Component {
                   </NavLink>
                 </td>
                 <td>
+                  <NavLink to="/detailWO">
                   <Button className='btn' outline color='primary' disabled>
                     Edit
                   </Button>{' '}
+                  </NavLink>
+                  <NavLink to="/detailWO">
                   <Button className='btn' outline color='danger' disabled>
                     Delete
                   </Button>{' '}
+                  </NavLink>
                 </td>
               </tr>
               <tr>
@@ -285,17 +289,23 @@ class Projects extends React.Component {
                   </Tooltip>
                 </td>
                 <td>
-                  <Button className='btn' outline color='success'>
-                    Show
-                  </Button>
+                  <NavLink to='/detailWO'>
+                    <Button className='btn' outline color='success'>
+                      Show
+                    </Button>
+                  </NavLink>
                 </td>
                 <td>
+                  <NavLink to="/detailWO">
                   <Button className='btn' outline color='primary'>
                     Edit
                   </Button>{' '}
+                  </NavLink>
+                  <NavLink to="/detailWO">
                   <Button className='btn' outline color='danger'>
                     Delete
                   </Button>{' '}
+                  </NavLink>
                 </td>
               </tr>
               <tr>
@@ -334,17 +344,23 @@ class Projects extends React.Component {
                   </Tooltip>
                 </td>
                 <td>
-                  <Button className='btn' outline color='success'>
-                    Show
-                  </Button>
+                  <NavLink to='/detailWO'>
+                    <Button className='btn' outline color='success'>
+                      Show
+                    </Button>
+                  </NavLink>
                 </td>
                 <td>
+                  <NavLink to="/detailWO">
                   <Button className='btn' outline color='primary'>
                     Edit
                   </Button>{' '}
+                  </NavLink>
+                  <NavLink to="/detailWO">
                   <Button className='btn' outline color='danger'>
                     Delete
                   </Button>{' '}
+                  </NavLink>
                 </td>
               </tr>
               <tr>
@@ -383,25 +399,23 @@ class Projects extends React.Component {
                   </Tooltip>
                 </td>
                 <td>
-                  <Button className='btn' outline color='success'>
-                    Show
-                  </Button>
+                  <NavLink to='/detailWO'>
+                    <Button className='btn' outline color='success'>
+                      Show
+                    </Button>
+                  </NavLink>
                 </td>
                 <td>
-                  <Button
-                    className='btn'
-                    outline
-                    color='primary'
-                    disabled='false'>
+                  <NavLink to="/detailWO">
+                  <Button className='btn' outline color='primary'>
                     Edit
                   </Button>{' '}
-                  <Button
-                    className='btn'
-                    outline
-                    color='danger'
-                    disabled={false}>
+                  </NavLink>
+                  <NavLink to="/detailWO">
+                  <Button className='btn' outline color='danger'>
                     Delete
                   </Button>{' '}
+                  </NavLink>
                 </td>
               </tr>
             </tbody>
