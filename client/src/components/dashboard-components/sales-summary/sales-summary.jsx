@@ -112,6 +112,7 @@ class SalesSummary extends React.Component {
               </div>
             </div> */}
           </div>
+
           <Row>
             <Col lg='6'>
               <div className='campaign ct-charts'>

@@ -13,8 +13,10 @@ import Asset from '../views/HAR/asset.jsx';
 import Cm from '../views/HAR/cm.jsx';
 import Pm from '../views/HAR/pm.jsx';
 import P3ak from '../views/HAR/p3ak.jsx';
-import UploadWO from '../views/HAR/uploadwo.jsx';
 import AllWO from '../views/HAR/allwo.jsx';
+import RegisterM from '../views/user/registermanajer.jsx';
+import RegisterA from '../views/user/registeradmin.jsx';
+import DetailWo from '../views/HAR/detailWO/detailwo.jsx';
 
 var ThemeRoutes = [
   {
@@ -24,16 +26,28 @@ var ThemeRoutes = [
     component: Starter
   },
   {
+    path: '/detailWO',
+    name: 'Detail WO',
+    icon: 'mdi mdi-database',
+    component: DetailWo
+  },
+  {
+    path: '/registerM',
+    name: 'Register Manajer',
+    icon: 'mdi mdi-database',
+    component: RegisterM
+  },
+  {
+    path: '/registerA',
+    name: 'Register Admin',
+    icon: 'mdi mdi-database',
+    component: RegisterA
+  },
+  {
     path: '/allWO',
     name: 'All Workorders',
     icon: 'mdi mdi-database',
     component: AllWO
-  },
-  {
-    path: '/uploadWO',
-    name: 'Upload Workorders',
-    icon: 'mdi mdi-database',
-    component: UploadWO
   },
   {
     path: '/cm',
@@ -107,6 +121,6 @@ var ThemeRoutes = [
     icon: 'mdi mdi-image-filter-vintage',
     component: TooltipComponent
   },
-  { path: '/', pathTo: '/dashboard', name: 'Dashboard', redirect: true }
+  { path: '/', pathTo: '/dashboard', name: 'Dashboard', redirect: true },
 ];
 export default ThemeRoutes;

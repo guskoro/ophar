@@ -9,6 +9,7 @@ import {
   Row,
   Col
 } from 'reactstrap';
+
 import Countup from 'react-countup';
 import axios from 'axios';
 
