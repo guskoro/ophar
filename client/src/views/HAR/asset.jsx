@@ -12,10 +12,16 @@ import {
   CardTitle,
   CardSubtitle,
   Col,
-  CustomInput,
+  Form,
+  FormGroup,
   Input,
   InputGroup,
   InputGroupAddon,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Pagination,
   PaginationItem,
   PaginationLink,
@@ -23,8 +29,6 @@ import {
   Table,
   Tooltip
 } from 'reactstrap';
-
-import classnames from 'classnames';
 
 import { NavLink } from 'react-router-dom';
 
