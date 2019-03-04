@@ -79,7 +79,7 @@ class Feeds extends React.Component {
                 Hi, you have {this.state.requests} Work Order requests.
               </li>
               <li className='feed-item'>
-                <div className='feed-icon bg-info'>
+                <div className='feed-icon bg-warning'>
                   <i className='ti-server' />
                 </div>{' '}
                 Wow, there are {this.state.all} Work Orders.
@@ -91,7 +91,7 @@ class Feeds extends React.Component {
                 Ohh, {this.state.overdue} Work Orders overdue.
               </li>
               <li className='feed-item'>
-                <div className='feed-icon bg-info'>
+                <div className='feed-icon bg-warning'>
                   <i className='far fa-thumbs-up' />
                 </div>{' '}
                 Good job, {this.state.done} Work Orders complete.

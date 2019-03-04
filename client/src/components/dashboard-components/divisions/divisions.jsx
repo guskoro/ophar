@@ -103,7 +103,7 @@ class Divisions extends Component {
                 </h1>
                 <CardText>Total Work Orders</CardText>
                 <NavLink to='/cm'>
-                  <Button color='info'>Let me in</Button>
+                  <Button color='danger'>Let me in</Button>
                 </NavLink>
               </CardBody>
             </Card>
@@ -119,7 +119,7 @@ class Divisions extends Component {
                 </h1>
                 <CardText>Total Work Orders</CardText>
                 <NavLink to='/pm'>
-                  <Button color='info'>Let me in</Button>
+                  <Button color='danger'>Let me in</Button>
                 </NavLink>
               </CardBody>
             </Card>
@@ -135,7 +135,7 @@ class Divisions extends Component {
                 </h1>
                 <CardText>Total Work Orders</CardText>
                 <NavLink to='/asset'>
-                  <Button color='info'>Let me in</Button>
+                  <Button color='danger'>Let me in</Button>
                 </NavLink>
               </CardBody>
             </Card>
@@ -151,7 +151,7 @@ class Divisions extends Component {
                 </h1>
                 <CardText>Total Work Orders</CardText>
                 <NavLink to='/p3ak'>
-                  <Button color='info'>Let me in</Button>
+                  <Button color='danger'>Let me in</Button>
                 </NavLink>
               </CardBody>
             </Card>

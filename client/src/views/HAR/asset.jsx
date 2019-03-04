@@ -246,20 +246,24 @@ class Projects extends React.Component {
                   </NavLink>
                 </td>
                 <td>
-                  <Button
-                    className='btn'
-                    outline
-                    color='primary'
-                    disabled={true}>
-                    Edit
-                  </Button>{' '}
-                  <Button
-                    className='btn'
-                    outline
-                    color='danger'
-                    disabled={true}>
-                    Delete
-                  </Button>{' '}
+                  <NavLink to='/detailWO'>
+                    <Button
+                      className='btn'
+                      outline
+                      color='info'
+                      disabled={true}>
+                      <i className='mdi mdi-pencil' />
+                    </Button>{' '}
+                  </NavLink>
+                  <NavLink to='/detailWO'>
+                    <Button
+                      className='profile-time-approved'
+                      outline
+                      color='danger'
+                      disabled={true}>
+                      <i className='mdi mdi-delete' />
+                    </Button>{' '}
+                  </NavLink>
                 </td>
               </tr>
               <tr>
@@ -421,20 +425,24 @@ class Projects extends React.Component {
                   </NavLink>
                 </td>
                 <td>
-                  <Button
-                    className='btn'
-                    outline
-                    color='primary'
-                    disabled={false}>
-                    Edit
-                  </Button>{' '}
-                  <Button
-                    className='btn'
-                    outline
-                    color='danger'
-                    disabled={false}>
-                    Delete
-                  </Button>{' '}
+                  <NavLink to='/detailWO'>
+                    <Button
+                      className='btn'
+                      outline
+                      color='info'
+                      disabled={false}>
+                      <i className='mdi mdi-pencil' />
+                    </Button>{' '}
+                  </NavLink>
+                  <NavLink to='/detailWO'>
+                    <Button
+                      className='profile-time-approved'
+                      outline
+                      color='danger'
+                      disabled={false}>
+                      <i className='mdi mdi-delete' />
+                    </Button>{' '}
+                  </NavLink>
                 </td>
               </tr>
             </tbody>
