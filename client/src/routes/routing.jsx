@@ -26,30 +26,6 @@ var ThemeRoutes = [
     component: Starter
   },
   {
-    path: '/detailWO',
-    name: 'Detail WO',
-    icon: 'mdi mdi-database',
-    component: DetailWo
-  },
-  {
-    path: '/newWO',
-    name: 'New WO',
-    icon: 'mdi mdi-database',
-    component: NewWo
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    icon: 'mdi mdi-database',
-    component: Register
-  },
-  {
-    path: '/allWO',
-    name: 'All Workorders',
-    icon: 'mdi mdi-database',
-    component: AllWO
-  },
-  {
     path: '/cm',
     name: 'Corrective Maintenance',
     icon: 'mdi mdi-settings',
@@ -72,6 +48,30 @@ var ThemeRoutes = [
     name: 'Patrol and Control',
     icon: 'mdi mdi-bullhorn',
     component: P3ak
+  },
+  {
+    path: '/detailWO',
+    name: 'Detail WO',
+    icon: 'mdi mdi-database',
+    component: DetailWo
+  },
+  {
+    path: '/newWO',
+    name: 'New WO',
+    icon: 'mdi mdi-database',
+    component: NewWo
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    icon: 'mdi mdi-database',
+    component: Register
+  },
+  {
+    path: '/allWO',
+    name: 'All Workorders',
+    icon: 'mdi mdi-database',
+    component: AllWO
   },
   {
     path: '/alert',
