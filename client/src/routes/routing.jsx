@@ -26,30 +26,6 @@ var ThemeRoutes = [
     component: Starter
   },
   {
-    path: '/detailWO',
-    name: 'Detail WO',
-    icon: 'mdi mdi-database',
-    component: DetailWo
-  },
-  {
-    path: '/registerM',
-    name: 'Register Manajer',
-    icon: 'mdi mdi-database',
-    component: RegisterM
-  },
-  {
-    path: '/registerA',
-    name: 'Register Admin',
-    icon: 'mdi mdi-database',
-    component: RegisterA
-  },
-  {
-    path: '/allWO',
-    name: 'All Workorders',
-    icon: 'mdi mdi-database',
-    component: AllWO
-  },
-  {
     path: '/cm',
     name: 'Corrective Maintenance',
     icon: 'mdi mdi-settings',
@@ -72,6 +48,30 @@ var ThemeRoutes = [
     name: 'Patrol and Control',
     icon: 'mdi mdi-bullhorn',
     component: P3ak
+  },
+  {
+    path: '/detailWO',
+    name: 'Detail WO',
+    icon: 'mdi mdi-database',
+    component: DetailWo
+  },
+  {
+    path: '/registerM',
+    name: 'Register Manajer',
+    icon: 'mdi mdi-database',
+    component: RegisterM
+  },
+  {
+    path: '/registerA',
+    name: 'Register Admin',
+    icon: 'mdi mdi-database',
+    component: RegisterA
+  },
+  {
+    path: '/allWO',
+    name: 'All Workorders',
+    icon: 'mdi mdi-database',
+    component: AllWO
   },
   {
     path: '/alert',
@@ -121,6 +121,6 @@ var ThemeRoutes = [
     icon: 'mdi mdi-image-filter-vintage',
     component: TooltipComponent
   },
-  { path: '/', pathTo: '/dashboard', name: 'Dashboard', redirect: true },
+  { path: '/', pathTo: '/dashboard', name: 'Dashboard', redirect: true }
 ];
 export default ThemeRoutes;

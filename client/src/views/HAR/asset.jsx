@@ -241,10 +241,18 @@ class Projects extends React.Component {
                   </NavLink>
                 </td>
                 <td>
-                  <Button className='btn' outline color='primary' disabled>
+                  <Button
+                    className='btn'
+                    outline
+                    color='primary'
+                    disabled={true}>
                     Edit
                   </Button>{' '}
-                  <Button className='btn' outline color='danger' disabled>
+                  <Button
+                    className='btn'
+                    outline
+                    color='danger'
+                    disabled={true}>
                     Delete
                   </Button>{' '}
                 </td>
@@ -392,7 +400,7 @@ class Projects extends React.Component {
                     className='btn'
                     outline
                     color='primary'
-                    disabled='false'>
+                    disabled={false}>
                     Edit
                   </Button>{' '}
                   <Button
