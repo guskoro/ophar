@@ -72,10 +72,12 @@ export default class Example extends React.Component {
                         <div className="profile">
                             <h1 className="mb-1 font-20 font-medium">Work Title</h1>
                         </div>
+                        {/* iki lek wo wes di aprroved */}
                         <div className="profile">
                             <Badge color="success" className="ml-0" pill>Approved</Badge>
                             <span className="profile-time-approved">At January, 12th - 2019</span>
                         </div>
+                        {/* Iki lek wo durung di approved */}
                         <div className="profile">
                             <Badge color="warning" className="ml-0" pill>Pending</Badge>
                         </div>
@@ -85,6 +87,7 @@ export default class Example extends React.Component {
                         <div className="profile">
                             <h1 className="mb-0 font-16 font-medium" color="info">Done Target : <span className="profile-time-approved">March, 12th - 2019</span></h1>
                         </div>
+                        {/* Iki lek login berdasar divisine dewe2, lek gak, gak metu tombol e */}
                         <div className="profile">
                             <Button outline color="danger" onClick={this.toggle}>{this.props.buttonLabel}Done</Button>
                                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
@@ -97,7 +100,9 @@ export default class Example extends React.Component {
                                         <Button color="secondary" onClick={this.toggle}>Cancel</Button>
                                     </ModalFooter>
                                 </Modal>
-                            <Button outline color="info" className="profile-time-approved">Edit</Button>
+                                {/* Digawe lek user mitek edit nang halaman divisi */}
+                            <Button outline color="info" className="profile-time-approved">Save</Button>
+                            <Button outline color="info" className="profile-time-approved">Approve</Button>
                         </div>
                     </Col>
                     
@@ -152,19 +157,35 @@ export default class Example extends React.Component {
                                 
                                 <TabPane tabId="2">
                                     <Row>
-                                    <Col sm="6">
-                                        <Card body>
-                                        <CardTitle>Special Title Treatment</CardTitle>
-                                        <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-                                        <Button>Go somewhere</Button>
-                                        </Card>
-                                    </Col>
-                                    <Col sm="6">
-                                        <Card body>
-                                        <CardTitle>Special Title Treatment</CardTitle>
-                                        <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-                                        <Button>Go somewhere</Button>
-                                        </Card>
+                                    <Col sm="12">
+                                        <Table borderless className="no-wrap v-middle" responsive>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Work Type</td>
+                                                    <td>FOC</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Work Program Type</td>
+                                                    <td>Rutin</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Priority</td>
+                                                    <td>Ciritcal</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Work Description</td>
+                                                    <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Work Plan</td>
+                                                    <td>1. lorem, 2. Ipsum</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Work Note</td>
+                                                    <td>Jangan lupa sahur dan berbuka</td>
+                                                </tr>
+                                            </tbody>
+                                        </Table>
                                     </Col>
                                     </Row>
                                 </TabPane>

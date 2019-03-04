@@ -1,7 +1,6 @@
 import React from 'react';
 
-import profilephoto from '../../assets/images/users/1.jpg';
-import img1 from '../../assets/images/users/1.jpg';
+import img1 from '../../../assets/images/users/1.jpg';
 // import img2 from '../../assets/images/users/2.jpg';
 // import img3 from '../../assets/images/users/3.jpg';
 // import img4 from '../../assets/images/users/4.jpg';
@@ -90,7 +89,7 @@ class Projects extends React.Component {
         <CardBody>
           <div className='d-flex align-items-center'>
             <div>
-              <CardTitle>Workorders</CardTitle>
+              <CardTitle>New Workorders</CardTitle>
               <CardSubtitle>HAR | Asset</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
@@ -103,11 +102,11 @@ class Projects extends React.Component {
                 </Input>
               </div>
               <div className='dl'>
-                <NavLink to="/uploadWO">
-									<Button className="btn" color="success"><i className='mdi mdi-upload' /></Button>{' '}
-								</NavLink>
+                {/* <NavLink to="/uploadWO">
+									<Button className="btn" color="success">Upload</Button>{' '}
+								</NavLink> */}
                 {/* <Button color='success' onClick={this.toggle}>
-                  {this.props.buttonLabel}<i className='mdi mdi-upload' />
+                  {this.props.buttonLabel}Upload WO
                 </Button>
                 <Modal
                   isOpen={this.state.modal}
@@ -175,10 +174,10 @@ class Projects extends React.Component {
               </div>
               <div className='dl'>
                 <InputGroup>
-                  <Input placeholder='Search..' />
                   <InputGroupAddon addonType='append'>
+                    <Input placeholder='Search..' />
                     <Button color='primary'>
-                    <i className='mdi mdi-magnify' />
+                      <i className='mdi mdi-magnify' />
                     </Button>
                   </InputGroupAddon>
                 </InputGroup>
@@ -198,6 +197,7 @@ class Projects extends React.Component {
                 <th className='border-0'>Status</th>
                 <th className='border-0'>Details</th>
                 <th className='border-0'>Action</th>
+                <th className='border-0'>Note</th>
               </tr>
             </thead>
             <tbody>
@@ -246,14 +246,41 @@ class Projects extends React.Component {
                 <td>
                   <NavLink to="/detailWO">
                   <Button className='btn' outline color='info' disabled>
-                    <i className='mdi mdi-pencil' />
+                    <i className='mdi mdi-check' />
                   </Button>{' '}
                   </NavLink>
                   <NavLink to="/detailWO">
                   <Button className='profile-time-approved' outline color='danger' disabled>
-                    <i className='mdi mdi-delete' />
+                    <i className='mdi mdi-close' />
                   </Button>{' '}
                   </NavLink>
+                </td>
+                <td>
+                <Button outline color='secondary' onClick={this.toggle}>
+                  {this.props.buttonLabel}Add a note
+                </Button>
+                <Modal
+                  isOpen={this.state.modal}
+                  toggle={this.toggle}
+                  className={this.props.className}>
+                  <ModalHeader toggle={this.toggle}>Add a note</ModalHeader>
+                  <ModalBody>
+                    <Form>
+                      <FormGroup>
+                        <Label for='exampleText'>Work Note</Label>
+                        <Input type='textarea' name='text' id='exampleText' />
+                      </FormGroup>
+                    </Form>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color='primary' onClick={this.toggle}>
+                      Submit
+                    </Button>{' '}
+                    <Button color='secondary' onClick={this.toggle}>
+                      Cancel
+                    </Button>
+                  </ModalFooter>
+                </Modal>
                 </td>
               </tr>
               <tr>
@@ -300,15 +327,42 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to="/detailWO">
-                  <Button className='btn' outline color='info'>
-                    <i className='mdi mdi-pencil' />
+                  <Button className='btn' outline color='info' >
+                    <i className='mdi mdi-check' />
                   </Button>{' '}
                   </NavLink>
                   <NavLink to="/detailWO">
-                  <Button className='profile-time-approved' outline color='danger'>
-                    <i className='mdi mdi-delete' />
+                  <Button className='profile-time-approved' outline color='danger' >
+                    <i className='mdi mdi-close' />
                   </Button>{' '}
                   </NavLink>
+                </td>
+                <td>
+                <Button outline color='secondary' onClick={this.toggle}>
+                  {this.props.buttonLabel}Add a note
+                </Button>
+                <Modal
+                  isOpen={this.state.modal}
+                  toggle={this.toggle}
+                  className={this.props.className}>
+                  <ModalHeader toggle={this.toggle}>Add a note</ModalHeader>
+                  <ModalBody>
+                    <Form>
+                      <FormGroup>
+                        <Label for='exampleText'>Work Note</Label>
+                        <Input type='textarea' name='text' id='exampleText' />
+                      </FormGroup>
+                    </Form>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color='primary' onClick={this.toggle}>
+                      Submit
+                    </Button>{' '}
+                    <Button color='secondary' onClick={this.toggle}>
+                      Cancel
+                    </Button>
+                  </ModalFooter>
+                </Modal>
                 </td>
               </tr>
               <tr>
@@ -355,15 +409,42 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to="/detailWO">
-                  <Button className='btn' outline color='info'>
-                    <i className='mdi mdi-pencil' />
+                  <Button className='btn' outline color='info' >
+                    <i className='mdi mdi-check' />
                   </Button>{' '}
                   </NavLink>
                   <NavLink to="/detailWO">
-                  <Button className='profile-time-approved' outline color='danger'>
-                    <i className='mdi mdi-delete' />
+                  <Button className='profile-time-approved' outline color='danger' >
+                    <i className='mdi mdi-close' />
                   </Button>{' '}
                   </NavLink>
+                </td>
+                <td>
+                <Button outline color='secondary' onClick={this.toggle}>
+                  {this.props.buttonLabel}Add a note
+                </Button>
+                <Modal
+                  isOpen={this.state.modal}
+                  toggle={this.toggle}
+                  className={this.props.className}>
+                  <ModalHeader toggle={this.toggle}>Add a note</ModalHeader>
+                  <ModalBody>
+                    <Form>
+                      <FormGroup>
+                        <Label for='exampleText'>Work Note</Label>
+                        <Input type='textarea' name='text' id='exampleText' />
+                      </FormGroup>
+                    </Form>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color='primary' onClick={this.toggle}>
+                      Submit
+                    </Button>{' '}
+                    <Button color='secondary' onClick={this.toggle}>
+                      Cancel
+                    </Button>
+                  </ModalFooter>
+                </Modal>
                 </td>
               </tr>
               <tr>
@@ -410,15 +491,42 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to="/detailWO">
-                  <Button className='btn' outline color='info'>
-                    <i className='mdi mdi-pencil' />
+                  <Button className='btn' outline color='info' >
+                    <i className='mdi mdi-check' />
                   </Button>{' '}
                   </NavLink>
                   <NavLink to="/detailWO">
-                  <Button className='profile-time-approved' outline color='danger'>
-                    <i className='mdi mdi-delete' />
+                  <Button className='profile-time-approved' outline color='danger' >
+                    <i className='mdi mdi-close' />
                   </Button>{' '}
                   </NavLink>
+                </td>
+                <td>
+                <Button outline color='secondary' onClick={this.toggle}>
+                  {this.props.buttonLabel}Add a note
+                </Button>
+                <Modal
+                  isOpen={this.state.modal}
+                  toggle={this.toggle}
+                  className={this.props.className}>
+                  <ModalHeader toggle={this.toggle}>Add a note</ModalHeader>
+                  <ModalBody>
+                    <Form>
+                      <FormGroup>
+                        <Label for='exampleText'>Work Note</Label>
+                        <Input type='textarea' name='text' id='exampleText' />
+                      </FormGroup>
+                    </Form>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color='primary' onClick={this.toggle}>
+                      Submit
+                    </Button>{' '}
+                    <Button color='secondary' onClick={this.toggle}>
+                      Cancel
+                    </Button>
+                  </ModalFooter>
+                </Modal>
                 </td>
               </tr>
             </tbody>
@@ -427,7 +535,7 @@ class Projects extends React.Component {
             <Col xs='12' md='12'>
               <CardBody className='border-top'>
                 <Pagination aria-label='Page navigation example'>
-                  <PaginationItem disabled>
+                  <PaginationItem disable>
                     <PaginationLink previous href='#' />
                   </PaginationItem>
                   <PaginationItem active>

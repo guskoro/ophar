@@ -14,9 +14,11 @@ import Cm from '../views/HAR/cm.jsx';
 import Pm from '../views/HAR/pm.jsx';
 import P3ak from '../views/HAR/p3ak.jsx';
 import AllWO from '../views/HAR/allwo.jsx';
-import RegisterM from '../views/user/registermanajer.jsx';
-import RegisterA from '../views/user/registeradmin.jsx';
+import Register from '../views/user/registermanajer.jsx';
+import RegisterForm from '../views/user/register.jsx';
 import DetailWo from '../views/HAR/detailWO/detailwo.jsx';
+import NewWo from '../views/HAR/detailWO/approvedWO.jsx';
+import UploadWO from '../views/HAR/detailWO/uploadwo.jsx';
 
 var ThemeRoutes = [
   {
@@ -50,22 +52,34 @@ var ThemeRoutes = [
     component: P3ak
   },
   {
+    path: '/uploadWO',
+    name: 'Upload WO',
+    icon: 'mdi mdi-database',
+    component: UploadWO
+  },
+  {
     path: '/detailWO',
     name: 'Detail WO',
     icon: 'mdi mdi-database',
     component: DetailWo
   },
   {
-    path: '/registerM',
-    name: 'Register Manajer',
+    path: '/newWO',
+    name: 'New WO',
     icon: 'mdi mdi-database',
-    component: RegisterM
+    component: NewWo
   },
   {
-    path: '/registerA',
-    name: 'Register Admin',
+    path: '/register',
+    name: 'Register',
     icon: 'mdi mdi-database',
-    component: RegisterA
+    component: Register
+  },
+  {
+    path: '/registerform',
+    name: 'Register Form',
+    icon: 'mdi mdi-database',
+    component: RegisterForm
   },
   {
     path: '/allWO',

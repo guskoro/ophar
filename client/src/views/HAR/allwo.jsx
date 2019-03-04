@@ -110,6 +110,7 @@ class Projects extends React.Component {
 								<th className="border-0">Assigned User</th>
 								<th className="border-0">Target Date</th>
 								<th className="border-0">Status</th>
+								<th className="border-0">Details</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -130,6 +131,13 @@ class Projects extends React.Component {
 									<i className="fa fa-circle text-danger" id="tlp1"></i>
 									<Tooltip placement="top" isOpen={this.state.tooltipOpen10} target="tlp1" toggle={this.toggle10}>Rejected</Tooltip>
 								</td>
+								<td>
+								<NavLink to='/detailWO'>
+									<Button className='btn' outline color='success'>
+									Show
+									</Button>
+								</NavLink>
+								</td>
 							</tr>
 							<tr>
 								<td>012SAKX</td>
@@ -147,6 +155,13 @@ class Projects extends React.Component {
 								<td>
 									<i className="fa fa-circle text-success" id="tlp2"></i>
 									<Tooltip placement="top" isOpen={this.state.tooltipOpen20} target="tlp2" toggle={this.toggle20}>In Progress</Tooltip>
+								</td>
+								<td>
+								<NavLink to='/detailWO'>
+									<Button className='btn' outline color='success'>
+									Show
+									</Button>
+								</NavLink>
 								</td>
 							</tr>
 							<tr>
@@ -166,6 +181,13 @@ class Projects extends React.Component {
 									<i className="fa fa-circle text-warning" id="tlp3"></i>
 									<Tooltip placement="top" isOpen={this.state.tooltipOpen30} target="tlp3" toggle={this.toggle30}>Pending Approval</Tooltip>
 								</td>
+								<td>
+								<NavLink to='/detailWO'>
+									<Button className='btn' outline color='success'>
+									Show
+									</Button>
+								</NavLink>
+								</td>
 							</tr>
 							<tr>
 								<td>012SAKX</td>
@@ -183,6 +205,13 @@ class Projects extends React.Component {
 								<td>
 									<i className="fa fa-circle text-muted" id="tlp4"></i>
 									<Tooltip placement="top" isOpen={this.state.tooltipOpen40} target="tlp4" toggle={this.toggle40}>WO Done</Tooltip>
+								</td>
+								<td>
+								<NavLink to='/detailWO'>
+									<Button className='btn' outline color='success'>
+									Show
+									</Button>
+								</NavLink>
 								</td>
 							</tr>
 						</tbody>
