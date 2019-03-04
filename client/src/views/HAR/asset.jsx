@@ -108,78 +108,12 @@ class Projects extends React.Component {
                     <i className='mdi mdi-upload' />
                   </Button>{' '}
                 </NavLink>
-                {/* <Button color='success' onClick={this.toggle}>
-                  {this.props.buttonLabel}<i className='mdi mdi-upload' />
-                </Button>
-                <Modal
-                  isOpen={this.state.modal}
-                  toggle={this.toggle}
-                  className={this.props.className}>
-                  <ModalHeader toggle={this.toggle}>Workorders</ModalHeader>
-                  <ModalBody>
-                    <Form>
-                      <FormGroup>
-                        <Label for='exampleEmail'>Work Title</Label>
-                        <Input />
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleText'>Work Detail Description</Label>
-                        <Input type='textarea' name='text' id='exampleText' />
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleEmail'>Work Plan</Label>
-                        <Input />
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleSelect'>Priority</Label>
-                        <Input type='select' name='select' id='exampleSelect'>
-                          <option>Critical</option>
-                          <option>High</option>
-                          <option>Medium</option>
-                          <option>Low</option>
-                        </Input>
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleSelect'>Work Type</Label>
-                        <Input type='select' name='select' id='exampleSelect'>
-                          <option>FOC</option>
-                          <option>FOT</option>
-                          <option>PS</option>
-                        </Input>
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleSelect'>Work Program Type</Label>
-                        <Input type='select' name='select' id='exampleSelect'>
-                          <option>Rutin</option>
-                          <option>Non Rutin</option>
-                        </Input>
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleDate'>Done Target</Label>
-                        <Input
-                          type='date'
-                          name='date'
-                          id='exampleDate'
-                          placeholder='date placeholder'
-                        />
-                      </FormGroup>
-                    </Form>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button color='primary' onClick={this.toggle}>
-                      Submit
-                    </Button>{' '}
-                    <Button color='secondary' onClick={this.toggle}>
-                      Cancel
-                    </Button>
-                  </ModalFooter>
-                </Modal> */}
               </div>
               <div className='dl'>
                 <InputGroup>
                   <Input placeholder='Search..' />
                   <InputGroupAddon addonType='append'>
-                    <Button color='primary'>
+                    <Button color='biruicon'>
                       <i className='mdi mdi-magnify' />
                     </Button>
                   </InputGroupAddon>
@@ -250,7 +184,7 @@ class Projects extends React.Component {
                     <Button
                       className='btn'
                       outline
-                      color='info'
+                      color='biruicon'
                       disabled={true}>
                       <i className='mdi mdi-pencil' />
                     </Button>{' '}
@@ -310,7 +244,7 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='info'>
+                    <Button className='btn' outline color='biruicon'>
                       <i className='mdi mdi-pencil' />
                     </Button>{' '}
                   </NavLink>
@@ -368,7 +302,7 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='info'>
+                    <Button className='btn' outline color='biruicon'>
                       <i className='mdi mdi-pencil' />
                     </Button>{' '}
                   </NavLink>
@@ -429,7 +363,7 @@ class Projects extends React.Component {
                     <Button
                       className='btn'
                       outline
-                      color='info'
+                      color='biruicon'
                       disabled={false}>
                       <i className='mdi mdi-pencil' />
                     </Button>{' '}

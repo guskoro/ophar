@@ -1,7 +1,18 @@
 import React from 'react';
-import { Card, CardBody, CardTitle, CardSubtitle, Col, Row } from 'reactstrap';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  CardSubtitle,
+  Col,
+  Row
+} from 'reactstrap';
+
 import { Doughnut } from 'react-chartjs-2';
 import axios from 'axios';
+import Buttons from '../../../views/ui-components/button';
+import { NavLink } from 'react-router-dom';
 
 class SalesSummary extends React.Component {
   constructor(props) {
@@ -114,7 +125,7 @@ class SalesSummary extends React.Component {
           </div>
 
           <Row>
-            <Col lg='6'>
+            <Col lg='5'>
               <div className='campaign ct-charts'>
                 <div
                   className='chart-wrapper'
@@ -132,7 +143,16 @@ class SalesSummary extends React.Component {
                 </div>
               </div>
             </Col>
-            <Col lg='6'>
+            <Col lg='2'>
+              <div>
+                <NavLink to='/allwo'>
+                  <Button className='btn' outline color='danger'>
+                    Show All
+                  </Button>{' '}
+                </NavLink>
+              </div>
+            </Col>
+            <Col lg='5'>
               <div className='campaign ct-charts'>
                 <div
                   className='chart-wrapper'

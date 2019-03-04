@@ -112,7 +112,7 @@ class Projects extends React.Component {
                 <InputGroup>
                   <Input placeholder='Search..' />
                   <InputGroupAddon addonType='append'>
-                    <Button color='primary'>
+                    <Button color='biruicon'>
                       <i className='mdi mdi-magnify' />
                     </Button>
                   </InputGroupAddon>
@@ -121,7 +121,7 @@ class Projects extends React.Component {
               <div className='dl'>
                 <NavLink to='/registerform'>
                   <Button className='btn' color='success'>
-                    Add User Admin
+                    Add User
                   </Button>{' '}
                 </NavLink>
               </div>
@@ -177,7 +177,7 @@ class Projects extends React.Component {
                   <Button
                     className='btn'
                     outline
-                    color='info'
+                    color='biruicon'
                     onClick={this.toggle}>
                     {this.props.buttonLabel}Edit
                   </Button>
@@ -233,7 +233,7 @@ class Projects extends React.Component {
                       </Form>
                     </ModalBody>
                     <ModalFooter>
-                      <Button color='primary' onClick={this.toggle}>
+                      <Button color='biruicon' onClick={this.toggle}>
                         Submit
                       </Button>{' '}
                       <Button color='secondary' onClick={this.toggle}>
@@ -279,7 +279,7 @@ class Projects extends React.Component {
                   <Button
                     className='btn'
                     outline
-                    color='info'
+                    color='biruicon'
                     onClick={this.toggle}>
                     {this.props.buttonLabel}Edit
                   </Button>
@@ -335,7 +335,7 @@ class Projects extends React.Component {
                       </Form>
                     </ModalBody>
                     <ModalFooter>
-                      <Button color='primary' onClick={this.toggle}>
+                      <Button color='primarya' onClick={this.toggle}>
                         Submit
                       </Button>{' '}
                       <Button color='secondary' onClick={this.toggle}>
@@ -381,7 +381,7 @@ class Projects extends React.Component {
                   <Button
                     className='btn'
                     outline
-                    color='info'
+                    color='biruicon'
                     onClick={this.toggle}>
                     {this.props.buttonLabel}Edit
                   </Button>
@@ -437,7 +437,109 @@ class Projects extends React.Component {
                       </Form>
                     </ModalBody>
                     <ModalFooter>
-                      <Button color='primary' onClick={this.toggle}>
+                      <Button color='primarya' onClick={this.toggle}>
+                        Submit
+                      </Button>{' '}
+                      <Button color='secondary' onClick={this.toggle}>
+                        Cancel
+                      </Button>
+                    </ModalFooter>
+                  </Modal>
+                  <Button
+                    className='profile-time-approved'
+                    outline
+                    color='danger'>
+                    Delete
+                  </Button>{' '}
+                </td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>CM</td>
+                <td>
+                  <div className='d-flex no-block align-items-center'>
+                    <div className='mr-2'>
+                      <img
+                        src={img1}
+                        alt='user'
+                        className='rounded-circle'
+                        width='45'
+                      />
+                    </div>
+                    <div className=''>
+                      <h5 className='mb-0 font-16 font-medium'>
+                        Guskoro Pradipta Prana Arief
+                      </h5>
+                      <span>guskoro@mugholladoh.com</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <Badge color='success' className='ml-0' pill>
+                    Admin
+                  </Badge>
+                </td>
+                <td>
+                  <Button
+                    className='btn'
+                    outline
+                    color='biruicon'
+                    onClick={this.toggle}>
+                    {this.props.buttonLabel}Edit
+                  </Button>
+                  <Modal
+                    isOpen={this.state.modal}
+                    toggle={this.toggle}
+                    className={this.props.className}>
+                    <ModalHeader toggle={this.toggle}>Register</ModalHeader>
+                    <ModalBody>
+                      <Form>
+                        <FormGroup>
+                          <Label for='exampleEmail'>Name</Label>
+                          <Input />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label for='exampleEmail'>Email</Label>
+                          <Input
+                            type='email'
+                            name='email'
+                            id='exampleEmail'
+                            placeholder='Email'
+                          />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label for='examplePassword'>Password</Label>
+                          <Input
+                            type='password'
+                            name='password'
+                            id='examplePassword'
+                            placeholder='Password'
+                          />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label for='exampleSelect'>Role</Label>
+                          <Input type='select' name='select' id='exampleSelect'>
+                            <option>...</option>
+                            <option>Admin</option>
+                            <option>Manager</option>
+                            <option>Supervisor</option>
+                            <option>Engineer</option>
+                          </Input>
+                        </FormGroup>
+                        <FormGroup>
+                          <Label for='exampleSelect'>Division</Label>
+                          <Input type='select' name='select' id='exampleSelect'>
+                            <option>...</option>
+                            <option>PM</option>
+                            <option>CM</option>
+                            <option>Asset</option>
+                            <option>P3ak</option>
+                          </Input>
+                        </FormGroup>
+                      </Form>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color='primarya' onClick={this.toggle}>
                         Submit
                       </Button>{' '}
                       <Button color='secondary' onClick={this.toggle}>

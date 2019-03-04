@@ -103,82 +103,18 @@ class Projects extends React.Component {
                 </Input>
               </div>
               <div className='dl'>
-                <NavLink to="/uploadWO">
-									<Button className="btn" color="success"><i className='mdi mdi-upload' /></Button>{' '}
-								</NavLink>
-                {/* <Button color='success' onClick={this.toggle}>
-                  {this.props.buttonLabel}<i className='mdi mdi-upload' />
-                </Button>
-                <Modal
-                  isOpen={this.state.modal}
-                  toggle={this.toggle}
-                  className={this.props.className}>
-                  <ModalHeader toggle={this.toggle}>Workorders</ModalHeader>
-                  <ModalBody>
-                    <Form>
-                      <FormGroup>
-                        <Label for='exampleEmail'>Work Title</Label>
-                        <Input />
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleText'>Work Detail Description</Label>
-                        <Input type='textarea' name='text' id='exampleText' />
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleEmail'>Work Plan</Label>
-                        <Input />
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleSelect'>Priority</Label>
-                        <Input type='select' name='select' id='exampleSelect'>
-                          <option>Critical</option>
-                          <option>High</option>
-                          <option>Medium</option>
-                          <option>Low</option>
-                        </Input>
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleSelect'>Work Type</Label>
-                        <Input type='select' name='select' id='exampleSelect'>
-                          <option>FOC</option>
-                          <option>FOT</option>
-                          <option>PS</option>
-                        </Input>
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleSelect'>Work Program Type</Label>
-                        <Input type='select' name='select' id='exampleSelect'>
-                          <option>Rutin</option>
-                          <option>Non Rutin</option>
-                        </Input>
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleDate'>Done Target</Label>
-                        <Input
-                          type='date'
-                          name='date'
-                          id='exampleDate'
-                          placeholder='date placeholder'
-                        />
-                      </FormGroup>
-                    </Form>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button color='primary' onClick={this.toggle}>
-                      Submit
-                    </Button>{' '}
-                    <Button color='secondary' onClick={this.toggle}>
-                      Cancel
-                    </Button>
-                  </ModalFooter>
-                </Modal> */}
+                <NavLink to='/uploadWO'>
+                  <Button className='btn' color='success'>
+                    <i className='mdi mdi-upload' />
+                  </Button>{' '}
+                </NavLink>
               </div>
               <div className='dl'>
                 <InputGroup>
                   <Input placeholder='Search..' />
                   <InputGroupAddon addonType='append'>
-                    <Button color='primary'>
-                    <i className='mdi mdi-magnify' />
+                    <Button color='biruicon'>
+                      <i className='mdi mdi-magnify' />
                     </Button>
                   </InputGroupAddon>
                 </InputGroup>
@@ -244,15 +180,19 @@ class Projects extends React.Component {
                   </NavLink>
                 </td>
                 <td>
-                  <NavLink to="/detailWO">
-                  <Button className='btn' outline color='info' disabled>
-                    <i className='mdi mdi-pencil' />
-                  </Button>{' '}
+                  <NavLink to='/detailWO'>
+                    <Button className='btn' outline color='biruicon' disabled>
+                      <i className='mdi mdi-pencil' />
+                    </Button>{' '}
                   </NavLink>
-                  <NavLink to="/detailWO">
-                  <Button className='profile-time-approved' outline color='danger' disabled>
-                    <i className='mdi mdi-delete' />
-                  </Button>{' '}
+                  <NavLink to='/detailWO'>
+                    <Button
+                      className='profile-time-approved'
+                      outline
+                      color='danger'
+                      disabled>
+                      <i className='mdi mdi-delete' />
+                    </Button>{' '}
                   </NavLink>
                 </td>
               </tr>
@@ -299,15 +239,18 @@ class Projects extends React.Component {
                   </NavLink>
                 </td>
                 <td>
-                  <NavLink to="/detailWO">
-                  <Button className='btn' outline color='info'>
-                    <i className='mdi mdi-pencil' />
-                  </Button>{' '}
+                  <NavLink to='/detailWO'>
+                    <Button className='btn' outline color='biruicon'>
+                      <i className='mdi mdi-pencil' />
+                    </Button>{' '}
                   </NavLink>
-                  <NavLink to="/detailWO">
-                  <Button className='profile-time-approved' outline color='danger'>
-                    <i className='mdi mdi-delete' />
-                  </Button>{' '}
+                  <NavLink to='/detailWO'>
+                    <Button
+                      className='profile-time-approved'
+                      outline
+                      color='danger'>
+                      <i className='mdi mdi-delete' />
+                    </Button>{' '}
                   </NavLink>
                 </td>
               </tr>
@@ -354,15 +297,18 @@ class Projects extends React.Component {
                   </NavLink>
                 </td>
                 <td>
-                  <NavLink to="/detailWO">
-                  <Button className='btn' outline color='info'>
-                    <i className='mdi mdi-pencil' />
-                  </Button>{' '}
+                  <NavLink to='/detailWO'>
+                    <Button className='btn' outline color='biruicon'>
+                      <i className='mdi mdi-pencil' />
+                    </Button>{' '}
                   </NavLink>
-                  <NavLink to="/detailWO">
-                  <Button className='profile-time-approved' outline color='danger'>
-                    <i className='mdi mdi-delete' />
-                  </Button>{' '}
+                  <NavLink to='/detailWO'>
+                    <Button
+                      className='profile-time-approved'
+                      outline
+                      color='danger'>
+                      <i className='mdi mdi-delete' />
+                    </Button>{' '}
                   </NavLink>
                 </td>
               </tr>
@@ -409,15 +355,18 @@ class Projects extends React.Component {
                   </NavLink>
                 </td>
                 <td>
-                  <NavLink to="/detailWO">
-                  <Button className='btn' outline color='info'>
-                    <i className='mdi mdi-pencil' />
-                  </Button>{' '}
+                  <NavLink to='/detailWO'>
+                    <Button className='btn' outline color='biruicon'>
+                      <i className='mdi mdi-pencil' />
+                    </Button>{' '}
                   </NavLink>
-                  <NavLink to="/detailWO">
-                  <Button className='profile-time-approved' outline color='danger'>
-                    <i className='mdi mdi-delete' />
-                  </Button>{' '}
+                  <NavLink to='/detailWO'>
+                    <Button
+                      className='profile-time-approved'
+                      outline
+                      color='danger'>
+                      <i className='mdi mdi-delete' />
+                    </Button>{' '}
                   </NavLink>
                 </td>
               </tr>

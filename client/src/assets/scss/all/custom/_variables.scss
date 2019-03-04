@@ -9,12 +9,12 @@ $themecolor-alt: #26c6da;
 $theme-light: #fff;
 $theme-dark: #212529;
 
-$skin1: #2962ff;
+$skin1: #001e6f;
 $skin2: #fe5419;
 $skin3: #00b0ff;
 $skin4: #6659f7;
 $skin5: #414755;
-$skin6: #fff;
+$skin6: #ffffff;
 
 /*Topbar Colors*/
 
@@ -99,13 +99,16 @@ $theme-colors: map-merge(
     'success': #2dce89,
     'info': #2962ff,
     'warning': #fff700,
-    'danger': #fa0000,
+    'danger': #c60000,
+    // fa000
     'light': $gray-100,
     'dark': $gray-800,
     'cyan': #4fc3f7,
     'orange': #fb6340,
     'purple': #5e72e4,
-    'inverse': #32325d
+    'inverse': #32325d,
+    'biruicon':#001e6f,
+    'ndewo':#f3f5fa,
   ),
   $theme-colors
 );

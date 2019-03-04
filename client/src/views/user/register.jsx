@@ -65,7 +65,7 @@ export default class Example extends React.Component {
                 <option>Patrols and Controls</option>
               </Input>
             </FormGroup>
-            <Button type='submit' color='info'>
+            <Button type='submit' color='biruicon'>
               Register
             </Button>
           </Form>
