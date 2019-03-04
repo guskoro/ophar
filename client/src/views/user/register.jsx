@@ -6,9 +6,7 @@ import {
   Form,
   FormGroup,
   Label,
-  Input,
-  FormText,
-  FormFeedback
+  Input
 } from 'reactstrap';
 
 export default class Example extends React.Component {
@@ -18,31 +16,37 @@ export default class Example extends React.Component {
         <CardBody>
           <Form>
             <FormGroup>
-              <Label for='exampleEmail'>Name</Label>
-              <Input />
+              <Label for='name'>Name</Label>
+              <Input type='text' name='name' id='name' placeholder='Name' />
             </FormGroup>
             <FormGroup>
-              <Label for='exampleEmail'>Email</Label>
-              <Input
-                type='email'
-                name='email'
-                id='exampleEmail'
-                placeholder='Email'
-              />
+              <Label for='email'>Email</Label>
+              <Input type='email' name='email' id='email' placeholder='Email' />
             </FormGroup>
             <FormGroup>
-              <Label for='examplePassword'>Password</Label>
+              <Label for='password'>Password</Label>
               <Input
                 type='password'
                 name='password'
-                id='examplePassword'
+                id='password'
                 placeholder='Password'
               />
             </FormGroup>
             <FormGroup>
-              <Label for='exampleSelect'>Role</Label>
-              <Input type='select' name='select' id='exampleSelect'>
-                <option>...</option>
+              <Label for='password2'>Password Confirmation</Label>
+              <Input
+                type='password'
+                name='password2'
+                id='password2'
+                placeholder='Password Confirmation'
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for='role'>Role</Label>
+              <Input type='select' name='role' id='role'>
+                <option selected disabled>
+                  Select role
+                </option>
                 <option>Admin</option>
                 <option>Manager</option>
                 <option>Supervisor</option>
@@ -50,16 +54,20 @@ export default class Example extends React.Component {
               </Input>
             </FormGroup>
             <FormGroup>
-              <Label for='exampleSelect'>Division</Label>
-              <Input type='select' name='select' id='exampleSelect'>
-                <option>...</option>
-                <option>PM</option>
-                <option>CM</option>
-                <option>Asset</option>
-                <option>P3ak</option>
+              <Label for='division'>Division</Label>
+              <Input type='select' name='division' id='division'>
+                <option selected disabled>
+                  Select division
+                </option>
+                <option>Corrective Maintenance</option>
+                <option>Preventive Maintenance</option>
+                <option>Assets</option>
+                <option>Patrols and Controls</option>
               </Input>
             </FormGroup>
-            <Button>Subnmit</Button>
+            <Button type='submit' color='info'>
+              Register
+            </Button>
           </Form>
         </CardBody>
       </Card>
