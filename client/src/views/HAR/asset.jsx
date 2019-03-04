@@ -246,20 +246,20 @@ class Projects extends React.Component {
                   </NavLink>
                 </td>
                 <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='info' disabled>
-                      <i className='mdi mdi-pencil' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'
-                      disabled>
-                      <i className='mdi mdi-delete' />
-                    </Button>{' '}
-                  </NavLink>
+                  <Button
+                    className='btn'
+                    outline
+                    color='primary'
+                    disabled={true}>
+                    Edit
+                  </Button>{' '}
+                  <Button
+                    className='btn'
+                    outline
+                    color='danger'
+                    disabled={true}>
+                    Delete
+                  </Button>{' '}
                 </td>
               </tr>
               <tr>
@@ -421,19 +421,20 @@ class Projects extends React.Component {
                   </NavLink>
                 </td>
                 <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='info'>
-                      <i className='mdi mdi-pencil' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'>
-                      <i className='mdi mdi-delete' />
-                    </Button>{' '}
-                  </NavLink>
+                  <Button
+                    className='btn'
+                    outline
+                    color='primary'
+                    disabled={false}>
+                    Edit
+                  </Button>{' '}
+                  <Button
+                    className='btn'
+                    outline
+                    color='danger'
+                    disabled={false}>
+                    Delete
+                  </Button>{' '}
                 </td>
               </tr>
             </tbody>

@@ -47,9 +47,15 @@ var ThemeRoutes = [
   },
   {
     path: '/p3ak',
-    name: 'Patrol and Control',
+    name: 'Patrols and Controls',
     icon: 'mdi mdi-bullhorn',
     component: P3ak
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    icon: 'mdi mdi-database',
+    component: Register
   },
   {
     path: '/uploadWO',
@@ -68,12 +74,6 @@ var ThemeRoutes = [
     name: 'New WO',
     icon: 'mdi mdi-database',
     component: NewWo
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    icon: 'mdi mdi-database',
-    component: Register
   },
   {
     path: '/registerform',
