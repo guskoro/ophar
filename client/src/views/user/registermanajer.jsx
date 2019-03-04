@@ -119,72 +119,11 @@ class Projects extends React.Component {
                 </InputGroup>
               </div>
               <div className='dl'>
-                {/* <NavLink to="/registerform">
-									<Button className="btn" color="success">Add User Admin</Button>{' '}
-                                </NavLink> */}
-                <Button color='success' onClick={this.toggle}>
-                  {this.props.buttonLabel}Add User
-                </Button>
-                <Modal
-                  isOpen={this.state.modal}
-                  toggle={this.toggle}
-                  className={this.props.className}>
-                  <ModalHeader toggle={this.toggle}>Register</ModalHeader>
-                  <ModalBody>
-                    <Form>
-                      <FormGroup>
-                        <Label for='exampleEmail'>Name</Label>
-                        <Input />
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleEmail'>Email</Label>
-                        <Input
-                          type='email'
-                          name='email'
-                          id='exampleEmail'
-                          placeholder='Email'
-                        />
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='examplePassword'>Password</Label>
-                        <Input
-                          type='password'
-                          name='password'
-                          id='examplePassword'
-                          placeholder='Password'
-                        />
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleSelect'>Role</Label>
-                        <Input type='select' name='select' id='exampleSelect'>
-                          <option>...</option>
-                          <option>Admin</option>
-                          <option>Manager</option>
-                          <option>Supervisor</option>
-                          <option>Engineer</option>
-                        </Input>
-                      </FormGroup>
-                      <FormGroup>
-                        <Label for='exampleSelect'>Division</Label>
-                        <Input type='select' name='select' id='exampleSelect'>
-                          <option>...</option>
-                          <option>PM</option>
-                          <option>CM</option>
-                          <option>Asset</option>
-                          <option>P3ak</option>
-                        </Input>
-                      </FormGroup>
-                    </Form>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button color='primary' onClick={this.toggle}>
-                      Submit
-                    </Button>{' '}
-                    <Button color='secondary' onClick={this.toggle}>
-                      Cancel
-                    </Button>
-                  </ModalFooter>
-                </Modal>
+                <NavLink to='/registerform'>
+                  <Button className='btn' color='success'>
+                    Add User Admin
+                  </Button>{' '}
+                </NavLink>
               </div>
               <div className='dl'>
                 <Input type='select' className='custom-select'>

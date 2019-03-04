@@ -15,6 +15,7 @@ import Pm from '../views/HAR/pm.jsx';
 import P3ak from '../views/HAR/p3ak.jsx';
 import AllWO from '../views/HAR/allwo.jsx';
 import Register from '../views/user/registermanajer.jsx';
+import RegisterForm from '../views/user/register.jsx';
 import DetailWo from '../views/HAR/detailWO/detailwo.jsx';
 import NewWo from '../views/HAR/detailWO/approvedWO.jsx';
 import UploadWO from '../views/HAR/detailWO/uploadwo.jsx';
@@ -75,6 +76,12 @@ var ThemeRoutes = [
     component: Register
   },
   {
+    path: '/registerform',
+    name: 'Register Form',
+    icon: 'mdi mdi-database',
+    component: RegisterForm
+  },
+  {
     path: '/allWO',
     name: 'All Workorders',
     icon: 'mdi mdi-database',
@@ -128,6 +135,6 @@ var ThemeRoutes = [
     icon: 'mdi mdi-image-filter-vintage',
     component: TooltipComponent
   },
-  { path: '/', pathTo: '/dashboard', name: 'Dashboard', redirect: true },
+  { path: '/', pathTo: '/dashboard', name: 'Dashboard', redirect: true }
 ];
 export default ThemeRoutes;
