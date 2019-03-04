@@ -121,7 +121,7 @@ class Projects extends React.Component {
 								{/* <NavLink to="/registerform">
 									<Button className="btn" color="success">Add User Admin</Button>{' '}
                                 </NavLink> */}
-                                    <Button color="success" onClick={this.toggle}>{this.props.buttonLabel}Add User or Admin</Button>
+                                    <Button color="success" onClick={this.toggle}>{this.props.buttonLabel}Add User</Button>
                                     <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                                     <ModalHeader toggle={this.toggle}>Register</ModalHeader>
                                     <ModalBody>
@@ -142,8 +142,10 @@ class Projects extends React.Component {
                                                 <Label for="exampleSelect">Role</Label>
                                                 <Input type="select" name="select" id="exampleSelect">
                                                     <option>...</option>
-                                                    <option>Admin</option>
-                                                    <option>User</option>
+													<option>Admin</option>
+                                                    <option>Manager</option>
+                                                    <option>Supervisor</option>
+													<option>Engineer</option>
                                                 </Input>
                                             </FormGroup>
                                             <FormGroup>
@@ -199,7 +201,51 @@ class Projects extends React.Component {
                                     <Badge color="primary" className="ml-0" pill>Manager</Badge>
 								</td>
                                 <td>
-									<Button className="btn" outline color="danger">Delete</Button>{' '}
+									<Button className="btn" outline color="info" onClick={this.toggle}>{this.props.buttonLabel}Edit</Button>
+										<Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+										<ModalHeader toggle={this.toggle}>Register</ModalHeader>
+										<ModalBody>
+											<Form>
+												<FormGroup>
+													<Label for="exampleEmail">Name</Label>
+													<Input />
+												</FormGroup>
+												<FormGroup>
+													<Label for="exampleEmail">Email</Label>
+													<Input type="email" name="email" id="exampleEmail" placeholder="Email" />
+												</FormGroup>
+												<FormGroup>
+													<Label for="examplePassword">Password</Label>
+													<Input type="password" name="password" id="examplePassword" placeholder="Password" />
+												</FormGroup>
+												<FormGroup>
+													<Label for="exampleSelect">Role</Label>
+													<Input type="select" name="select" id="exampleSelect">
+														<option>...</option>
+														<option>Admin</option>
+														<option>Manager</option>
+														<option>Supervisor</option>
+														<option>Engineer</option>
+													</Input>
+												</FormGroup>
+												<FormGroup>
+													<Label for="exampleSelect">Division</Label>
+													<Input type="select" name="select" id="exampleSelect">
+														<option>...</option>
+														<option>PM</option>
+														<option>CM</option>
+														<option>Asset</option>
+														<option>P3ak</option>
+													</Input>
+												</FormGroup>
+											</Form>
+										</ModalBody>
+										<ModalFooter>
+											<Button color="primary" onClick={this.toggle}>Submit</Button>{' '}
+											<Button color="secondary" onClick={this.toggle}>Cancel</Button>
+										</ModalFooter>
+										</Modal>
+									<Button className="profile-time-approved" outline color="danger">Delete</Button>{' '}
 								</td>
 							</tr>
                             <tr>								
@@ -215,7 +261,51 @@ class Projects extends React.Component {
                                     <Badge color="secondary" className="ml-0" pill>Supervisor</Badge>
 								</td>
                                 <td>
-									<Button className="btn" outline color="danger">Delete</Button>{' '}
+									<Button className="btn" outline color="info" onClick={this.toggle}>{this.props.buttonLabel}Edit</Button>
+										<Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+										<ModalHeader toggle={this.toggle}>Register</ModalHeader>
+										<ModalBody>
+											<Form>
+												<FormGroup>
+													<Label for="exampleEmail">Name</Label>
+													<Input />
+												</FormGroup>
+												<FormGroup>
+													<Label for="exampleEmail">Email</Label>
+													<Input type="email" name="email" id="exampleEmail" placeholder="Email" />
+												</FormGroup>
+												<FormGroup>
+													<Label for="examplePassword">Password</Label>
+													<Input type="password" name="password" id="examplePassword" placeholder="Password" />
+												</FormGroup>
+												<FormGroup>
+													<Label for="exampleSelect">Role</Label>
+													<Input type="select" name="select" id="exampleSelect">
+														<option>...</option>
+														<option>Admin</option>
+														<option>Manager</option>
+														<option>Supervisor</option>
+														<option>Engineer</option>
+													</Input>
+												</FormGroup>
+												<FormGroup>
+													<Label for="exampleSelect">Division</Label>
+													<Input type="select" name="select" id="exampleSelect">
+														<option>...</option>
+														<option>PM</option>
+														<option>CM</option>
+														<option>Asset</option>
+														<option>P3ak</option>
+													</Input>
+												</FormGroup>
+											</Form>
+										</ModalBody>
+										<ModalFooter>
+											<Button color="primary" onClick={this.toggle}>Submit</Button>{' '}
+											<Button color="secondary" onClick={this.toggle}>Cancel</Button>
+										</ModalFooter>
+										</Modal>
+									<Button className="profile-time-approved" outline color="danger">Delete</Button>{' '}
 								</td>
 							</tr>
                             <tr>								
@@ -231,7 +321,51 @@ class Projects extends React.Component {
                                     <Badge color="light" className="ml-0" pill>Engineer</Badge>
 								</td>
                                 <td>
-									<Button className="btn" outline color="danger">Delete</Button>{' '}
+									<Button className="btn" outline color="info" onClick={this.toggle}>{this.props.buttonLabel}Edit</Button>
+										<Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+										<ModalHeader toggle={this.toggle}>Register</ModalHeader>
+										<ModalBody>
+											<Form>
+												<FormGroup>
+													<Label for="exampleEmail">Name</Label>
+													<Input />
+												</FormGroup>
+												<FormGroup>
+													<Label for="exampleEmail">Email</Label>
+													<Input type="email" name="email" id="exampleEmail" placeholder="Email" />
+												</FormGroup>
+												<FormGroup>
+													<Label for="examplePassword">Password</Label>
+													<Input type="password" name="password" id="examplePassword" placeholder="Password" />
+												</FormGroup>
+												<FormGroup>
+													<Label for="exampleSelect">Role</Label>
+													<Input type="select" name="select" id="exampleSelect">
+														<option>...</option>
+														<option>Admin</option>
+														<option>Manager</option>
+														<option>Supervisor</option>
+														<option>Engineer</option>
+													</Input>
+												</FormGroup>
+												<FormGroup>
+													<Label for="exampleSelect">Division</Label>
+													<Input type="select" name="select" id="exampleSelect">
+														<option>...</option>
+														<option>PM</option>
+														<option>CM</option>
+														<option>Asset</option>
+														<option>P3ak</option>
+													</Input>
+												</FormGroup>
+											</Form>
+										</ModalBody>
+										<ModalFooter>
+											<Button color="primary" onClick={this.toggle}>Submit</Button>{' '}
+											<Button color="secondary" onClick={this.toggle}>Cancel</Button>
+										</ModalFooter>
+										</Modal>
+									<Button className="profile-time-approved" outline color="danger">Delete</Button>{' '}
 								</td>
 							</tr>
 						</tbody>

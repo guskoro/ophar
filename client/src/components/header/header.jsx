@@ -86,6 +86,7 @@ class Header extends React.Component {
 					</div>
 					<Collapse className="navbarbg" isOpen={this.state.isOpen} navbar data-navbarbg="skin1" >
 						<Nav className="ml-auto float-right" navbar>
+						{/* Tombol gawe lek gak login */}
 							<Button color="info" onClick={this.toggleLogin}>{this.props.buttonLabel}Login</Button>
 							<Modal isOpen={this.state.modal} toggle={this.toggleLogin} className={this.props.className}>
 							<ModalHeader toggle={this.toggleLogin}>Login</ModalHeader>
@@ -115,6 +116,7 @@ class Header extends React.Component {
 							{/* Start Profile Dropdown                                                         */}
 							{/*--------------------------------------------------------------------------------*/}
 							<UncontrolledDropdown nav inNavbar>
+							{/* Logo gawe lek wes login tok */}
 								<DropdownToggle nav caret className="pro-pic">
 									<img
 										src={profilephoto}

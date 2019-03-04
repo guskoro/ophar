@@ -16,6 +16,7 @@ import P3ak from '../views/HAR/p3ak.jsx';
 import AllWO from '../views/HAR/allwo.jsx';
 import Register from '../views/user/registermanajer.jsx';
 import DetailWo from '../views/HAR/detailWO/detailwo.jsx';
+import NewWo from '../views/HAR/detailWO/approvedWO';
 
 var ThemeRoutes = [
   {
@@ -29,6 +30,12 @@ var ThemeRoutes = [
     name: 'Detail WO',
     icon: 'mdi mdi-database',
     component: DetailWo
+  },
+  {
+    path: '/newWO',
+    name: 'New WO',
+    icon: 'mdi mdi-database',
+    component: NewWo
   },
   {
     path: '/register',

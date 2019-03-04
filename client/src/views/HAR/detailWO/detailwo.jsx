@@ -72,10 +72,12 @@ export default class Example extends React.Component {
                         <div className="profile">
                             <h1 className="mb-1 font-20 font-medium">Work Title</h1>
                         </div>
+                        {/* iki lek wo wes di aprroved */}
                         <div className="profile">
                             <Badge color="success" className="ml-0" pill>Approved</Badge>
                             <span className="profile-time-approved">At January, 12th - 2019</span>
                         </div>
+                        {/* Iki lek wo durung di approved */}
                         <div className="profile">
                             <Badge color="warning" className="ml-0" pill>Pending</Badge>
                         </div>
@@ -85,6 +87,7 @@ export default class Example extends React.Component {
                         <div className="profile">
                             <h1 className="mb-0 font-16 font-medium" color="info">Done Target : <span className="profile-time-approved">March, 12th - 2019</span></h1>
                         </div>
+                        {/* Iki lek login berdasar divisine dewe2, lek gak, gak metu tombol e */}
                         <div className="profile">
                             <Button outline color="danger" onClick={this.toggle}>{this.props.buttonLabel}Done</Button>
                                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
@@ -97,7 +100,9 @@ export default class Example extends React.Component {
                                         <Button color="secondary" onClick={this.toggle}>Cancel</Button>
                                     </ModalFooter>
                                 </Modal>
+                                {/* Digawe lek user mitek edit nang halaman divisi */}
                             <Button outline color="info" className="profile-time-approved">Save</Button>
+                            <Button outline color="info" className="profile-time-approved">Approve</Button>
                         </div>
                     </Col>
                     
@@ -174,6 +179,10 @@ export default class Example extends React.Component {
                                                 <tr>
                                                     <td>Work Plan</td>
                                                     <td>1. lorem, 2. Ipsum</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Work Note</td>
+                                                    <td>Jangan lupa sahur dan berbuka</td>
                                                 </tr>
                                             </tbody>
                                         </Table>
