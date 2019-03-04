@@ -16,7 +16,8 @@ import P3ak from '../views/HAR/p3ak.jsx';
 import AllWO from '../views/HAR/allwo.jsx';
 import Register from '../views/user/registermanajer.jsx';
 import DetailWo from '../views/HAR/detailWO/detailwo.jsx';
-import NewWo from '../views/HAR/detailWO/approvedWO';
+import NewWo from '../views/HAR/detailWO/approvedWO.jsx';
+import UploadWO from '../views/HAR/detailWO/uploadwo.jsx';
 
 var ThemeRoutes = [
   {
@@ -48,6 +49,12 @@ var ThemeRoutes = [
     name: 'Patrol and Control',
     icon: 'mdi mdi-bullhorn',
     component: P3ak
+  },
+  {
+    path: '/uploadWO',
+    name: 'Upload WO',
+    icon: 'mdi mdi-database',
+    component: UploadWO
   },
   {
     path: '/detailWO',

@@ -175,9 +175,11 @@ class Projects extends React.Component {
               <div className='dl'>
                 <InputGroup>
                   <InputGroupAddon addonType='append'>
-                    <Button color='primary'>Search</Button>
+                    <Input placeholder='Search..' />
+                    <Button color='primary'>
+                      <i className='mdi mdi-magnify' />
+                    </Button>
                   </InputGroupAddon>
-                  <Input placeholder='Search..' />
                 </InputGroup>
               </div>
             </div>
@@ -243,13 +245,13 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to="/detailWO">
-                  <Button className='btn' outline color='primary' disabled>
-                    Approve
+                  <Button className='btn' outline color='info' disabled>
+                    <i className='mdi mdi-check' />
                   </Button>{' '}
                   </NavLink>
                   <NavLink to="/detailWO">
                   <Button className='profile-time-approved' outline color='danger' disabled>
-                    Decline
+                    <i className='mdi mdi-close' />
                   </Button>{' '}
                   </NavLink>
                 </td>
@@ -325,13 +327,13 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to="/detailWO">
-                  <Button className='btn' outline color='primary'>
-                    Approve
+                  <Button className='btn' outline color='info' >
+                    <i className='mdi mdi-check' />
                   </Button>{' '}
                   </NavLink>
                   <NavLink to="/detailWO">
-                  <Button className='profile-time-approved' outline color='danger'>
-                    Decline
+                  <Button className='profile-time-approved' outline color='danger' >
+                    <i className='mdi mdi-close' />
                   </Button>{' '}
                   </NavLink>
                 </td>
@@ -407,13 +409,13 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to="/detailWO">
-                  <Button className='btn' outline color='primary'>
-                    Approve
+                  <Button className='btn' outline color='info' >
+                    <i className='mdi mdi-check' />
                   </Button>{' '}
                   </NavLink>
                   <NavLink to="/detailWO">
-                  <Button className='profile-time-approved' outline color='danger'>
-                    Decline
+                  <Button className='profile-time-approved' outline color='danger' >
+                    <i className='mdi mdi-close' />
                   </Button>{' '}
                   </NavLink>
                 </td>
@@ -489,13 +491,13 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to="/detailWO">
-                  <Button className='btn' outline color='primary'>
-                    Approve
+                  <Button className='btn' outline color='info' >
+                    <i className='mdi mdi-check' />
                   </Button>{' '}
                   </NavLink>
                   <NavLink to="/detailWO">
-                  <Button className='profile-time-approved' outline color='danger'>
-                    Decline
+                  <Button className='profile-time-approved' outline color='danger' >
+                    <i className='mdi mdi-close' />
                   </Button>{' '}
                   </NavLink>
                 </td>
@@ -533,7 +535,7 @@ class Projects extends React.Component {
             <Col xs='12' md='12'>
               <CardBody className='border-top'>
                 <Pagination aria-label='Page navigation example'>
-                  <PaginationItem disabled>
+                  <PaginationItem disable>
                     <PaginationLink previous href='#' />
                   </PaginationItem>
                   <PaginationItem active>

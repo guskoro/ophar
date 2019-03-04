@@ -75,6 +75,7 @@ class Header extends React.Component {
 									alt="homepage" 
 									className="dark-logo" 
 								/>
+								{/* <h5>We Speak Beyond Connectivity</h5> */}
 							</b>
 						</NavbarBrand>
 						{/*--------------------------------------------------------------------------------*/}

@@ -8,56 +8,49 @@ export default class Example extends React.Component {
             <CardBody>
                 <Form>
                     <FormGroup>
-                        <Label for="exampleEmail">Work Title</Label>
-                        <Input />
+                    <Label for='exampleEmail'>Work Title</Label>
+                    <Input />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="exampleText">Work Detail</Label>
-                        <Input type="textarea" name="text" id="exampleText" />
+                    <Label for='exampleText'>Work Detail Description</Label>
+                    <Input type='textarea' name='text' id='exampleText' />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="exampleDate">Start Target</Label>
-                        <Input
-                            type="date"
-                            name="date"
-                            id="exampleDate"
-                            placeholder="date placeholder"/>
+                    <Label for='exampleEmail'>Work Plan</Label>
+                    <Input />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="exampleDate">Done Target</Label>
-                        <Input
-                            type="date"
-                            name="date"
-                            id="exampleDate"
-                            placeholder="date placeholder"/>
-                    </FormGroup>
-                    <FormGroup>
-                    <Label for="exampleSelect">Priority</Label>
-                    <Input type="select" name="select" id="exampleSelect">
-                        <option>Highest</option>
+                    <Label for='exampleSelect'>Priority</Label>
+                    <Input type='select' name='select' id='exampleSelect'>
+                        <option>Critical</option>
                         <option>High</option>
                         <option>Medium</option>
                         <option>Low</option>
                     </Input>
                     </FormGroup>
                     <FormGroup>
-                    <Label for="exampleSelect">Work Type</Label>
-                    <Input type="select" name="select" id="exampleSelect">
+                    <Label for='exampleSelect'>Work Type</Label>
+                    <Input type='select' name='select' id='exampleSelect'>
                         <option>FOC</option>
                         <option>FOT</option>
                         <option>PS</option>
                     </Input>
                     </FormGroup>
                     <FormGroup>
-                    <Label for="exampleSelect">Work Program Type</Label>
-                    <Input type="select" name="select" id="exampleSelect">
+                    <Label for='exampleSelect'>Work Program Type</Label>
+                    <Input type='select' name='select' id='exampleSelect'>
                         <option>Rutin</option>
                         <option>Non Rutin</option>
                     </Input>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="exampleEmail">Work Program</Label>
-                        <Input />
+                    <Label for='exampleDate'>Done Target</Label>
+                    <Input
+                        type='date'
+                        name='date'
+                        id='exampleDate'
+                        placeholder='date placeholder'
+                    />
                     </FormGroup>
                     <Button>Submit</Button>
                 </Form>

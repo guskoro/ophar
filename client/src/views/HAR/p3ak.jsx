@@ -1,5 +1,6 @@
 import React from 'react';
 
+import profilephoto from '../../assets/images/users/1.jpg';
 import img1 from '../../assets/images/users/1.jpg';
 // import img2 from '../../assets/images/users/2.jpg';
 // import img3 from '../../assets/images/users/3.jpg';
@@ -102,11 +103,11 @@ class Projects extends React.Component {
                 </Input>
               </div>
               <div className='dl'>
-                {/* <NavLink to="/uploadWO">
-									<Button className="btn" color="success">Upload</Button>{' '}
-								</NavLink> */}
-                <Button color='success' onClick={this.toggle}>
-                  {this.props.buttonLabel}Upload WO
+                <NavLink to="/uploadWO">
+									<Button className="btn" color="success"><i className='mdi mdi-upload' /></Button>{' '}
+								</NavLink>
+                {/* <Button color='success' onClick={this.toggle}>
+                  {this.props.buttonLabel}<i className='mdi mdi-upload' />
                 </Button>
                 <Modal
                   isOpen={this.state.modal}
@@ -170,14 +171,16 @@ class Projects extends React.Component {
                       Cancel
                     </Button>
                   </ModalFooter>
-                </Modal>
+                </Modal> */}
               </div>
               <div className='dl'>
                 <InputGroup>
-                  <InputGroupAddon addonType='append'>
-                    <Button color='primary'>Search</Button>
-                  </InputGroupAddon>
                   <Input placeholder='Search..' />
+                  <InputGroupAddon addonType='append'>
+                    <Button color='primary'>
+                    <i className='mdi mdi-magnify' />
+                    </Button>
+                  </InputGroupAddon>
                 </InputGroup>
               </div>
             </div>
@@ -242,13 +245,13 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to="/detailWO">
-                  <Button className='btn' outline color='primary' disabled>
-                    Edit
+                  <Button className='btn' outline color='info' disabled>
+                    <i className='mdi mdi-pencil' />
                   </Button>{' '}
                   </NavLink>
                   <NavLink to="/detailWO">
                   <Button className='profile-time-approved' outline color='danger' disabled>
-                    Delete
+                    <i className='mdi mdi-delete' />
                   </Button>{' '}
                   </NavLink>
                 </td>
@@ -297,13 +300,13 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to="/detailWO">
-                  <Button className='btn' outline color='primary'>
-                    Edit
+                  <Button className='btn' outline color='info'>
+                    <i className='mdi mdi-pencil' />
                   </Button>{' '}
                   </NavLink>
                   <NavLink to="/detailWO">
                   <Button className='profile-time-approved' outline color='danger'>
-                    Delete
+                    <i className='mdi mdi-delete' />
                   </Button>{' '}
                   </NavLink>
                 </td>
@@ -352,13 +355,13 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to="/detailWO">
-                  <Button className='btn' outline color='primary'>
-                    Edit
+                  <Button className='btn' outline color='info'>
+                    <i className='mdi mdi-pencil' />
                   </Button>{' '}
                   </NavLink>
                   <NavLink to="/detailWO">
                   <Button className='profile-time-approved' outline color='danger'>
-                    Delete
+                    <i className='mdi mdi-delete' />
                   </Button>{' '}
                   </NavLink>
                 </td>
@@ -407,13 +410,13 @@ class Projects extends React.Component {
                 </td>
                 <td>
                   <NavLink to="/detailWO">
-                  <Button className='btn' outline color='primary'>
-                    Edit
+                  <Button className='btn' outline color='info'>
+                    <i className='mdi mdi-pencil' />
                   </Button>{' '}
                   </NavLink>
                   <NavLink to="/detailWO">
                   <Button className='profile-time-approved' outline color='danger'>
-                    Delete
+                    <i className='mdi mdi-delete' />
                   </Button>{' '}
                   </NavLink>
                 </td>
