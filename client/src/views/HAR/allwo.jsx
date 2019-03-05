@@ -1,24 +1,15 @@
 import React from 'react';
 
-import img1 from '../../assets/images/users/1.jpg';
-import img2 from '../../assets/images/users/2.jpg';
-import img3 from '../../assets/images/users/3.jpg';
-import img4 from '../../assets/images/users/4.jpg';
-
 import {
   Button,
-  ButtonGroup,
   Card,
   CardBody,
   CardTitle,
   CardSubtitle,
   Col,
-  CustomInput,
   Input,
   InputGroup,
   InputGroupAddon,
-  Label,
-  Nav,
   Pagination,
   PaginationItem,
   PaginationLink,
@@ -26,50 +17,90 @@ import {
   Table,
   Tooltip
 } from 'reactstrap';
-
-import { NavLink } from 'react-router-dom';
+import axios from 'axios';
+import moment from 'moment';
+import classnames from 'classnames';
+import { Link } from 'react-router-dom';
 
 class Projects extends React.Component {
   constructor(props) {
     super(props);
 
-    this.toggle10 = this.toggle10.bind(this);
-    this.toggle20 = this.toggle20.bind(this);
-    this.toggle30 = this.toggle30.bind(this);
-    this.toggle40 = this.toggle40.bind(this);
+    this.pageSize = 5;
+
+    this.toggle = this.toggle.bind(this);
+
     this.state = {
-      tooltipOpen10: false,
-      tooltipOpen20: false,
-      tooltipOpen30: false,
-      tooltipOpen40: false
+      WOs: [],
+      query: 0,
+      currentPage: 0,
+      pagesCount: 0
     };
   }
 
-  toggle10() {
+  handleClick(e, index) {
+    e.preventDefault();
+
     this.setState({
-      tooltipOpen10: !this.state.tooltipOpen10
+      currentPage: index
     });
   }
 
-  toggle20() {
-    this.setState({
-      tooltipOpen20: !this.state.tooltipOpen20
-    });
+  async componentDidMount() {
+    await this.getWO();
   }
 
-  toggle30() {
-    this.setState({
-      tooltipOpen30: !this.state.tooltipOpen30
-    });
+  async getWO() {
+    const query = [
+      '',
+      '&approved_by_spv=false&approved_by_manager=false',
+      '&approved_by_spv=true&approved_by_manager=true',
+      '&done=true'
+    ];
+
+    await axios
+      .get(`/api/working-order?${query[this.state.query]}`)
+      .then(res => {
+        this.setState({
+          WOs: res.data,
+          pagesCount: Math.ceil(res.data.length / this.pageSize)
+        });
+      })
+      .catch(err => console.log(err.response.data));
   }
 
-  toggle40() {
+  async onChange(e) {
     this.setState({
-      tooltipOpen40: !this.state.tooltipOpen40
+      [e.target.name]: e.target.value
     });
+    console.log(this.state.query);
   }
+
+  toggle = targetName => {
+    if (!this.state[targetName]) {
+      this.setState({
+        ...this.state,
+        [targetName]: {
+          tooltipOpen: true
+        }
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        [targetName]: {
+          tooltipOpen: !this.state[targetName].tooltipOpen
+        }
+      });
+    }
+  };
+
+  isToolTipOpen = targetName => {
+    return this.state[targetName] ? this.state[targetName].tooltipOpen : false;
+  };
 
   render() {
+    const { currentPage } = this.state;
+
     return (
       /*--------------------------------------------------------------------------------*/
       /* Menampilkan semua WO untuk semua USER                                          */
@@ -83,15 +114,15 @@ class Projects extends React.Component {
               <CardSubtitle>HAR</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
-              <div className='dl'>
+              <div className='dl batas-kanan'>
                 <Input type='select' className='custom-select'>
                   <option value='0'>Approved</option>
-                  <option value='1'>Pending</option>
+                  <option value='1'>Pending Approval</option>
                   <option value='2'>Rejected</option>
                   <option value='3'>Done</option>
                 </Input>
               </div>
-              <div className='dl'>
+              <div className='dlbatas-kanan'>
                 <InputGroup>
                   <InputGroupAddon addonType='append'>
                     <Input placeholder='Search..' />
@@ -103,7 +134,7 @@ class Projects extends React.Component {
               </div>
             </div>
           </div>
-          <Table className='no-wrap v-middle' responsive>
+          <Table className='wrap v-middle' responsive>
             <thead>
               <tr className='border-0'>
                 <th className='border-0'>Code</th>
@@ -111,211 +142,119 @@ class Projects extends React.Component {
                 <th className='border-0'>Type</th>
                 <th className='border-0'>Description</th>
                 <th className='border-0'>Priority</th>
-                <th className='border-0'>Assigned User</th>
-                <th className='border-0'>Target Date</th>
+                <th className='border-0'>Program</th>
+                <th className='border-0'>Deadline</th>
                 <th className='border-0'>Status</th>
                 <th className='border-0'>Details</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
+              {this.state.WOs.slice(
+                currentPage * this.pageSize,
+                (currentPage + 1) * this.pageSize
+              ).map((data, id) => {
+                return (
+                  <tr key={id}>
+                    <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                    <td>
+                      <div className='d-flex no-block align-items-center'>
+                        <div className='mr-2'>
+                          <img
+                            src={`https:${data.pic.avatar}`}
+                            alt='user'
+                            className='rounded-circle'
+                            width='45'
+                          />
+                        </div>
+                        <div className=''>
+                          <h5 className='mb-0 font-16 font-medium'>
+                            {data.pic.name}
+                          </h5>
+                          <span>{data.pic.division.name}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{data.type.name}</td>
+                    <td>{data.title}</td>
+                    <td>{data.priority.name}</td>
+                    <td>{data.program}</td>
+                    <td className='blue-grey-text  text-darken-4 font-medium'>
+                      {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
+                    </td>
+                    <td>
+                      <i
+                        className={classnames('fa fa-circle', {
+                          'text-danger': data.rejected,
+                          'text-warning': !(
+                            data.approved_by_spv &&
+                            data.approved_by_manager &&
+                            data.done
+                          ),
+                          'text-success':
+                            data.approved_by_spv &&
+                            data.approved_by_manager &&
+                            !data.done,
+                          'text-secondary': data.done
+                        })}
+                        id={`indicator-${id}`}
                       />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>FOC</td>
-                <td>Elite Admin</td>
-                <td>Highest</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  12-04-2019
-                </td>
-                <td>
-                  <i className='fa fa-circle text-danger' id='tlp1' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen10}
-                    target='tlp1'
-                    toggle={this.toggle10}>
-                    Rejected
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-              </tr>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>FOT</td>
-                <td>Elite Admin</td>
-                <td>High</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  $96K
-                </td>
-                <td>
-                  <i className='fa fa-circle text-success' id='tlp2' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen20}
-                    target='tlp2'
-                    toggle={this.toggle20}>
-                    In Progress
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-              </tr>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>PS</td>
-                <td>Elite Admin</td>
-                <td>Medium</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  $96K
-                </td>
-                <td>
-                  <i className='fa fa-circle text-warning' id='tlp3' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen30}
-                    target='tlp3'
-                    toggle={this.toggle30}>
-                    Pending Approval
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-              </tr>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>Elite Admin</td>
-                <td>Elite Admin</td>
-                <td>Low</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  $96K
-                </td>
-                <td>
-                  <i className='fa fa-circle text-muted' id='tlp4' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen40}
-                    target='tlp4'
-                    toggle={this.toggle40}>
-                    WO Done
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-              </tr>
+                      <Tooltip
+                        placement='top'
+                        isOpen={this.isToolTipOpen(`indicator-${id}`)}
+                        target={`indicator-${id}`}
+                        toggle={() => this.toggle(`indicator-${id}`)}>
+                        {data.rejected && 'Rejected'}
+                        {!(
+                          data.approved_by_spv &&
+                          data.approved_by_manager &&
+                          data.done
+                        ) && 'Pending Approval'}
+                        {data.approved_by_spv &&
+                          data.approved_by_manager &&
+                          !data.done &&
+                          'On Progress'}
+                        {data.done && 'Done'}
+                      </Tooltip>
+                    </td>
+                    <td>
+                      <Link to={{ pathname: `/detailWO/${data._id}` }}>
+                        <Button className='btn' outline color='success'>
+                          Show
+                        </Button>
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
           <Row>
             <Col xs='12' md='12'>
               <CardBody className='border-top'>
                 <Pagination aria-label='Page navigation example'>
-                  <PaginationItem disabled>
-                    <PaginationLink previous href='#' />
+                  <PaginationItem disabled={currentPage <= 0}>
+                    <PaginationLink
+                      onClick={e => this.handleClick(e, currentPage - 1)}
+                      previous
+                      href='#'
+                    />
                   </PaginationItem>
-                  <PaginationItem active>
-                    <PaginationLink href='#'>1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>5</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink next href='#' />
+                  {[...Array(this.state.pagesCount)].map((page, i) => (
+                    <PaginationItem active={i === currentPage} key={i}>
+                      <PaginationLink
+                        onClick={e => this.handleClick(e, i)}
+                        href='#'>
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem
+                    disabled={currentPage >= this.state.pagesCount - 1}>
+                    <PaginationLink
+                      onClick={e => this.handleClick(e, currentPage + 1)}
+                      next
+                      href='#'
+                    />
                   </PaginationItem>
                 </Pagination>
               </CardBody>

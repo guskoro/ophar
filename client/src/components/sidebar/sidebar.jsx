@@ -38,7 +38,7 @@ class Sidebar extends React.Component {
             {/* Sidebar Menus will go here                                                */}
             {/*--------------------------------------------------------------------------------*/}
             <Nav id='sidebarnav'>
-              {this.props.routes.slice(0, 6).map((prop, key) => {
+              {this.props.routes.slice(0, 5).map((prop, key) => {
                 if (prop.redirect) {
                   return null;
                 } else {

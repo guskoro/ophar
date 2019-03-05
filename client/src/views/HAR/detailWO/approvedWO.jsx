@@ -1,10 +1,6 @@
 import React from 'react';
 
 import img1 from '../../../assets/images/users/1.jpg';
-// import img2 from '../../assets/images/users/2.jpg';
-// import img3 from '../../assets/images/users/3.jpg';
-// import img4 from '../../assets/images/users/4.jpg';
-
 import {
   Button,
   Card,
@@ -29,8 +25,8 @@ import {
   Table,
   Tooltip
 } from 'reactstrap';
-
-import { NavLink } from 'react-router-dom';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 class Projects extends React.Component {
   constructor(props) {
@@ -181,11 +177,11 @@ class Projects extends React.Component {
                   </Tooltip>
                 </td>
                 <td>
-                  <NavLink to='/detailWO'>
+                  <Link to='/detailWO'>
                     <Button className='btn' outline color='success'>
                       Show
                     </Button>
-                  </NavLink>
+                  </Link>
                 </td>
                 <td>
                   <Button
@@ -277,7 +273,7 @@ class Projects extends React.Component {
             <Col xs='12' md='12'>
               <CardBody className='border-top'>
                 <Pagination aria-label='Page navigation example'>
-                  <PaginationItem disable>
+                  <PaginationItem disabled>
                     <PaginationLink previous href='#' />
                   </PaginationItem>
                   <PaginationItem active>

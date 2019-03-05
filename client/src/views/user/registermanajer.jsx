@@ -26,58 +26,47 @@ import {
   Row,
   Table
 } from 'reactstrap';
-
-import { NavLink } from 'react-router-dom';
-
-class ModalExample extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-}
+import axios from 'axios';
+import classnames from 'classnames';
+import { Link } from 'react-router-dom';
 
 class Projects extends React.Component {
   constructor(props) {
     super(props);
 
+    this.pageSize = 5;
+
     this.state = {
-      modal: false
+      users: [],
+      modal: false,
+      currentPage: 0,
+      pagesCount: 0
     };
 
     this.toggle = this.toggle.bind(this);
-
-    this.toggle10 = this.toggle10.bind(this);
-    this.toggle20 = this.toggle20.bind(this);
-    this.toggle30 = this.toggle30.bind(this);
-    this.toggle40 = this.toggle40.bind(this);
-    this.state = {
-      tooltipOpen10: false,
-      tooltipOpen20: false,
-      tooltipOpen30: false,
-      tooltipOpen40: false
-    };
   }
 
-  toggle10() {
-    this.setState({
-      tooltipOpen10: !this.state.tooltipOpen10
-    });
-  }
+  componentDidMount = async () => {
+    await this.getUsers();
+  };
 
-  toggle20() {
-    this.setState({
-      tooltipOpen20: !this.state.tooltipOpen20
-    });
-  }
+  getUsers = async () => {
+    await axios
+      .get('/api/user')
+      .then(res => {
+        this.setState({
+          users: res.data,
+          pagesCount: Math.ceil(res.data.length / this.pageSize)
+        });
+      })
+      .catch(err => console.log(err.response.data));
+  };
 
-  toggle30() {
-    this.setState({
-      tooltipOpen30: !this.state.tooltipOpen30
-    });
-  }
+  handleClick(e, index) {
+    e.preventDefault();
 
-  toggle40() {
     this.setState({
-      tooltipOpen40: !this.state.tooltipOpen40
+      currentPage: index
     });
   }
 
@@ -88,6 +77,8 @@ class Projects extends React.Component {
   }
 
   render() {
+    const { currentPage } = this.state;
+
     return (
       /*--------------------------------------------------------------------------------*/
       /* Menampilkan semua WO untuk semua USER                                          */
@@ -101,14 +92,14 @@ class Projects extends React.Component {
               <CardSubtitle>HAR</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
-              <div className='dl'>
-                <NavLink to='/registerform'>
+              <div className='dl batas-kanan'>
+                <Link to='/registerform'>
                   <Button className='btn' color='success'>
-                    Add User
+                    <i className='mdi mdi-plus' />
                   </Button>{' '}
-                </NavLink>
+                </Link>
               </div>
-              <div className='dl'>
+              <div className='dl batas-kanan'>
                 <InputGroup>
                   <Input placeholder='Search..' />
                   <InputGroupAddon addonType='append'>
@@ -119,13 +110,13 @@ class Projects extends React.Component {
                 </InputGroup>
               </div>
 
-              <div className='dl'>
+              <div className='dl batas-kanan'>
                 <Input type='select' className='custom-select'>
                   <option value='0'>All</option>
-                  <option value='1'>CM</option>
-                  <option value='2'>PM</option>
-                  <option value='3'>Asset</option>
-                  <option value='4'>P3AK</option>
+                  <option value='1'>Corrective Maintenance</option>
+                  <option value='2'>Preventive Maintenance</option>
+                  <option value='3'>Assets</option>
+                  <option value='4'>Patrols and Controls</option>
                 </Input>
               </div>
             </div>
@@ -133,448 +124,172 @@ class Projects extends React.Component {
           <Table className='no-wrap v-middle' responsive>
             <thead>
               <tr className='border-0'>
-                <th className='border-0'>No</th>
-                <th className='border-0'>Divisi</th>
+                <th className='border-0'>ID</th>
+                <th className='border-0'>Division</th>
                 <th className='border-0'>Name</th>
                 <th className='border-0'>Role</th>
                 <th className='border-0'>Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>PM</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>
-                        Dino Puguh Mugholladoh
-                      </h5>
-                      <span>dino@mugholladoh.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <Badge color='primary' className='ml-0' pill>
-                    Manager
-                  </Badge>
-                </td>
-                <td>
-                  <Button
-                    className='btn'
-                    outline
-                    color='biruicon'
-                    onClick={this.toggle}>
-                    {this.props.buttonLabel}Edit
-                  </Button>
-                  <Modal
-                    isOpen={this.state.modal}
-                    toggle={this.toggle}
-                    className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Register</ModalHeader>
-                    <ModalBody>
-                      <Form>
-                        <FormGroup>
-                          <Label for='exampleEmail'>Name</Label>
-                          <Input />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='exampleEmail'>Email</Label>
-                          <Input
-                            type='email'
-                            name='email'
-                            id='exampleEmail'
-                            placeholder='Email'
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='examplePassword'>Password</Label>
-                          <Input
-                            type='password'
-                            name='password'
-                            id='examplePassword'
-                            placeholder='Password'
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='exampleSelect'>Role</Label>
-                          <Input type='select' name='select' id='exampleSelect'>
-                            <option>...</option>
-                            <option>Admin</option>
-                            <option>Manager</option>
-                            <option>Supervisor</option>
-                            <option>Engineer</option>
-                          </Input>
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='exampleSelect'>Division</Label>
-                          <Input type='select' name='select' id='exampleSelect'>
-                            <option>...</option>
-                            <option>PM</option>
-                            <option>CM</option>
-                            <option>Asset</option>
-                            <option>P3ak</option>
-                          </Input>
-                        </FormGroup>
-                      </Form>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color='biruicon' onClick={this.toggle}>
-                        Submit
-                      </Button>{' '}
-                      <Button color='secondary' onClick={this.toggle}>
-                        Cancel
-                      </Button>
-                    </ModalFooter>
-                  </Modal>
-                  <Button
-                    className='profile-time-approved'
-                    outline
-                    color='danger'>
-                    Delete
-                  </Button>{' '}
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>CM</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>
-                        Dino Puguh Mugholladoh
-                      </h5>
-                      <span>dino@mugholladoh.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <Badge color='secondary' className='ml-0' pill>
-                    Supervisor
-                  </Badge>
-                </td>
-                <td>
-                  <Button
-                    className='btn'
-                    outline
-                    color='biruicon'
-                    onClick={this.toggle}>
-                    {this.props.buttonLabel}Edit
-                  </Button>
-                  <Modal
-                    isOpen={this.state.modal}
-                    toggle={this.toggle}
-                    className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Register</ModalHeader>
-                    <ModalBody>
-                      <Form>
-                        <FormGroup>
-                          <Label for='exampleEmail'>Name</Label>
-                          <Input />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='exampleEmail'>Email</Label>
-                          <Input
-                            type='email'
-                            name='email'
-                            id='exampleEmail'
-                            placeholder='Email'
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='examplePassword'>Password</Label>
-                          <Input
-                            type='password'
-                            name='password'
-                            id='examplePassword'
-                            placeholder='Password'
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='exampleSelect'>Role</Label>
-                          <Input type='select' name='select' id='exampleSelect'>
-                            <option>...</option>
-                            <option>Admin</option>
-                            <option>Manager</option>
-                            <option>Supervisor</option>
-                            <option>Engineer</option>
-                          </Input>
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='exampleSelect'>Division</Label>
-                          <Input type='select' name='select' id='exampleSelect'>
-                            <option>...</option>
-                            <option>PM</option>
-                            <option>CM</option>
-                            <option>Asset</option>
-                            <option>P3ak</option>
-                          </Input>
-                        </FormGroup>
-                      </Form>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color='primarya' onClick={this.toggle}>
-                        Submit
-                      </Button>{' '}
-                      <Button color='secondary' onClick={this.toggle}>
-                        Cancel
-                      </Button>
-                    </ModalFooter>
-                  </Modal>
-                  <Button
-                    className='profile-time-approved'
-                    outline
-                    color='danger'>
-                    Delete
-                  </Button>{' '}
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>Asset</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>
-                        Dino Puguh Mugholladoh
-                      </h5>
-                      <span>dino@mugholladoh.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <Badge color='light' className='ml-0' pill>
-                    Engineer
-                  </Badge>
-                </td>
-                <td>
-                  <Button
-                    className='btn'
-                    outline
-                    color='biruicon'
-                    onClick={this.toggle}>
-                    {this.props.buttonLabel}Edit
-                  </Button>
-                  <Modal
-                    isOpen={this.state.modal}
-                    toggle={this.toggle}
-                    className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Register</ModalHeader>
-                    <ModalBody>
-                      <Form>
-                        <FormGroup>
-                          <Label for='exampleEmail'>Name</Label>
-                          <Input />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='exampleEmail'>Email</Label>
-                          <Input
-                            type='email'
-                            name='email'
-                            id='exampleEmail'
-                            placeholder='Email'
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='examplePassword'>Password</Label>
-                          <Input
-                            type='password'
-                            name='password'
-                            id='examplePassword'
-                            placeholder='Password'
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='exampleSelect'>Role</Label>
-                          <Input type='select' name='select' id='exampleSelect'>
-                            <option>...</option>
-                            <option>Admin</option>
-                            <option>Manager</option>
-                            <option>Supervisor</option>
-                            <option>Engineer</option>
-                          </Input>
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='exampleSelect'>Division</Label>
-                          <Input type='select' name='select' id='exampleSelect'>
-                            <option>...</option>
-                            <option>PM</option>
-                            <option>CM</option>
-                            <option>Asset</option>
-                            <option>P3ak</option>
-                          </Input>
-                        </FormGroup>
-                      </Form>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color='primarya' onClick={this.toggle}>
-                        Submit
-                      </Button>{' '}
-                      <Button color='secondary' onClick={this.toggle}>
-                        Cancel
-                      </Button>
-                    </ModalFooter>
-                  </Modal>
-                  <Button
-                    className='profile-time-approved'
-                    outline
-                    color='danger'>
-                    Delete
-                  </Button>{' '}
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>CM</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>
-                        Guskoro Pradipta Prana Arief
-                      </h5>
-                      <span>guskoro@mugholladoh.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <Badge color='success' className='ml-0' pill>
-                    Admin
-                  </Badge>
-                </td>
-                <td>
-                  <Button
-                    className='btn'
-                    outline
-                    color='biruicon'
-                    onClick={this.toggle}>
-                    {this.props.buttonLabel}Edit
-                  </Button>
-                  <Modal
-                    isOpen={this.state.modal}
-                    toggle={this.toggle}
-                    className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Register</ModalHeader>
-                    <ModalBody>
-                      <Form>
-                        <FormGroup>
-                          <Label for='exampleEmail'>Name</Label>
-                          <Input />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='exampleEmail'>Email</Label>
-                          <Input
-                            type='email'
-                            name='email'
-                            id='exampleEmail'
-                            placeholder='Email'
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='examplePassword'>Password</Label>
-                          <Input
-                            type='password'
-                            name='password'
-                            id='examplePassword'
-                            placeholder='Password'
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='exampleSelect'>Role</Label>
-                          <Input type='select' name='select' id='exampleSelect'>
-                            <option>...</option>
-                            <option>Admin</option>
-                            <option>Manager</option>
-                            <option>Supervisor</option>
-                            <option>Engineer</option>
-                          </Input>
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for='exampleSelect'>Division</Label>
-                          <Input type='select' name='select' id='exampleSelect'>
-                            <option>...</option>
-                            <option>PM</option>
-                            <option>CM</option>
-                            <option>Asset</option>
-                            <option>P3ak</option>
-                          </Input>
-                        </FormGroup>
-                      </Form>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color='primarya' onClick={this.toggle}>
-                        Submit
-                      </Button>{' '}
-                      <Button color='secondary' onClick={this.toggle}>
-                        Cancel
-                      </Button>
-                    </ModalFooter>
-                  </Modal>
-                  <Button
-                    className='profile-time-approved'
-                    outline
-                    color='danger'>
-                    Delete
-                  </Button>{' '}
-                </td>
-              </tr>
+              {this.state.users
+                .slice(
+                  currentPage * this.pageSize,
+                  (currentPage + 1) * this.pageSize
+                )
+                .map((data, id) => {
+                  let roleName = data.role.name;
+                  return (
+                    <tr key={id}>
+                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                      <td>
+                        {data.division ? data.division.name : 'No division'}
+                      </td>
+                      <td>
+                        <div className='d-flex no-block align-items-center'>
+                          <div className='mr-2'>
+                            <img
+                              src={`https:${data.avatar}`}
+                              alt='user'
+                              className='rounded-circle'
+                              width='45'
+                            />
+                          </div>
+                          <div className=''>
+                            <h5 className='mb-0 font-16 font-medium'>
+                              {data.name}
+                            </h5>
+                            <span>{data.email}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <Badge
+                          color={classnames({
+                            primary: roleName == 'manager',
+                            success: roleName == 'supervisor',
+                            danger: roleName == 'admin',
+                            warning: roleName == 'engineer'
+                          })}
+                          className='ml-0'
+                          pill>
+                          {roleName}
+                        </Badge>
+                      </td>
+                      <td>
+                        <Button
+                          className='btn'
+                          outline
+                          color='biruicon'
+                          onClick={this.toggle}>
+                          {this.props.buttonLabel}
+                          <i className='mdi mdi-pencil' />
+                        </Button>
+                        <Modal
+                          isOpen={this.state.modal}
+                          toggle={this.toggle}
+                          className={this.props.className}>
+                          <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
+                          <ModalBody>
+                            <Form>
+                              <FormGroup>
+                                <Label for='exampleEmail'>Name</Label>
+                                <Input />
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='exampleEmail'>Email</Label>
+                                <Input
+                                  type='email'
+                                  name='email'
+                                  id='exampleEmail'
+                                  placeholder='Email'
+                                />
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='examplePassword'>Password</Label>
+                                <Input
+                                  type='password'
+                                  name='password'
+                                  id='examplePassword'
+                                  placeholder='Password'
+                                />
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='exampleSelect'>Role</Label>
+                                <Input
+                                  type='select'
+                                  name='select'
+                                  id='exampleSelect'>
+                                  <option>...</option>
+                                  <option>Admin</option>
+                                  <option>Manager</option>
+                                  <option>Supervisor</option>
+                                  <option>Engineer</option>
+                                </Input>
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='exampleSelect'>Division</Label>
+                                <Input
+                                  type='select'
+                                  name='select'
+                                  id='exampleSelect'>
+                                  <option>...</option>
+                                  <option>PM</option>
+                                  <option>CM</option>
+                                  <option>Asset</option>
+                                  <option>P3ak</option>
+                                </Input>
+                              </FormGroup>
+                            </Form>
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button color='biruicon' onClick={this.toggle}>
+                              Submit
+                            </Button>{' '}
+                            <Button color='secondary' onClick={this.toggle}>
+                              Cancel
+                            </Button>
+                          </ModalFooter>
+                        </Modal>
+                        <Button
+                          className='profile-time-approved'
+                          outline
+                          color='danger'>
+                          <i className='mdi mdi-delete' />
+                        </Button>{' '}
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </Table>
           <Row>
             <Col xs='12' md='12'>
               <CardBody className='border-top'>
                 <Pagination aria-label='Page navigation example'>
-                  <PaginationItem disabled>
-                    <PaginationLink previous href='#' />
+                  <PaginationItem disabled={currentPage <= 0}>
+                    <PaginationLink
+                      onClick={e => this.handleClick(e, currentPage - 1)}
+                      previous
+                      href='#'
+                    />
                   </PaginationItem>
-                  <PaginationItem active>
-                    <PaginationLink href='#'>1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>5</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink next href='#' />
+                  {[...Array(this.state.pagesCount)].map((page, i) => (
+                    <PaginationItem active={i === currentPage} key={i}>
+                      <PaginationLink
+                        onClick={e => this.handleClick(e, i)}
+                        href='#'>
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem
+                    disabled={currentPage >= this.state.pagesCount - 1}>
+                    <PaginationLink
+                      onClick={e => this.handleClick(e, currentPage + 1)}
+                      next
+                      href='#'
+                    />
                   </PaginationItem>
                 </Pagination>
               </CardBody>

@@ -131,7 +131,7 @@ class Projects extends React.Component {
               <div className='dl batas-kanan'>
                 <Link to='/uploadWO'>
                   <Button className='btn' color='success'>
-                    <i className='mdi mdi-upload' />
+                    <i className='mdi mdi-plus' />
                   </Button>{' '}
                 </Link>
               </div>
@@ -155,8 +155,8 @@ class Projects extends React.Component {
                 <th className='border-0'>Type</th>
                 <th className='border-0'>Description</th>
                 <th className='border-0'>Priority</th>
-                <th className='border-0'>Assigned User</th>
-                <th className='border-0'>Target Date</th>
+                <th className='border-0'>Program</th>
+                <th className='border-0'>Deadline</th>
                 <th className='border-0'>Status</th>
                 <th className='border-0'>Details</th>
                 <th className='border-0'>Action</th>
@@ -184,7 +184,7 @@ class Projects extends React.Component {
                           <h5 className='mb-0 font-16 font-medium'>
                             {data.pic.name}
                           </h5>
-                          <span>{data.pic.email}</span>
+                          <span>{data.pic.division.name}</span>
                         </div>
                       </div>
                     </td>
