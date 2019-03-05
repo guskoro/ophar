@@ -1,7 +1,4 @@
 import React from 'react';
-import classnames from 'classnames';
-import img1 from '../../assets/images/users/1.jpg';
-
 import {
   Button,
   Card,
@@ -20,15 +17,19 @@ import {
   Tooltip
 } from 'reactstrap';
 import axios from 'axios';
+import classnames from 'classnames';
+import moment from 'moment';
 import { NavLink } from 'react-router-dom';
 
 class Projects extends React.Component {
   constructor(props) {
     super(props);
 
+    this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.state = {
-      WOs: []
+      WOs: [],
+      query: 0
     };
   }
 
@@ -36,15 +37,37 @@ class Projects extends React.Component {
     await this.getWO();
   }
 
+  async componentWillUpdate() {
+    await this.getWO();
+  }
+
   async getWO() {
+    const query = [
+      '',
+      '&approved_by_spv=false&approved_by_manager=false',
+      '&approved_by_spv=true&approved_by_manager=true',
+      '&done=true'
+    ];
+
     await axios
-      .get('/api/working-order?division=corrective+maintenance')
+      .get(
+        `/api/working-order?division=corrective+maintenance${
+          query[this.state.query]
+        }`
+      )
       .then(res => {
         this.setState({
           WOs: res.data
         });
       })
       .catch(err => console.log(err.response.data));
+  }
+
+  async onChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+    console.log(this.state.query);
   }
 
   toggle = targetName => {
@@ -83,11 +106,15 @@ class Projects extends React.Component {
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
               <div className='dl'>
-                <Input type='select' className='custom-select'>
-                  <option value='0'>All</option>
-                  <option value='1'>Pending Approval</option>
-                  <option value='2'>On Progress</option>
-                  <option value='3'>Done</option>
+                <Input
+                  type='select'
+                  name='filter'
+                  className='custom-select'
+                  onChange={this.onChange}>
+                  <option value={0}>All</option>
+                  <option value={1}>Pending Approval</option>
+                  <option value={2}>On Progress</option>
+                  <option value={3}>Done</option>
                 </Input>
               </div>
               <div className='dl'>
@@ -152,7 +179,7 @@ class Projects extends React.Component {
                     <td>{data.priority.name}</td>
                     <td>{data.program}</td>
                     <td className='blue-grey-text  text-darken-4 font-medium'>
-                      {data.deadline}
+                      {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
                     </td>
                     <td>
                       <i
