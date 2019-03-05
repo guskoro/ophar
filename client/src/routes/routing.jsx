@@ -64,7 +64,7 @@ var ThemeRoutes = [
     component: UploadWO
   },
   {
-    path: '/detailWO',
+    path: '/detailWO/:id',
     name: 'Detail WO',
     icon: 'mdi mdi-database',
     component: DetailWo

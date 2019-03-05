@@ -19,21 +19,21 @@ import {
 import axios from 'axios';
 import classnames from 'classnames';
 import moment from 'moment';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 class Projects extends React.Component {
   constructor(props) {
     super(props);
 
-    this.pageSize = 2;
-    this.pagesCount = Math.ceil(this.dataSet.length / this.pageSize);
+    this.pageSize = 5;
 
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.state = {
       WOs: [],
       query: 0,
-      currentPage: 0
+      currentPage: 0,
+      pagesCount: 0
     };
   }
 
@@ -47,10 +47,6 @@ class Projects extends React.Component {
   }
 
   async componentDidMount() {
-    await this.getWO();
-  }
-
-  async componentWillUpdate() {
     await this.getWO();
   }
 
@@ -70,7 +66,8 @@ class Projects extends React.Component {
       )
       .then(res => {
         this.setState({
-          WOs: res.data
+          WOs: res.data,
+          pagesCount: Math.ceil(res.data.length / this.pageSize)
         });
       })
       .catch(err => console.log(err.response.data));
@@ -119,7 +116,7 @@ class Projects extends React.Component {
               <CardSubtitle>HAR | Corrective Maintenance</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
-              <div className='dl'>
+              <div className='dl batas-kanan'>
                 <Input
                   type='select'
                   name='filter'
@@ -131,12 +128,12 @@ class Projects extends React.Component {
                   <option value={3}>Done</option>
                 </Input>
               </div>
-              <div className='dl'>
-                <NavLink to='/uploadWO'>
+              <div className='dl batas-kanan'>
+                <Link to='/uploadWO'>
                   <Button className='btn' color='success'>
                     <i className='mdi mdi-upload' />
                   </Button>{' '}
-                </NavLink>
+                </Link>
               </div>
               <div className='dl'>
                 <InputGroup>
@@ -172,7 +169,7 @@ class Projects extends React.Component {
               ).map((data, id) => {
                 return (
                   <tr key={id}>
-                    <td>{data._id}</td>
+                    <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
                     <td>
                       <div className='d-flex no-block align-items-center'>
                         <div className='mr-2'>
@@ -234,26 +231,27 @@ class Projects extends React.Component {
                       </Tooltip>
                     </td>
                     <td>
-                      <NavLink to='/detailWO'>
+                      <Link to={{ pathname: `/detailWO/${data._id}` }}>
                         <Button className='btn' outline color='success'>
                           Show
                         </Button>
-                      </NavLink>
+                      </Link>
                     </td>
                     <td>
-                      <NavLink to='/detailWO'>
+                      <Link
+                        to={{ pathname: '/detailWO', state: { id: data._id } }}>
                         <Button className='btn' outline color='info'>
                           <i className='mdi mdi-pencil' />
                         </Button>{' '}
-                      </NavLink>
-                      <NavLink to='/detailWO'>
+                      </Link>
+                      <Link to='/detailWO'>
                         <Button
                           className='profile-time-approved'
                           outline
                           color='danger'>
                           <i className='mdi mdi-delete' />
                         </Button>{' '}
-                      </NavLink>
+                      </Link>
                     </td>
                   </tr>
                 );
@@ -271,7 +269,7 @@ class Projects extends React.Component {
                       href='#'
                     />
                   </PaginationItem>
-                  {[...Array(this.pagesCount)].map((page, i) => (
+                  {[...Array(this.state.pagesCount)].map((page, i) => (
                     <PaginationItem active={i === currentPage} key={i}>
                       <PaginationLink
                         onClick={e => this.handleClick(e, i)}
@@ -280,7 +278,8 @@ class Projects extends React.Component {
                       </PaginationLink>
                     </PaginationItem>
                   ))}
-                  <PaginationItem disabled={currentPage >= this.pagesCount - 1}>
+                  <PaginationItem
+                    disabled={currentPage >= this.state.pagesCount - 1}>
                     <PaginationLink
                       onClick={e => this.handleClick(e, currentPage + 1)}
                       next

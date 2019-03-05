@@ -4,14 +4,12 @@ import {
   Button,
   Card,
   CardBody,
-  CardText,
-  CardTitle,
   Col,
-  CustomInput,
   Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
+  CustomInput,
   Nav,
   NavItem,
   NavLink,
@@ -20,13 +18,9 @@ import {
   TabPane,
   Table
 } from 'reactstrap';
-
+import axios from 'axios';
+import moment from 'moment';
 import classnames from 'classnames';
-
-import img1 from '../../../assets/images/users/1.jpg';
-import img2 from '../../../assets/images/users/2.jpg';
-import img3 from '../../../assets/images/users/3.jpg';
-import img4 from '../../../assets/images/users/4.jpg';
 
 export default class Example extends React.Component {
   constructor(props) {
@@ -37,10 +31,27 @@ export default class Example extends React.Component {
     this.toggle = this.toggle.bind(this);
 
     this.state = {
+      detailWO: {},
       isOpen: false,
       activeTab: '1',
-      modal: false
+      modal: false,
+      id: this.props.match.params.id
     };
+  }
+
+  async componentDidMount() {
+    await this.getDetailWO();
+  }
+
+  async getDetailWO() {
+    await axios
+      .get(`/api/working-order/${this.state.id}`)
+      .then(res => {
+        this.setState({
+          detailWO: res.data
+        });
+      })
+      .catch(err => console.log(err.response.data));
   }
 
   toggleTab(tab) {
@@ -58,6 +69,8 @@ export default class Example extends React.Component {
   }
 
   render() {
+    // console.log(this.state.detailWO.pic.name);
+
     return (
       <Card>
         <CardBody>
@@ -67,47 +80,56 @@ export default class Example extends React.Component {
                 <div className='d-flex no-block align-items-center'>
                   <div className='mr-2'>
                     <img
-                      src={img1}
+                      src='https://imgix.ranker.com/user_node_img/50007/1000136055/original/yao-ming-rage-face-photo-u2?w=650&q=50&fm=pjpg&fit=crop&crop=faces'
                       alt='user'
                       className='rounded-circle'
                       width='100'
                     />
                   </div>
                   <div className=''>
-                    <h1 className='mb-0 font-28 font-medium'>Hanna Gover</h1>
+                    <h1 className='mb-0 font-28 font-medium'>
+                      {/* {this.state.detailWO.pic.name} */}
+                    </h1>
                     <span>hgover@gmail.com</span>
                   </div>
                 </div>
               </div>
               <div className='profile'>
-                <h1 className='mb-1 font-20 font-medium'>Work Title</h1>
-              </div>
-              {/* iki lek wo wes di aprroved */}
-              <div className='profile'>
-                <Badge color='success' className='ml-0' pill>
-                  Approved
-                </Badge>
-                <span className='profile-time-approved'>
-                  At January, 12th - 2019
-                </span>
-              </div>
-              {/* Iki lek wo durung di approved */}
-              <div className='profile'>
-                <Badge color='warning' className='ml-0' pill>
-                  Pending
-                </Badge>
-              </div>
-              <div className='profile'>
-                <h1 className='mb-0 font-16 font-medium'>
-                  Remaining Time :{' '}
-                  <span className='profile-time-approved'>50 Hours</span>
+                <h1 className='mb-1 font-20 font-medium'>
+                  {this.state.detailWO.title}
                 </h1>
               </div>
+              {this.state.detailWO.approved_by_manager ? (
+                <div className='profile'>
+                  <h5>
+                    <Badge color='success' className='ml-0' pill>
+                      Approved at{' '}
+                      {moment(this.state.detailWO.start).format(
+                        'DD-MM-YYYY HH:mm'
+                      )}
+                    </Badge>
+                  </h5>
+                </div>
+              ) : (
+                <div className='profile'>
+                  <h5>
+                    <Badge color='warning' className='ml-0' pill>
+                      Pending Approval
+                    </Badge>
+                  </h5>
+                </div>
+              )}
               <div className='profile'>
                 <h1 className='mb-0 font-16 font-medium' color='info'>
-                  Done Target :{' '}
+                  Deadline{' '}
+                  {moment().isAfter(this.state.detailWO.deadline)
+                    ? 'is overdue'
+                    : moment().to(this.state.detailWO.deadline)}{' '}
+                  :
                   <span className='profile-time-approved'>
-                    March, 12th - 2019
+                    {moment(this.state.detailWO.deadline).format(
+                      'DD-MM-YYYY HH:mm'
+                    )}
                   </span>
                 </h1>
               </div>
@@ -175,7 +197,7 @@ export default class Example extends React.Component {
                 <Nav tabs>
                   <NavItem>
                     <NavLink
-                      className={classnames({
+                      className={classnames('pointer-hover', {
                         active: this.state.activeTab === '1'
                       })}
                       onClick={() => {
@@ -186,7 +208,7 @@ export default class Example extends React.Component {
                   </NavItem>
                   <NavItem>
                     <NavLink
-                      className={classnames({
+                      className={classnames('pointer-hover', {
                         active: this.state.activeTab === '2'
                       })}
                       onClick={() => {
@@ -209,36 +231,20 @@ export default class Example extends React.Component {
                             </tr>
                           </thead>
                           <tbody>
-                            <tr>
-                              <td>1. Syahdat</td>
-                              <td>
-                                <CustomInput
-                                  type='checkbox'
-                                  id='exampleCustomCheckbox1'
-                                  label='Done'
-                                />
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>2. Sholat</td>
-                              <td>
-                                <CustomInput
-                                  type='checkbox'
-                                  id='exampleCustomCheckbox2'
-                                  label='In Progress'
-                                />
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>3. Zakat</td>
-                              <td>
-                                <CustomInput
-                                  type='checkbox'
-                                  id='exampleCustomCheckbox3'
-                                  label='In Progress'
-                                />
-                              </td>
-                            </tr>
+                            {/* {this.state.detailWO.plans.map(plan => {
+                              return (
+                                <tr>
+                                  <td>{plan}</td>
+                                  <td>
+                                    <CustomInput
+                                      type='checkbox'
+                                      id='exampleCustomCheckbox1'
+                                      label='Done'
+                                    />
+                                  </td>
+                                </tr>
+                              );
+                            })} */}
                           </tbody>
                         </Table>
                       </Col>
@@ -258,8 +264,8 @@ export default class Example extends React.Component {
                               <td>FOC</td>
                             </tr>
                             <tr>
-                              <td>Work Program Type</td>
-                              <td>Rutin</td>
+                              <td>Work Program</td>
+                              <td>{this.state.detailWO.program}</td>
                             </tr>
                             <tr>
                               <td>Priority</td>
@@ -267,29 +273,11 @@ export default class Example extends React.Component {
                             </tr>
                             <tr>
                               <td>Work Description</td>
-                              <td>
-                                Lorem Ipsum is simply dummy text of the printing
-                                and typesetting industry. Lorem Ipsum has been
-                                the industry's standard dummy text ever since
-                                the 1500s, when an unknown printer took a galley
-                                of type and scrambled it to make a type specimen
-                                book. It has survived not only five centuries,
-                                but also the leap into electronic typesetting,
-                                remaining essentially unchanged. It was
-                                popularised in the 1960s with the release of
-                                Letraset sheets containing Lorem Ipsum passages,
-                                and more recently with desktop publishing
-                                software like Aldus PageMaker including versions
-                                of Lorem Ipsum.
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Work Plan</td>
-                              <td>1. lorem, 2. Ipsum</td>
+                              <td>{this.state.detailWO.description}</td>
                             </tr>
                             <tr>
                               <td>Work Note</td>
-                              <td>Jangan lupa sahur dan berbuka</td>
+                              <td>{this.state.detailWO.note}</td>
                             </tr>
                           </tbody>
                         </Table>

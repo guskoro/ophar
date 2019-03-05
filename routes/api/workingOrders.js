@@ -98,9 +98,10 @@ router.post(
 
 router.get('/:id', (req, res) => {
   WorkingOrder.findById(req.params.id)
-    .populate('pic', 'name-_id')
+    .populate('pic')
+    .populate('type', 'name-_id')
     .populate('priority', 'name-_id')
-    .then(workingOrder => res.status(200).json(workingOrder))
+    .then(workingOrder => res.json(workingOrder))
     .catch(err => res.status(404).json(err));
 });
 

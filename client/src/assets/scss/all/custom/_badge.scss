@@ -8,6 +8,7 @@
   height: 2rem;
   font-size: 0.875rem;
 }
+
 .badge-rounded {
   border-radius: 40px;
 }
@@ -27,9 +28,11 @@ Rounds
   border-radius: 100%;
   background: $blue;
   line-height: 52px;
+
   img {
     border-radius: 100%;
   }
+
   &.round-info {
     background: $blue;
   }
