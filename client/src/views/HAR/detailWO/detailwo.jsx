@@ -24,9 +24,6 @@ import {
 import classnames from 'classnames';
 
 import img1 from '../../../assets/images/users/1.jpg';
-import img2 from '../../../assets/images/users/2.jpg';
-import img3 from '../../../assets/images/users/3.jpg';
-import img4 from '../../../assets/images/users/4.jpg';
 
 export default class Example extends React.Component {
   constructor(props) {
@@ -98,6 +95,16 @@ export default class Example extends React.Component {
                 </Badge>
               </div>
               <div className='profile'>
+                <Badge color='danger' className='ml-0' pill>
+                  Rejected
+                </Badge>
+              </div>
+              <div className='profile'>
+                <Badge color='secondary' className='ml-0' pill>
+                  Done
+                </Badge>
+              </div>
+              <div className='profile'>
                 <h1 className='mb-0 font-16 font-medium'>
                   Remaining Time :{' '}
                   <span className='profile-time-approved'>50 Hours</span>
@@ -121,7 +128,7 @@ export default class Example extends React.Component {
                   toggle={this.toggle}
                   className={this.props.className}>
                   <ModalHeader toggle={this.toggle}>Done Work</ModalHeader>
-                  <ModalBody>Are you sure to end this work?</ModalBody>
+                  <ModalBody>Are you sure want to end this work?</ModalBody>
                   <ModalFooter>
                     <Button color='primary' onClick={this.toggle}>
                       Yes
@@ -150,7 +157,7 @@ export default class Example extends React.Component {
                   toggle={this.toggle}
                   className={this.props.className}>
                   <ModalHeader toggle={this.toggle}>Decline Work</ModalHeader>
-                  <ModalBody>Are you sure to decline this work?</ModalBody>
+                  <ModalBody>Are you sure want to decline this work?</ModalBody>
                   <ModalFooter>
                     <Button color='primary' onClick={this.toggle}>
                       Yes
@@ -248,10 +255,7 @@ export default class Example extends React.Component {
                   <TabPane tabId='2'>
                     <Row>
                       <Col sm='12'>
-                        <Table
-                          borderless
-                          className='no-wrap v-middle'
-                          responsive>
+                        <Table borderless className='wrap v-middle' responsive>
                           <tbody>
                             <tr>
                               <td>Work Type</td>

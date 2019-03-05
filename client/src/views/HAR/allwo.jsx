@@ -84,20 +84,22 @@ class Projects extends React.Component {
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
               <div className='dl'>
-                <InputGroup>
-                  <InputGroupAddon addonType='append'>
-                    <Button color='biruicon'>Search</Button>
-                  </InputGroupAddon>
-                  <Input placeholder='Search..' />
-                </InputGroup>
-              </div>
-              <div className='dl'>
                 <Input type='select' className='custom-select'>
                   <option value='0'>Approved</option>
                   <option value='1'>Pending</option>
                   <option value='2'>Rejected</option>
                   <option value='3'>Done</option>
                 </Input>
+              </div>
+              <div className='dl'>
+                <InputGroup>
+                  <InputGroupAddon addonType='append'>
+                    <Input placeholder='Search..' />
+                    <Button color='biruicon'>
+                      <i className='mdi mdi-magnify' />
+                    </Button>
+                  </InputGroupAddon>
+                </InputGroup>
               </div>
             </div>
           </div>

@@ -19,6 +19,8 @@ import {
   UncontrolledDropdown
 } from 'reactstrap';
 
+import { NavLink } from 'react-router-dom';
+
 import profilephoto from '../../assets/images/users/1.jpg';
 
 /*--------------------------------------------------------------------------------*/
@@ -167,13 +169,21 @@ class Header extends React.Component {
                     Logout
                   </Button>
                   <DropdownItem divider />
-                  <Button color='ndewo' className='btn-rounded ml-3 mb-2 mt-2'>
-                    New Workordes
-                  </Button>
+                  <NavLink to='/newWO'>
+                    <Button
+                      color='ndewo'
+                      className='btn-rounded ml-3 mb-2 mt-2'>
+                      New Workordes
+                    </Button>
+                  </NavLink>
                   <DropdownItem divider />
-                  <Button color='ndewo' className='btn-rounded ml-3 mb-2 mt-2'>
-                    Users
-                  </Button>
+                  <NavLink to='/register'>
+                    <Button
+                      color='ndewo'
+                      className='btn-rounded ml-3 mb-2 mt-2'>
+                      Users
+                    </Button>
+                  </NavLink>
                 </DropdownMenu>
               </UncontrolledDropdown>
               {/*--------------------------------------------------------------------------------*/}
