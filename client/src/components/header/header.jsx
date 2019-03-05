@@ -114,7 +114,7 @@ class Header extends React.Component {
                 <ModalHeader toggle={this.toggleLogin}>Login</ModalHeader>
                 <ModalBody>
                   <Form inline>
-                    <FormGroup>
+                    <FormGroup className='batas-kanan'>
                       <Label for='exampleEmail' hidden>
                         Email
                       </Label>
@@ -124,7 +124,7 @@ class Header extends React.Component {
                         id='exampleEmail'
                         placeholder='Email'
                       />
-                    </FormGroup>{' '}
+                    </FormGroup>
                     <FormGroup>
                       <Label for='examplePassword' hidden>
                         Password
@@ -140,7 +140,7 @@ class Header extends React.Component {
                 </ModalBody>
                 <ModalFooter>
                   <Button color='biruicon' onClick={this.toggleLogin}>
-                    Submit
+                    Login
                   </Button>{' '}
                   <Button color='secondary' onClick={this.toggleLogin}>
                     Cancel
