@@ -102,9 +102,18 @@ class Projects extends React.Component {
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
               <div className='dl'>
+                <Input type='select' className='custom-select'>
+                  <option value='0'>All</option>
+                  <option value='1'>CM</option>
+                  <option value='2'>PM</option>
+                  <option value='3'>Asset</option>
+                  <option value='4'>P3AK</option>
+                </Input>
+              </div>
+              <div className='dl'>
                 <NavLink to='/registerform'>
                   <Button className='btn' color='success'>
-                    Add User
+                    <i className='mdi mdi-plus' />
                   </Button>{' '}
                 </NavLink>
               </div>
@@ -117,16 +126,6 @@ class Projects extends React.Component {
                     </Button>
                   </InputGroupAddon>
                 </InputGroup>
-              </div>
-
-              <div className='dl'>
-                <Input type='select' className='custom-select'>
-                  <option value='0'>All</option>
-                  <option value='1'>CM</option>
-                  <option value='2'>PM</option>
-                  <option value='3'>Asset</option>
-                  <option value='4'>P3AK</option>
-                </Input>
               </div>
             </div>
           </div>

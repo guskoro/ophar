@@ -131,7 +131,7 @@ class Projects extends React.Component {
               <div className='dl batas-kanan'>
                 <Link to='/uploadWO'>
                   <Button className='btn' color='success'>
-                    <i className='mdi mdi-upload' />
+                    <i className='mdi mdi-plus' />
                   </Button>{' '}
                 </Link>
               </div>
