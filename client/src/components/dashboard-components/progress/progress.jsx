@@ -298,7 +298,7 @@ class DivisionProgress extends Component {
                   <Progress
                     id='cmProgress'
                     animated
-                    color='primary'
+                    color='danger'
                     value={this.state.cmData.value}
                   />
                   <Tooltip
@@ -319,7 +319,7 @@ class DivisionProgress extends Component {
                   <Progress
                     id='pmProgress'
                     animated
-                    color='primary'
+                    color='danger'
                     value={this.state.pmData.value}
                   />
                   <Tooltip
@@ -340,7 +340,7 @@ class DivisionProgress extends Component {
                   <Progress
                     id='assetsProgress'
                     animated
-                    color='primary'
+                    color='danger'
                     value={this.state.assetsData.value}
                   />
                   <Tooltip
@@ -361,7 +361,7 @@ class DivisionProgress extends Component {
                   <Progress
                     id='controlsProgress'
                     animated
-                    color='primary'
+                    color='danger'
                     value={this.state.controlsData.value}
                   />
                   <Tooltip

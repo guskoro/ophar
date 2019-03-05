@@ -25,6 +25,7 @@ import profilephoto from '../../assets/images/users/1.jpg';
 /* Import images which are need for the HEADER                                    */
 /*--------------------------------------------------------------------------------*/
 import logodarkicon from '../../assets/images/logo_icon+.png';
+import logodarktext from '../../assets/images/logoIconText.png';
 
 class Header extends React.Component {
   constructor(props) {
@@ -75,8 +76,15 @@ class Header extends React.Component {
                   alt='homepage'
                   className='dark-logo'
                 />
-                {/* <h5>We Speak Beyond Connectivity</h5> */}
               </b>
+              <span className='logo-text'>
+                <img
+                  src={logodarktext}
+                  alt='homepage'
+                  className='dark-logo'
+                  width='130px'
+                />
+              </span>
             </NavbarBrand>
             {/*--------------------------------------------------------------------------------*/}
             {/* Mobile View Toggler  [visible only after 768px screen]                         */}
@@ -94,7 +102,7 @@ class Header extends React.Component {
             data-navbarbg='skin1'>
             <Nav className='ml-auto float-right' navbar>
               {/* Tombol gawe lek gak login */}
-              <Button color='info' onClick={this.toggleLogin}>
+              <Button color='biruicon' onClick={this.toggleLogin}>
                 {this.props.buttonLabel}Login
               </Button>
               <Modal
@@ -129,7 +137,7 @@ class Header extends React.Component {
                   </Form>
                 </ModalBody>
                 <ModalFooter>
-                  <Button color='primary' onClick={this.toggleLogin}>
+                  <Button color='biruicon' onClick={this.toggleLogin}>
                     Submit
                   </Button>{' '}
                   <Button color='secondary' onClick={this.toggleLogin}>
@@ -155,8 +163,16 @@ class Header extends React.Component {
                 </DropdownToggle>
                 <DropdownMenu right className='user-dd'>
                   <DropdownItem divider />
-                  <Button color='danger' className='btn-rounded ml-3 mb-2 mt-2'>
+                  <Button color='ndewo' className='btn-rounded ml-3 mb-2 mt-2'>
                     Logout
+                  </Button>
+                  <DropdownItem divider />
+                  <Button color='ndewo' className='btn-rounded ml-3 mb-2 mt-2'>
+                    New Workordes
+                  </Button>
+                  <DropdownItem divider />
+                  <Button color='ndewo' className='btn-rounded ml-3 mb-2 mt-2'>
+                    Users
                   </Button>
                 </DropdownMenu>
               </UncontrolledDropdown>

@@ -192,7 +192,7 @@ class Register extends React.Component {
               </Input>
               <FormFeedback>{errors.division}</FormFeedback>
             </FormGroup>
-            <Button type='submit' color='info'>
+            <Button type='submit' color='biruicon'>
               Register
             </Button>
           </Form>

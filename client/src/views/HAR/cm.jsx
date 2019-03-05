@@ -101,7 +101,7 @@ class Projects extends React.Component {
                 <InputGroup>
                   <Input placeholder='Search..' />
                   <InputGroupAddon addonType='append'>
-                    <Button color='primary'>
+                    <Button color='biruicon'>
                       <i className='mdi mdi-magnify' />
                     </Button>
                   </InputGroupAddon>

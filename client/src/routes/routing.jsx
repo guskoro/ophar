@@ -24,7 +24,7 @@ var ThemeRoutes = [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    icon: 'ti-loop',
+    icon: 'mdi mdi-view-dashboard',
     component: Starter
   },
   {
@@ -54,7 +54,7 @@ var ThemeRoutes = [
   {
     path: '/register',
     name: 'Register',
-    icon: 'mdi mdi-database',
+    icon: 'mdi mdi-account-multiple-plus',
     component: Register
   },
   {
