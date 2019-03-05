@@ -84,7 +84,7 @@ class Projects extends React.Component {
           <div className='d-flex align-items-center'>
             <div>
               <CardTitle>Workorders</CardTitle>
-              <CardSubtitle>HAR | Asset</CardSubtitle>
+              <CardSubtitle>HAR | PM</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
               <div className='dl'>

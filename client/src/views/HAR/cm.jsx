@@ -25,12 +25,25 @@ class Projects extends React.Component {
   constructor(props) {
     super(props);
 
+    this.pageSize = 2;
+    this.pagesCount = Math.ceil(this.dataSet.length / this.pageSize);
+
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.state = {
       WOs: [],
-      query: 0
+      query: 0,
+      currentPage: 0
     };
+  }
+
+  // Pagination
+  handleClick(e, index) {
+    e.preventDefault();
+
+    this.setState({
+      currentPage: index
+    });
   }
 
   async componentDidMount() {
@@ -93,6 +106,7 @@ class Projects extends React.Component {
   };
 
   render() {
+    const { currentPage } = this.state;
     return (
       /*--------------------------------------------------------------------------------*/
       /* Used In Dashboard-4 [General]                                                  */
@@ -152,7 +166,10 @@ class Projects extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {this.state.WOs.map((data, id) => {
+              {this.state.WOs.slice(
+                currentPage * this.pageSize,
+                (currentPage + 1) * this.pageSize
+              ).map((data, id) => {
                 return (
                   <tr key={id}>
                     <td>{data._id}</td>
@@ -247,26 +264,28 @@ class Projects extends React.Component {
             <Col xs='12' md='12'>
               <CardBody className='border-top'>
                 <Pagination aria-label='Page navigation example'>
-                  <PaginationItem disabled>
-                    <PaginationLink previous href='#' />
+                  <PaginationItem disabled={currentPage <= 0}>
+                    <PaginationLink
+                      onClick={e => this.handleClick(e, currentPage - 1)}
+                      previous
+                      href='#'
+                    />
                   </PaginationItem>
-                  <PaginationItem active>
-                    <PaginationLink href='#'>1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>5</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink next href='#' />
+                  {[...Array(this.pagesCount)].map((page, i) => (
+                    <PaginationItem active={i === currentPage} key={i}>
+                      <PaginationLink
+                        onClick={e => this.handleClick(e, i)}
+                        href='#'>
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem disabled={currentPage >= this.pagesCount - 1}>
+                    <PaginationLink
+                      onClick={e => this.handleClick(e, currentPage + 1)}
+                      next
+                      href='#'
+                    />
                   </PaginationItem>
                 </Pagination>
               </CardBody>
