@@ -1,10 +1,6 @@
 import React from 'react';
-
-import profilephoto from '../../assets/images/users/1.jpg';
+import classnames from 'classnames';
 import img1 from '../../assets/images/users/1.jpg';
-// import img2 from '../../assets/images/users/2.jpg';
-// import img3 from '../../assets/images/users/3.jpg';
-// import img4 from '../../assets/images/users/4.jpg';
 
 import {
   Button,
@@ -13,16 +9,9 @@ import {
   CardTitle,
   CardSubtitle,
   Col,
-  Form,
-  FormGroup,
   Input,
   InputGroup,
   InputGroupAddon,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Pagination,
   PaginationItem,
   PaginationLink,
@@ -30,58 +19,72 @@ import {
   Table,
   Tooltip
 } from 'reactstrap';
-
+import axios from 'axios';
 import { NavLink } from 'react-router-dom';
 
 class Projects extends React.Component {
   constructor(props) {
     super(props);
 
-    this.toggle = this.toggle.bind(this);
+    // Pagination
+    this.pageSize = 2;
+    this.pagesCount = Math.ceil(this.dataSet.length / this.pageSize);
 
-    this.toggle10 = this.toggle10.bind(this);
-    this.toggle20 = this.toggle20.bind(this);
-    this.toggle30 = this.toggle30.bind(this);
-    this.toggle40 = this.toggle40.bind(this);
+    this.toggle = this.toggle.bind(this);
     this.state = {
-      tooltipOpen10: false,
-      tooltipOpen20: false,
-      tooltipOpen30: false,
-      tooltipOpen40: false
+      WOs: [],
+      currentPage: 0
     };
   }
 
-  toggle() {
-    this.setState(prevState => ({
-      modal: !prevState.modal
-    }));
-  }
+  // Pagination
+  handleClick(e, index) {
+    e.preventDefault();
 
-  toggle10() {
     this.setState({
-      tooltipOpen10: !this.state.tooltipOpen10
+      currentPage: index
     });
   }
 
-  toggle20() {
-    this.setState({
-      tooltipOpen20: !this.state.tooltipOpen20
-    });
+  async componentDidMount() {
+    await this.getWO();
   }
 
-  toggle30() {
-    this.setState({
-      tooltipOpen30: !this.state.tooltipOpen30
-    });
+  async getWO() {
+    await axios
+      .get('/api/working-order?division=corrective+maintenance')
+      .then(res => {
+        this.setState({
+          WOs: res.data
+        });
+      })
+      .catch(err => console.log(err.response.data));
   }
 
-  toggle40() {
-    this.setState({
-      tooltipOpen40: !this.state.tooltipOpen40
-    });
-  }
+  toggle = targetName => {
+    if (!this.state[targetName]) {
+      this.setState({
+        ...this.state,
+        [targetName]: {
+          tooltipOpen: true
+        }
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        [targetName]: {
+          tooltipOpen: !this.state[targetName].tooltipOpen
+        }
+      });
+    }
+  };
+
+  isToolTipOpen = targetName => {
+    return this.state[targetName] ? this.state[targetName].tooltipOpen : false;
+  };
 
   render() {
+    const { currentPage } = this.state;
     return (
       /*--------------------------------------------------------------------------------*/
       /* Used In Dashboard-4 [General]                                                  */
@@ -91,15 +94,15 @@ class Projects extends React.Component {
           <div className='d-flex align-items-center'>
             <div>
               <CardTitle>Workorders</CardTitle>
-              <CardSubtitle>HAR | CM</CardSubtitle>
+              <CardSubtitle>HAR | Corrective Maintenance</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
               <div className='dl'>
                 <Input type='select' className='custom-select'>
-                  <option value='0'>Monthly</option>
-                  <option value='1'>Daily</option>
-                  <option value='2'>Weekly</option>
-                  <option value='3'>Yearly</option>
+                  <option value='0'>All</option>
+                  <option value='1'>Pending Approval</option>
+                  <option value='2'>On Progress</option>
+                  <option value='3'>Done</option>
                 </Input>
               </div>
               <div className='dl'>
@@ -137,265 +140,126 @@ class Projects extends React.Component {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
+              {this.state.WOs.slice(
+                currentPage * this.pageSize,
+                (currentPage + 1) * this.pageSize
+              ).map((data, id) => {
+                return (
+                  <tr key={id}>
+                    <td>{data._id}</td>
+                    <td>
+                      <div className='d-flex no-block align-items-center'>
+                        <div className='mr-2'>
+                          <img
+                            src={`https:${data.pic.avatar}`}
+                            alt='user'
+                            className='rounded-circle'
+                            width='45'
+                          />
+                        </div>
+                        <div className=''>
+                          <h5 className='mb-0 font-16 font-medium'>
+                            {data.pic.name}
+                          </h5>
+                          <span>{data.pic.email}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{data.type.name}</td>
+                    <td>{data.title}</td>
+                    <td>{data.priority.name}</td>
+                    <td>{data.program}</td>
+                    <td className='blue-grey-text  text-darken-4 font-medium'>
+                      {data.deadline}
+                    </td>
+                    <td>
+                      <i
+                        className={classnames('fa fa-circle', {
+                          'text-danger': data.rejected,
+                          'text-warning': !(
+                            data.approved_by_spv &&
+                            data.approved_by_manager &&
+                            data.done
+                          ),
+                          'text-success':
+                            data.approved_by_spv &&
+                            data.approved_by_manager &&
+                            !data.done,
+                          'text-secondary': data.done
+                        })}
+                        id={`indicator-${id}`}
                       />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>FOC</td>
-                <td>Elite Admin</td>
-                <td>Highest</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  12-04-2019
-                </td>
-                <td>
-                  <i className='fa fa-circle text-danger' id='tlp1' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen10}
-                    target='tlp1'
-                    toggle={this.toggle10}>
-                    Rejected
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='biruicon' disabled>
-                      <i className='mdi mdi-pencil' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'
-                      disabled>
-                      <i className='mdi mdi-delete' />
-                    </Button>{' '}
-                  </NavLink>
-                </td>
-              </tr>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>FOT</td>
-                <td>Elite Admin</td>
-                <td>High</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  $96K
-                </td>
-                <td>
-                  <i className='fa fa-circle text-success' id='tlp2' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen20}
-                    target='tlp2'
-                    toggle={this.toggle20}>
-                    In Progress
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='biruicon'>
-                      <i className='mdi mdi-pencil' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'>
-                      <i className='mdi mdi-delete' />
-                    </Button>{' '}
-                  </NavLink>
-                </td>
-              </tr>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>PS</td>
-                <td>Elite Admin</td>
-                <td>Medium</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  $96K
-                </td>
-                <td>
-                  <i className='fa fa-circle text-warning' id='tlp3' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen30}
-                    target='tlp3'
-                    toggle={this.toggle30}>
-                    Pending Approval
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='biruicon'>
-                      <i className='mdi mdi-pencil' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'>
-                      <i className='mdi mdi-delete' />
-                    </Button>{' '}
-                  </NavLink>
-                </td>
-              </tr>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>Elite Admin</td>
-                <td>Elite Admin</td>
-                <td>Low</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  $96K
-                </td>
-                <td>
-                  <i className='fa fa-circle text-muted' id='tlp4' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen40}
-                    target='tlp4'
-                    toggle={this.toggle40}>
-                    WO Done
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='biruicon'>
-                      <i className='mdi mdi-pencil' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'>
-                      <i className='mdi mdi-delete' />
-                    </Button>{' '}
-                  </NavLink>
-                </td>
-              </tr>
+                      <Tooltip
+                        placement='top'
+                        isOpen={this.isToolTipOpen(`indicator-${id}`)}
+                        target={`indicator-${id}`}
+                        toggle={() => this.toggle(`indicator-${id}`)}>
+                        {data.rejected && 'Rejected'}
+                        {!(
+                          data.approved_by_spv &&
+                          data.approved_by_manager &&
+                          data.done
+                        ) && 'Pending Approval'}
+                        {data.approved_by_spv &&
+                          data.approved_by_manager &&
+                          !data.done &&
+                          'On Progress'}
+                        {data.done && 'Done'}
+                      </Tooltip>
+                    </td>
+                    <td>
+                      <NavLink to='/detailWO'>
+                        <Button className='btn' outline color='success'>
+                          Show
+                        </Button>
+                      </NavLink>
+                    </td>
+                    <td>
+                      <NavLink to='/detailWO'>
+                        <Button className='btn' outline color='info'>
+                          <i className='mdi mdi-pencil' />
+                        </Button>{' '}
+                      </NavLink>
+                      <NavLink to='/detailWO'>
+                        <Button
+                          className='profile-time-approved'
+                          outline
+                          color='danger'>
+                          <i className='mdi mdi-delete' />
+                        </Button>{' '}
+                      </NavLink>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
           <Row>
             <Col xs='12' md='12'>
               <CardBody className='border-top'>
                 <Pagination aria-label='Page navigation example'>
-                  <PaginationItem disabled>
-                    <PaginationLink previous href='#' />
+                  <PaginationItem disabled={currentPage <= 0}>
+                    <PaginationLink
+                      onClick={e => this.handleClick(e, currentPage - 1)}
+                      previous
+                      href='#'
+                    />
                   </PaginationItem>
-                  <PaginationItem active>
-                    <PaginationLink href='#'>1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>5</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink next href='#' />
+                  {[...Array(this.pagesCount)].map((page, i) => (
+                    <PaginationItem active={i === currentPage} key={i}>
+                      <PaginationLink
+                        onClick={e => this.handleClick(e, i)}
+                        href='#'>
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem disabled={currentPage >= this.pagesCount - 1}>
+                    <PaginationLink
+                      onClick={e => this.handleClick(e, currentPage + 1)}
+                      next
+                      href='#'
+                    />
                   </PaginationItem>
                 </Pagination>
               </CardBody>

@@ -17,19 +17,19 @@ module.exports = validateRegisterInput = data => {
       max: 45
     })
   ) {
-    errors.name = 'Nama harus lebih dari 2 karakter';
+    errors.name = 'Name must be atleast 2 characters';
   }
 
   if (Validator.isEmpty(data.name)) {
-    errors.name = 'Nama harus diisi';
+    errors.name = 'Name is required';
   }
 
   if (!Validator.isEmail(data.email)) {
-    errors.email = 'Email yang didaftarkan harus benar';
+    errors.email = 'Email is invalid';
   }
 
   if (Validator.isEmpty(data.email)) {
-    errors.email = 'Email harus diisi';
+    errors.email = 'Email is required';
   }
 
   if (
@@ -37,23 +37,23 @@ module.exports = validateRegisterInput = data => {
       min: 8
     })
   ) {
-    errors.password = 'Kata sandi harus lebih dari 8 karakter';
+    errors.password = 'Password must be atleast 8 characters';
   }
 
   if (Validator.isEmpty(data.password)) {
-    errors.password = 'Kata sandi harus diisi';
+    errors.password = 'Password is required';
   }
 
   if (!Validator.equals(data.password, data.password2)) {
-    errors.password2 = 'Konfirmasi Kata sandi harus sesuai';
+    errors.password2 = 'Password must match';
   }
 
   if (Validator.isEmpty(data.password2)) {
-    errors.password2 = 'Konfirmasi kata sandi harus diisi';
+    errors.password2 = 'Password confirmation is required';
   }
 
   if (Validator.isEmpty(data.role)) {
-    errors.role = 'Role user harus diisi';
+    errors.role = 'Role user is required';
   }
 
   // if (Validator.isEmpty(data.division)) {
