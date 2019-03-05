@@ -109,7 +109,6 @@ class Projects extends React.Component {
                   </InputGroupAddon>
                 </InputGroup>
               </div>
-
               <div className='dl batas-kanan'>
                 <Input type='select' className='custom-select'>
                   <option value='0'>All</option>
