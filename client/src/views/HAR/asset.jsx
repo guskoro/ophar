@@ -1,10 +1,6 @@
 import React from 'react';
 
-import profilephoto from '../../assets/images/users/1.jpg';
 import img1 from '../../assets/images/users/1.jpg';
-// import img2 from '../../assets/images/users/2.jpg';
-// import img3 from '../../assets/images/users/3.jpg';
-// import img4 from '../../assets/images/users/4.jpg';
 
 import {
   Button,
@@ -13,16 +9,9 @@ import {
   CardTitle,
   CardSubtitle,
   Col,
-  Form,
-  FormGroup,
   Input,
   InputGroup,
   InputGroupAddon,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Pagination,
   PaginationItem,
   PaginationLink,
@@ -37,7 +26,12 @@ class Projects extends React.Component {
   constructor(props) {
     super(props);
 
-    this.toggle = this.toggle.bind(this);
+    this.dataSet = [...Array(Math.ceil(20 + Math.random() * 20))].map(
+      (a, i) => 'Record ' + (i + 1)
+    );
+
+    this.pageSize = 2;
+    this.pagesCount = Math.ceil(this.dataSet.length / this.pageSize);
 
     this.toggle10 = this.toggle10.bind(this);
     this.toggle20 = this.toggle20.bind(this);
@@ -47,14 +41,18 @@ class Projects extends React.Component {
       tooltipOpen10: false,
       tooltipOpen20: false,
       tooltipOpen30: false,
-      tooltipOpen40: false
+      tooltipOpen40: false,
+      currentPage: 0
     };
   }
 
-  toggle() {
-    this.setState(prevState => ({
-      modal: !prevState.modal
-    }));
+  // Pagination Test
+  handleClick(e, index) {
+    e.preventDefault();
+
+    this.setState({
+      currentPage: index
+    });
   }
 
   toggle10() {
@@ -82,6 +80,8 @@ class Projects extends React.Component {
   }
 
   render() {
+    const { currentPage } = this.state;
+
     return (
       /*--------------------------------------------------------------------------------*/
       /* Used In Dashboard-4 [General]                                                  */
@@ -137,274 +137,106 @@ class Projects extends React.Component {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>FOC</td>
-                <td>Elite Admin</td>
-                <td>Highest</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  12-04-2019
-                </td>
-                <td>
-                  <i className='fa fa-circle text-danger' id='tlp1' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen10}
-                    target='tlp1'
-                    toggle={this.toggle10}>
-                    Rejected
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='btn'
-                      outline
-                      color='biruicon'
-                      disabled={true}>
-                      <i className='mdi mdi-pencil' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'
-                      disabled={true}>
-                      <i className='mdi mdi-delete' />
-                    </Button>{' '}
-                  </NavLink>
-                </td>
-              </tr>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>FOT</td>
-                <td>Elite Admin</td>
-                <td>High</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  $96K
-                </td>
-                <td>
-                  <i className='fa fa-circle text-success' id='tlp2' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen20}
-                    target='tlp2'
-                    toggle={this.toggle20}>
-                    In Progress
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='biruicon'>
-                      <i className='mdi mdi-pencil' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'>
-                      <i className='mdi mdi-delete' />
-                    </Button>{' '}
-                  </NavLink>
-                </td>
-              </tr>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>PS</td>
-                <td>Elite Admin</td>
-                <td>Medium</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  $96K
-                </td>
-                <td>
-                  <i className='fa fa-circle text-warning' id='tlp3' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen30}
-                    target='tlp3'
-                    toggle={this.toggle30}>
-                    Pending Approval
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='biruicon'>
-                      <i className='mdi mdi-pencil' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'>
-                      <i className='mdi mdi-delete' />
-                    </Button>{' '}
-                  </NavLink>
-                </td>
-              </tr>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>Elite Admin</td>
-                <td>Elite Admin</td>
-                <td>Low</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  $96K
-                </td>
-                <td>
-                  <i className='fa fa-circle text-muted' id='tlp4' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen40}
-                    target='tlp4'
-                    toggle={this.toggle40}>
-                    WO Done
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='btn'
-                      outline
-                      color='biruicon'
-                      disabled={false}>
-                      <i className='mdi mdi-pencil' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'
-                      disabled={false}>
-                      <i className='mdi mdi-delete' />
-                    </Button>{' '}
-                  </NavLink>
-                </td>
-              </tr>
+              {this.dataSet
+                .slice(
+                  currentPage * this.pageSize,
+                  (currentPage + 1) * this.pageSize
+                )
+                .map((data, i) => (
+                  <tr key={i}>
+                    <td>{data}</td>
+                    <td>
+                      <div className='d-flex no-block align-items-center'>
+                        <div className='mr-2'>
+                          <img
+                            src={img1}
+                            alt='user'
+                            className='rounded-circle'
+                            width='45'
+                          />
+                        </div>
+                        <div className=''>
+                          <h5 className='mb-0 font-16 font-medium'>
+                            Hanna Gover
+                          </h5>
+                          <span>hgover@gmail.com</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>FOC</td>
+                    <td>Elite Admin</td>
+                    <td>Highest</td>
+                    <td>Guskoro, Puguh</td>
+                    <td className='blue-grey-text  text-darken-4 font-medium'>
+                      12-04-2019
+                    </td>
+                    <td>
+                      <i className='fa fa-circle text-danger' id='tlp1' />
+                      <Tooltip
+                        placement='top'
+                        isOpen={this.state.tooltipOpen10}
+                        target='tlp1'
+                        toggle={this.toggle10}>
+                        Rejected
+                      </Tooltip>
+                    </td>
+                    <td>
+                      <NavLink to='/detailWO'>
+                        <Button className='btn' outline color='success'>
+                          Show
+                        </Button>
+                      </NavLink>
+                    </td>
+                    <td>
+                      <NavLink to='/detailWO'>
+                        <Button
+                          className='btn'
+                          outline
+                          color='biruicon'
+                          disabled={true}>
+                          <i className='mdi mdi-pencil' />
+                        </Button>{' '}
+                      </NavLink>
+                      <NavLink to='/detailWO'>
+                        <Button
+                          className='profile-time-approved'
+                          outline
+                          color='danger'
+                          disabled={true}>
+                          <i className='mdi mdi-delete' />
+                        </Button>{' '}
+                      </NavLink>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </Table>
           <Row>
             <Col xs='12' md='12'>
               <CardBody className='border-top'>
                 <Pagination aria-label='Page navigation example'>
-                  <PaginationItem disabled>
-                    <PaginationLink previous href='#' />
+                  <PaginationItem disabled={currentPage <= 0}>
+                    <PaginationLink
+                      onClick={e => this.handleClick(e, currentPage - 1)}
+                      previous
+                      href='#'
+                    />
                   </PaginationItem>
-                  <PaginationItem active>
-                    <PaginationLink href='#'>1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>5</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink next href='#' />
+                  {[...Array(this.pagesCount)].map((page, i) => (
+                    <PaginationItem active={i === currentPage} key={i}>
+                      <PaginationLink
+                        onClick={e => this.handleClick(e, i)}
+                        href='#'>
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem disabled={currentPage >= this.pagesCount - 1}>
+                    <PaginationLink
+                      onClick={e => this.handleClick(e, currentPage + 1)}
+                      next
+                      href='#'
+                    />
                   </PaginationItem>
                 </Pagination>
               </CardBody>
