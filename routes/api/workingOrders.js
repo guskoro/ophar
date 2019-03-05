@@ -25,7 +25,7 @@ router.get('/', (req, res) => {
   if (req.query.overdue) query.deadline = { $lte: new Date() };
 
   WorkingOrder.find(query)
-    .populate('pic', 'name-_id')
+    .populate('pic')
     .populate('type', 'name-_id')
     .populate('priority', 'name-_id')
     .then(workingOrders => res.json(workingOrders))
