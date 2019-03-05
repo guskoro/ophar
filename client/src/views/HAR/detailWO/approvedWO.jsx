@@ -37,6 +37,9 @@ class Projects extends React.Component {
     super(props);
 
     this.toggle = this.toggle.bind(this);
+    // Reject Modal & Approve Modal
+    this.toggleR = this.toggleR.bind(this);
+    this.toggleA = this.toggleA.bind(this);
 
     this.toggle10 = this.toggle10.bind(this);
     this.toggle20 = this.toggle20.bind(this);
@@ -53,6 +56,18 @@ class Projects extends React.Component {
   toggle() {
     this.setState(prevState => ({
       modal: !prevState.modal
+    }));
+  }
+
+  toggleR() {
+    this.setState(prevState => ({
+      modalR: !prevState.modalR
+    }));
+  }
+
+  toggleA() {
+    this.setState(prevState => ({
+      modalA: !prevState.modalA
     }));
   }
 
@@ -148,262 +163,6 @@ class Projects extends React.Component {
                     </div>
                   </div>
                 </td>
-                <td>FOC</td>
-                <td>Elite Admin</td>
-                <td>Highest</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  12-04-2019
-                </td>
-                <td>
-                  <i className='fa fa-circle text-danger' id='tlp1' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen10}
-                    target='tlp1'
-                    toggle={this.toggle10}>
-                    Rejected
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='biruicon' disabled>
-                      <i className='mdi mdi-check' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'
-                      disabled>
-                      <i className='mdi mdi-close' />
-                    </Button>{' '}
-                  </NavLink>
-                </td>
-                <td>
-                  <Button outline color='secondary' onClick={this.toggle}>
-                    {this.props.buttonLabel}Add a note
-                  </Button>
-                  <Modal
-                    isOpen={this.state.modal}
-                    toggle={this.toggle}
-                    className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Add a note</ModalHeader>
-                    <ModalBody>
-                      <Form>
-                        <FormGroup>
-                          <Label for='exampleText'>Work Note</Label>
-                          <Input type='textarea' name='text' id='exampleText' />
-                        </FormGroup>
-                      </Form>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color='biruicon' onClick={this.toggle}>
-                        Submit
-                      </Button>{' '}
-                      <Button color='secondary' onClick={this.toggle}>
-                        Cancel
-                      </Button>
-                    </ModalFooter>
-                  </Modal>
-                </td>
-              </tr>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>FOT</td>
-                <td>Elite Admin</td>
-                <td>High</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  $96K
-                </td>
-                <td>
-                  <i className='fa fa-circle text-success' id='tlp2' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen20}
-                    target='tlp2'
-                    toggle={this.toggle20}>
-                    In Progress
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='biruicon'>
-                      <i className='mdi mdi-check' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'>
-                      <i className='mdi mdi-close' />
-                    </Button>{' '}
-                  </NavLink>
-                </td>
-                <td>
-                  <Button outline color='secondary' onClick={this.toggle}>
-                    {this.props.buttonLabel}Add a note
-                  </Button>
-                  <Modal
-                    isOpen={this.state.modal}
-                    toggle={this.toggle}
-                    className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Add a note</ModalHeader>
-                    <ModalBody>
-                      <Form>
-                        <FormGroup>
-                          <Label for='exampleText'>Work Note</Label>
-                          <Input type='textarea' name='text' id='exampleText' />
-                        </FormGroup>
-                      </Form>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color='biruicon' onClick={this.toggle}>
-                        Submit
-                      </Button>{' '}
-                      <Button color='secondary' onClick={this.toggle}>
-                        Cancel
-                      </Button>
-                    </ModalFooter>
-                  </Modal>
-                </td>
-              </tr>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>PS</td>
-                <td>Elite Admin</td>
-                <td>Medium</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  $96K
-                </td>
-                <td>
-                  <i className='fa fa-circle text-warning' id='tlp3' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen30}
-                    target='tlp3'
-                    toggle={this.toggle30}>
-                    Pending Approval
-                  </Tooltip>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </NavLink>
-                </td>
-                <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='biruicon'>
-                      <i className='mdi mdi-check' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'>
-                      <i className='mdi mdi-close' />
-                    </Button>{' '}
-                  </NavLink>
-                </td>
-                <td>
-                  <Button outline color='secondary' onClick={this.toggle}>
-                    {this.props.buttonLabel}Add a note
-                  </Button>
-                  <Modal
-                    isOpen={this.state.modal}
-                    toggle={this.toggle}
-                    className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Add a note</ModalHeader>
-                    <ModalBody>
-                      <Form>
-                        <FormGroup>
-                          <Label for='exampleText'>Work Note</Label>
-                          <Input type='textarea' name='text' id='exampleText' />
-                        </FormGroup>
-                      </Form>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color='biruicon' onClick={this.toggle}>
-                        Submit
-                      </Button>{' '}
-                      <Button color='secondary' onClick={this.toggle}>
-                        Cancel
-                      </Button>
-                    </ModalFooter>
-                  </Modal>
-                </td>
-              </tr>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
                 <td>Elite Admin</td>
                 <td>Elite Admin</td>
                 <td>Low</td>
@@ -429,19 +188,60 @@ class Projects extends React.Component {
                   </NavLink>
                 </td>
                 <td>
-                  <NavLink to='/detailWO'>
-                    <Button className='btn' outline color='biruicon'>
-                      <i className='mdi mdi-check' />
-                    </Button>{' '}
-                  </NavLink>
-                  <NavLink to='/detailWO'>
-                    <Button
-                      className='profile-time-approved'
-                      outline
-                      color='danger'>
-                      <i className='mdi mdi-close' />
-                    </Button>{' '}
-                  </NavLink>
+                  <Button
+                    className='btn'
+                    outline
+                    color='biruicon'
+                    onClick={this.toggleA}>
+                    {this.props.buttonLabel}
+                    <i className='mdi mdi-check' />
+                  </Button>{' '}
+                  <Modal
+                    isOpen={this.state.modalA}
+                    toggle={this.toggleA}
+                    className={this.props.className}>
+                    <ModalHeader toggle={this.toggleA}>
+                      Approve Workorders
+                    </ModalHeader>
+                    <ModalBody>
+                      Are you sure want to approve this work?
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color='biruicon' onClick={this.toggleA}>
+                        Yes
+                      </Button>{' '}
+                      <Button color='secondary' onClick={this.toggleA}>
+                        Cancel
+                      </Button>
+                    </ModalFooter>
+                  </Modal>
+                  <Button
+                    className='profile-time-approved'
+                    outline
+                    color='danger'
+                    onClick={this.toggleR}>
+                    {this.props.buttonLabel}
+                    <i className='mdi mdi-close' />
+                  </Button>{' '}
+                  <Modal
+                    isOpen={this.state.modalR}
+                    toggle={this.toggleR}
+                    className={this.props.className}>
+                    <ModalHeader toggle={this.toggleR}>
+                      Reject Workorders
+                    </ModalHeader>
+                    <ModalBody>
+                      Are you sure want to reject this work?
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color='biruicon' onClick={this.toggleR}>
+                        Yes
+                      </Button>{' '}
+                      <Button color='secondary' onClick={this.toggleR}>
+                        Cancel
+                      </Button>
+                    </ModalFooter>
+                  </Modal>
                 </td>
                 <td>
                   <Button outline color='secondary' onClick={this.toggle}>

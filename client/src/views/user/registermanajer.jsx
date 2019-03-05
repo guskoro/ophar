@@ -1,20 +1,15 @@
 import React from 'react';
 
 import img1 from '../../assets/images/users/1.jpg';
-import img2 from '../../assets/images/users/2.jpg';
-import img3 from '../../assets/images/users/3.jpg';
-import img4 from '../../assets/images/users/4.jpg';
 
 import {
   Badge,
   Button,
-  ButtonGroup,
   Card,
   CardBody,
   CardTitle,
   CardSubtitle,
   Col,
-  CustomInput,
   Form,
   FormGroup,
   Input,
@@ -25,13 +20,11 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-  Nav,
   Pagination,
   PaginationItem,
   PaginationLink,
   Row,
-  Table,
-  Tooltip
+  Table
 } from 'reactstrap';
 
 import { NavLink } from 'react-router-dom';
@@ -104,10 +97,17 @@ class Projects extends React.Component {
         <CardBody>
           <div className='d-flex align-items-center'>
             <div>
-              <CardTitle>All Workorders</CardTitle>
+              <CardTitle>Register for Admin</CardTitle>
               <CardSubtitle>HAR</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
+              <div className='dl'>
+                <NavLink to='/registerform'>
+                  <Button className='btn' color='success'>
+                    Add User
+                  </Button>{' '}
+                </NavLink>
+              </div>
               <div className='dl'>
                 <InputGroup>
                   <Input placeholder='Search..' />
@@ -118,13 +118,7 @@ class Projects extends React.Component {
                   </InputGroupAddon>
                 </InputGroup>
               </div>
-              <div className='dl'>
-                <NavLink to='/registerform'>
-                  <Button className='btn' color='success'>
-                    Add User
-                  </Button>{' '}
-                </NavLink>
-              </div>
+
               <div className='dl'>
                 <Input type='select' className='custom-select'>
                   <option value='0'>All</option>

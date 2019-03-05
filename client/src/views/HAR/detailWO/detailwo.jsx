@@ -143,7 +143,7 @@ export default class Example extends React.Component {
                   toggle={this.toggle}
                   className={this.props.className}>
                   <ModalHeader toggle={this.toggle}>Done Work</ModalHeader>
-                  <ModalBody>Are you sure to end this work?</ModalBody>
+                  <ModalBody>Are you sure want to end this work?</ModalBody>
                   <ModalFooter>
                     <Button color='primary' onClick={this.toggle}>
                       Yes
@@ -172,7 +172,7 @@ export default class Example extends React.Component {
                   toggle={this.toggle}
                   className={this.props.className}>
                   <ModalHeader toggle={this.toggle}>Decline Work</ModalHeader>
-                  <ModalBody>Are you sure to decline this work?</ModalBody>
+                  <ModalBody>Are you sure want to decline this work?</ModalBody>
                   <ModalFooter>
                     <Button color='primary' onClick={this.toggle}>
                       Yes
@@ -254,10 +254,7 @@ export default class Example extends React.Component {
                   <TabPane tabId='2'>
                     <Row>
                       <Col sm='12'>
-                        <Table
-                          borderless
-                          className='no-wrap v-middle'
-                          responsive>
+                        <Table borderless className='wrap v-middle' responsive>
                           <tbody>
                             <tr>
                               <td>Work Type</td>
