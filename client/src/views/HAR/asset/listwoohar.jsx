@@ -1,7 +1,7 @@
 import React from 'react';
+
 import {
   Button,
-  Card,
   CardBody,
   CardTitle,
   CardSubtitle,
@@ -9,22 +9,24 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
+  Row,
   Pagination,
   PaginationItem,
   PaginationLink,
-  Row,
   Table,
   Tooltip
 } from 'reactstrap';
-import axios from 'axios';
-import classnames from 'classnames';
-import moment from 'moment';
+
 import { Link } from 'react-router-dom';
 
-class Projects extends React.Component {
+import classnames from 'classnames';
+import moment from 'moment';
+import axios from 'axios';
+
+class HarWO extends React.Component {
   constructor(props) {
     super(props);
-
+    this.toggleTab = this.toggleTab.bind(this);
     this.pageSize = 5;
 
     this.onChange = this.onChange.bind(this);
@@ -33,8 +35,18 @@ class Projects extends React.Component {
       WOs: [],
       query: 0,
       currentPage: 0,
-      pagesCount: 0
+      pagesCount: 0,
+      activeTab: '1'
     };
+  }
+
+  // Tab
+  toggleTab(tab) {
+    if (this.state.activeTab !== tab) {
+      this.setState({
+        activeTab: tab
+      });
+    }
   }
 
   // Pagination
@@ -59,11 +71,7 @@ class Projects extends React.Component {
     ];
 
     await axios
-      .get(
-        `/api/working-order?division=preventive+maintenance${
-          query[this.state.query]
-        }`
-      )
+      .get(`/api/working-order?division=assets${query[this.state.query]}`)
       .then(res => {
         this.setState({
           WOs: res.data,
@@ -105,15 +113,12 @@ class Projects extends React.Component {
   render() {
     const { currentPage } = this.state;
     return (
-      /*--------------------------------------------------------------------------------*/
-      /* Used In Dashboard-4 [General]                                                  */
-      /*--------------------------------------------------------------------------------*/
-      <Card>
-        <CardBody>
-          <div className='d-flex align-items-center'>
+      <Row>
+        <Col sm='12'>
+          <div className='d-flex align-items-center batas-atas'>
             <div>
               <CardTitle>Workorders</CardTitle>
-              <CardSubtitle>HAR | Preventive Maintenance</CardSubtitle>
+              <CardSubtitle>HAR | Assets</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
               <div className='dl batas-kanan'>
@@ -284,10 +289,10 @@ class Projects extends React.Component {
               </CardBody>
             </Col>
           </Row>
-        </CardBody>
-      </Card>
+        </Col>
+      </Row>
     );
   }
 }
 
-export default Projects;
+export default HarWO;

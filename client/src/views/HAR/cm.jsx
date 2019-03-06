@@ -238,12 +238,6 @@ class Projects extends React.Component {
                       </Link>
                     </td>
                     <td>
-                      <Link
-                        to={{ pathname: '/detailWO', state: { id: data._id } }}>
-                        <Button className='btn' outline color='info'>
-                          <i className='mdi mdi-pencil' />
-                        </Button>{' '}
-                      </Link>
                       <Link to='/detailWO'>
                         <Button
                           className='profile-time-approved'
