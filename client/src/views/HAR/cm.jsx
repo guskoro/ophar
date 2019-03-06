@@ -73,11 +73,19 @@ class Projects extends React.Component {
       .catch(err => console.log(err.response.data));
   }
 
+  async onDelete(data) {
+    await axios
+      .delete(`/api/working-order/${data._id}`)
+      .then(res => {
+        if (res.status === 200) this.getWO();
+      })
+      .catch(err => err.response.data);
+  }
+
   async onChange(e) {
     this.setState({
       [e.target.name]: e.target.value
     });
-    console.log(this.state.query);
   }
 
   toggle = targetName => {
@@ -104,6 +112,7 @@ class Projects extends React.Component {
 
   render() {
     const { currentPage } = this.state;
+    let idWO = '';
     return (
       /*--------------------------------------------------------------------------------*/
       /* Used In Dashboard-4 [General]                                                  */
@@ -167,9 +176,10 @@ class Projects extends React.Component {
                 currentPage * this.pageSize,
                 (currentPage + 1) * this.pageSize
               ).map((data, id) => {
+                idWO = data._id;
                 return (
                   <tr key={id}>
-                    <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                    <td>{idWO.slice(0, 9).toUpperCase() + '...'}</td>
                     <td>
                       <div className='d-flex no-block align-items-center'>
                         <div className='mr-2'>
@@ -244,14 +254,13 @@ class Projects extends React.Component {
                           <i className='mdi mdi-pencil' />
                         </Button>{' '}
                       </Link>
-                      <Link to='/detailWO'>
-                        <Button
-                          className='profile-time-approved'
-                          outline
-                          color='danger'>
-                          <i className='mdi mdi-delete' />
-                        </Button>{' '}
-                      </Link>
+                      <Button
+                        onClick={this.onDelete.bind(this, data)}
+                        className='profile-time-approved'
+                        outline
+                        color='danger'>
+                        <i className='mdi mdi-delete' />
+                      </Button>{' '}
                     </td>
                   </tr>
                 );

@@ -75,10 +75,10 @@ router.post(
                 });
 
                 if (req.body.plans) {
-                  const plans = req.body.plans.split(',');
+                  // const plans = req.body.plans.split(',');
 
                   plans.map(plan => {
-                    newWorkingOrder.plans.push(plan);
+                    newWorkingOrder.plans.push({ name: plan.value });
                   });
                 }
 
@@ -118,6 +118,12 @@ router.patch(
       .then(workingOrder => {
         if (req.body._id) {
           delete req.body._id;
+        }
+        if (req.body.plans) {
+          plans.map(plan => {
+            newWorkingOrder.plans.push({ name: plan.value, done: plan.done });
+          });
+          delete req.body.plans;
         }
         for (let i in req.body) {
           workingOrder[i] = req.body[i];
@@ -203,6 +209,28 @@ router.post(
           .catch(err => res.status(404).json(err));
       })
       .catch(err => res.status(404).json(err));
+  }
+);
+
+router.delete(
+  '/:id',
+  // passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    // User.findById(req.user.id)
+    //   .populate('role', 'name-_id')
+    //   .then(user => {
+    //     if (user.role.name != 'admin')
+    //       return res
+    //         .status(403)
+    //         .json({ access: 'Maaf, anda tidak mempunyai access untuk ini' });
+
+    WorkingOrder.findByIdAndDelete(req.params.id)
+      .then(workingOrder => {
+        res.json(workingOrder);
+      })
+      .catch(err => res.status(404).json(err));
+    // })
+    // .catch(err => res.status(404).json(err));
   }
 );
 

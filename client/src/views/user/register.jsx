@@ -10,6 +10,7 @@ import {
   FormFeedback
 } from 'reactstrap';
 import axios from 'axios';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { registerUser } from '../../actions/authAction';
@@ -33,17 +34,17 @@ class Register extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  async componentDidMount() {
-    await this.getRoles();
-    await this.getDivisions();
-  }
-
   async componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) {
+    if (this.props.errors !== nextProps.errors) {
       this.setState({
         errors: nextProps.errors
       });
     }
+  }
+
+  async componentDidMount() {
+    await this.getRoles();
+    await this.getDivisions();
   }
 
   async getRoles() {
@@ -80,7 +81,7 @@ class Register extends React.Component {
       division: this.state.division
     };
 
-    this.props.registerUser(newUser);
+    this.props.registerUser(newUser, this.props.history);
   }
 
   onChange(e) {
@@ -216,4 +217,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { registerUser }
-)(Register);
+)(withRouter(Register));
