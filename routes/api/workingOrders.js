@@ -54,13 +54,12 @@ router.post(
       .populate('division', 'name-_id')
       .then(pic => {
         if (pic.role.name !== 'engineer') {
-          errors.pic = 'Maaf, anda bukan Engineer kami';
+          errors.pic = 'Sorry, you are not engineer';
 
           res.status(403).json(errors);
         }
         Priority.findById(req.body.priority)
           .then(priority => {
-            console.log(pic);
             Type.findById(req.body.type)
               .then(type => {
                 const newWorkingOrder = new WorkingOrder({
@@ -77,8 +76,11 @@ router.post(
                 if (req.body.plans) {
                   // const plans = req.body.plans.split(',');
 
-                  plans.map(plan => {
-                    newWorkingOrder.plans.push({ name: plan.value });
+                  req.body.plans.map(plan => {
+                    newWorkingOrder.plans.push({
+                      name: plan.value,
+                      done: false
+                    });
                   });
                 }
 
@@ -214,23 +216,23 @@ router.post(
 
 router.delete(
   '/:id',
-  // passport.authenticate('jwt', { session: false }),
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    // User.findById(req.user.id)
-    //   .populate('role', 'name-_id')
-    //   .then(user => {
-    //     if (user.role.name != 'admin')
-    //       return res
-    //         .status(403)
-    //         .json({ access: 'Maaf, anda tidak mempunyai access untuk ini' });
+    User.findById(req.user.id)
+      .populate('role', 'name-_id')
+      .then(user => {
+        if (user.role.name != 'admin')
+          return res
+            .status(403)
+            .json({ access: 'Maaf, anda tidak mempunyai access untuk ini' });
 
-    WorkingOrder.findByIdAndDelete(req.params.id)
-      .then(workingOrder => {
-        res.json(workingOrder);
+        WorkingOrder.findByIdAndDelete(req.params.id)
+          .then(workingOrder => {
+            res.json(workingOrder);
+          })
+          .catch(err => res.status(404).json(err));
       })
       .catch(err => res.status(404).json(err));
-    // })
-    // .catch(err => res.status(404).json(err));
   }
 );
 

@@ -17,3 +17,8 @@
 .pointer-hover {
     cursor: pointer;
 }
+
+.text-logo {
+    margin-top: 0;
+    margin-left: .5rem;
+}

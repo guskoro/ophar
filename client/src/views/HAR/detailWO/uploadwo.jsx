@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Alert,
   Button,
   Card,
   CardBody,
@@ -36,11 +37,13 @@ export default class Example extends Component {
       plans: '',
       description: '',
       program: '',
-      deadline: ''
+      deadline: '',
+      errorAccess: false
     };
 
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onDismiss = this.onDismiss.bind(this);
   }
 
   componentDidMount = async () => {
@@ -57,19 +60,6 @@ export default class Example extends Component {
         });
       })
       .catch(err => console.log(err.response.data));
-  };
-
-  addWorkingOrder = async newWO => {
-    await axios
-      .post('/api/working-order', newWO)
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err =>
-        this.setState({
-          errors: err.response.data
-        })
-      );
   };
 
   getTypes = async () => {
@@ -130,16 +120,28 @@ export default class Example extends Component {
 
     axios
       .post('/api/working-order', newWO)
-      .then(res => {
-        console.log(res.data);
+      .then(() => {
+        this.props.history.push('/dashboard');
       })
-      .catch(err => console.log(err.response.data));
+      .catch(err => {
+        if (err.response.status === 401) {
+          this.setState({
+            errorAccess: true
+          });
+        } else {
+          this.setState({ errors: err.response.data });
+        }
+      });
   }
 
   onChange(e) {
     this.setState({
       [e.target.name]: e.target.value
     });
+  }
+
+  onDismiss() {
+    this.setState({ errorAccess: false });
   }
 
   render() {
@@ -161,6 +163,10 @@ export default class Example extends Component {
       <Card>
         <CardBody>
           <Form onSubmit={this.onSubmit}>
+            <FormGroup>
+              <Input invalid={errors.access ? true : false} hidden />
+              <FormFeedback>{errors.access}</FormFeedback>
+            </FormGroup>
             <FormGroup>
               <Label for='title'>Work Order Title</Label>
               <Input
@@ -274,6 +280,14 @@ export default class Example extends Component {
                 onChange={this.onChange}
               />
               <FormFeedback>{errors.deadline}</FormFeedback>
+            </FormGroup>
+            <FormGroup>
+              <Alert
+                color='danger'
+                isOpen={this.state.errorAccess}
+                toggle={this.onDismiss}>
+                Sorry, you don't have access to add working order
+              </Alert>
             </FormGroup>
             <Button type='submit' color='biruicon'>
               Submit

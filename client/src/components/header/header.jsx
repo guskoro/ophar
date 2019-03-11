@@ -20,11 +20,14 @@ import {
   UncontrolledDropdown
 } from 'reactstrap';
 
+import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 import { NavLink, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { loginUser } from '../../actions/authAction';
-import profilephoto from '../../assets/images/users/1.jpg';
+
+import setAuthToken from '../../utils/setAuthToken';
 
 /*--------------------------------------------------------------------------------*/
 /* Import images which are need for the HEADER                                    */
@@ -42,6 +45,8 @@ class Header extends React.Component {
     this.showMobilemenu = this.showMobilemenu.bind(this);
     this.state = {
       errors: [],
+      currentUser: {},
+      isAuthenticated: false,
       isOpen: false,
       email: '',
       password: ''
@@ -49,6 +54,10 @@ class Header extends React.Component {
 
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  async componentDidMount() {
+    await this.getCurrentUser();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -63,6 +72,18 @@ class Header extends React.Component {
     }
   }
 
+  getCurrentUser() {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      setAuthToken(token);
+      const current = jwt_decode(token);
+      this.setState({
+        currentUser: current,
+        isAuthenticated: true
+      });
+    }
+  }
+
   onSubmit(e) {
     e.preventDefault();
 
@@ -71,10 +92,28 @@ class Header extends React.Component {
       password: this.state.password
     };
 
-    this.props.loginUser(user);
+    // this.props.loginUser(user);
+    axios
+      .post('/api/user/login', user)
+      .then(res => {
+        const { token } = res.data;
 
-    this.toggleLogin();
-    // this.props.registerUser(newUser, this.props.history);
+        localStorage.setItem('jwtToken', token);
+        setAuthToken(token);
+        const decoded = jwt_decode(token);
+        this.setState({
+          currentUser: decoded,
+          isAuthenticated: true
+        });
+
+        this.toggleLogin();
+        this.props.history.push('/');
+      })
+      .catch(err =>
+        this.setState({
+          errors: err.response.data
+        })
+      );
   }
 
   onChange(e) {
@@ -104,7 +143,7 @@ class Header extends React.Component {
   }
 
   render() {
-    const { errors } = this.state;
+    const { errors, currentUser, isAuthenticated } = this.state;
 
     return (
       <header className='topbar navbarbg' data-navbarbg='skin1'>
@@ -147,9 +186,9 @@ class Header extends React.Component {
             data-navbarbg='skin1'>
             <Nav className='ml-auto float-right' navbar>
               {/* Tombol gawe lek gak login */}
-              {this.props.auth.isAuthenticated == false && (
+              {isAuthenticated == false && (
                 <Button color='biruicon' onClick={this.toggleLogin}>
-                  {this.props.buttonLabel}Login
+                  Login
                 </Button>
               )}
               <Modal
@@ -202,40 +241,45 @@ class Header extends React.Component {
               {/*--------------------------------------------------------------------------------*/}
               {/* Start Profile Dropdown                                                         */}
               {/*--------------------------------------------------------------------------------*/}
-              {this.props.auth.isAuthenticated && (
+              {isAuthenticated && (
                 <UncontrolledDropdown nav inNavbar>
                   {/* Logo gawe lek wes login tok */}
                   <DropdownToggle nav caret className='pro-pic'>
                     <img
-                      src={profilephoto}
+                      src={`https:${currentUser.avatar}`}
                       alt='user'
                       className='rounded-circle'
                       width='31'
                     />
                   </DropdownToggle>
                   <DropdownMenu right className='user-dd'>
+                    {(currentUser.role === 'manager' ||
+                      currentUser.role === 'supervisor') && (
+                      <NavLink to='/newWO'>
+                        <DropdownItem divider />
+                        <Button
+                          color='ndewo'
+                          className='btn-rounded ml-3 mb-2 mt-2'>
+                          New Workordes
+                        </Button>
+                      </NavLink>
+                    )}
+                    {currentUser.role === 'admin' && (
+                      <NavLink to='/register'>
+                        <DropdownItem divider />
+                        <Button
+                          color='ndewo'
+                          className='btn-rounded ml-3 mb-2 mt-2'>
+                          Users
+                        </Button>
+                      </NavLink>
+                    )}
                     <DropdownItem divider />
                     <Button
                       color='ndewo'
                       className='btn-rounded ml-3 mb-2 mt-2'>
                       Logout
                     </Button>
-                    <DropdownItem divider />
-                    <NavLink to='/newWO'>
-                      <Button
-                        color='ndewo'
-                        className='btn-rounded ml-3 mb-2 mt-2'>
-                        New Workordes
-                      </Button>
-                    </NavLink>
-                    <DropdownItem divider />
-                    <NavLink to='/register'>
-                      <Button
-                        color='ndewo'
-                        className='btn-rounded ml-3 mb-2 mt-2'>
-                        Users
-                      </Button>
-                    </NavLink>
                   </DropdownMenu>
                 </UncontrolledDropdown>
               )}

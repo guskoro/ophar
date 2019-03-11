@@ -12,8 +12,7 @@ module.exports = validateWorkingOrderInput = data => {
   // data.users = !isEmpty(data.users) ? data.users : '';
   data.deadline = !isEmpty(data.deadline) ? data.deadline : '';
 
-  if (Validator.isEmpty(data.title))
-    errors.title = 'Title working order harus diisi';
+  if (Validator.isEmpty(data.title)) errors.title = 'Title is required';
 
   if (
     !Validator.isLength(data.description, {
@@ -21,25 +20,23 @@ module.exports = validateWorkingOrderInput = data => {
       max: 30
     })
   )
-    errors.description = 'Deskripsi harus terdiri dari 3 sampai 30 karakter';
+    errors.description = 'Description must be atleast 3 characters';
 
   if (Validator.isEmpty(data.description))
-    errors.description = 'Deskripsi working order harus diisi';
+    errors.description = 'Description is required';
 
   if (Validator.isEmpty(data.priority))
-    errors.priority = 'Prioritas working order harus diisi';
+    errors.priority = 'Priority is required';
 
-  if (Validator.isEmpty(data.type))
-    errors.type = 'Tipe working order harus diisi';
+  if (Validator.isEmpty(data.type)) errors.type = 'Type is required';
 
-  if (Validator.isEmpty(data.program))
-    errors.program = 'Program working order harus diisi';
+  if (Validator.isEmpty(data.program)) errors.program = 'Program is required';
 
   // if (Validator.isEmpty(data.users))
-  //   errors.users = 'Harus ada minimal satu user dalam working order';
+  //   errors.users = 'Harus ada minimal satu user dalam';
 
   if (Validator.isEmpty(data.deadline))
-    errors.deadline = 'Deadline working order harus diisi';
+    errors.deadline = 'Deadline is required';
 
   return {
     errors,
