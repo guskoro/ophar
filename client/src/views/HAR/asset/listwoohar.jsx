@@ -9,6 +9,10 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Row,
   Pagination,
   PaginationItem,
@@ -29,7 +33,7 @@ class HarWO extends React.Component {
     super(props);
     this.toggleTab = this.toggleTab.bind(this);
     this.pageSize = 5;
-
+    this.toggleModals = this.toggleModals.bind(this);
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.state = {
@@ -38,8 +42,16 @@ class HarWO extends React.Component {
       query: 0,
       currentPage: 0,
       pagesCount: 0,
-      activeTab: '1'
+      activeTab: '1',
+      modal: false
     };
+  }
+
+  // Modals
+  toggleModals() {
+    this.setState(prevState => ({
+      modal: !prevState.modal
+    }));
   }
 
   // Tab
@@ -261,14 +273,36 @@ class HarWO extends React.Component {
                     </td>
                     {this.state.division === 'Assets' && (
                       <td>
-                        <Link to='/detailWO'>
-                          <Button
-                            className='profile-time-approved'
-                            outline
-                            color='danger'>
-                            <i className='mdi mdi-delete' />
-                          </Button>{' '}
-                        </Link>
+                        <Button
+                          onClick={this.toggleModals}
+                          className='profile-time-approved'
+                          outline
+                          color='danger'>
+                          <i className='mdi mdi-delete' />
+                        </Button>{' '}
+                        <Modal
+                          isOpen={this.state.modal}
+                          toggle={this.toggleModals}
+                          className={this.props.className}>
+                          <ModalHeader toggle={this.toggleModals}>
+                            Delete
+                          </ModalHeader>
+                          <ModalBody>
+                            Are you sure want to delete this data?
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button
+                              color='primary'
+                              onClick={this.onDelete.bind(this, data)}>
+                              Yes
+                            </Button>{' '}
+                            <Button
+                              color='secondary'
+                              onClick={this.toggleModals}>
+                              Cancel
+                            </Button>
+                          </ModalFooter>
+                        </Modal>
                       </td>
                     )}
                   </tr>

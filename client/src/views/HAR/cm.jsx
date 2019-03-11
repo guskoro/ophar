@@ -278,36 +278,40 @@ class Projects extends React.Component {
                         </Button>
                       </Link>
                     </td>
-                    <td>
-                      <Button
-                        onClick={this.toggleModals}
-                        className='profile-time-approved'
-                        outline
-                        color='danger'>
-                        <i className='mdi mdi-delete' />
-                      </Button>{' '}
-                      <Modal
-                        isOpen={this.state.modal}
-                        toggle={this.toggleModals}
-                        className={this.props.className}>
-                        <ModalHeader toggle={this.toggleModals}>
-                          Delete
-                        </ModalHeader>
-                        <ModalBody>
-                          Are you sure want to delete this data?
-                        </ModalBody>
-                        <ModalFooter>
-                          <Button
-                            color='primary'
-                            onClick={this.onDelete.bind(this, data)}>
-                            Yes
-                          </Button>{' '}
-                          <Button color='secondary' onClick={this.toggleModals}>
-                            Cancel
-                          </Button>
-                        </ModalFooter>
-                      </Modal>
-                    </td>
+                    {this.state.division === 'Corrective Maintenance' && (
+                      <td>
+                        <Button
+                          onClick={this.toggleModals}
+                          className='profile-time-approved'
+                          outline
+                          color='danger'>
+                          <i className='mdi mdi-delete' />
+                        </Button>{' '}
+                        <Modal
+                          isOpen={this.state.modal}
+                          toggle={this.toggleModals}
+                          className={this.props.className}>
+                          <ModalHeader toggle={this.toggleModals}>
+                            Delete
+                          </ModalHeader>
+                          <ModalBody>
+                            Are you sure want to delete this data?
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button
+                              color='primary'
+                              onClick={this.onDelete.bind(this, data)}>
+                              Yes
+                            </Button>{' '}
+                            <Button
+                              color='secondary'
+                              onClick={this.toggleModals}>
+                              Cancel
+                            </Button>
+                          </ModalFooter>
+                        </Modal>
+                      </td>
+                    )}
                   </tr>
                 );
               })}
