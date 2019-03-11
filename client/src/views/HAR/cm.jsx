@@ -23,6 +23,7 @@ import {
 import axios from 'axios';
 import classnames from 'classnames';
 import moment from 'moment';
+import jwt_decode from 'jwt-decode';
 import { Link } from 'react-router-dom';
 
 class Projects extends React.Component {
@@ -34,6 +35,7 @@ class Projects extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.state = {
+      division: '',
       WOs: [],
       query: 0,
       currentPage: 0,
@@ -60,6 +62,17 @@ class Projects extends React.Component {
 
   async componentDidMount() {
     await this.getWO();
+    await this.getCurrentUser();
+  }
+
+  getCurrentUser() {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      const current = jwt_decode(token);
+      this.setState({
+        division: current.division
+      });
+    }
   }
 
   async getWO() {
@@ -89,7 +102,10 @@ class Projects extends React.Component {
     await axios
       .delete(`/api/working-order/${data._id}`)
       .then(res => {
-        if (res.status === 200) this.getWO();
+        if (res.status === 200) {
+          this.toggle();
+          this.getWO();
+        }
       })
       .catch(err => err.response.data);
   }
@@ -123,8 +139,8 @@ class Projects extends React.Component {
   };
 
   render() {
-    const { currentPage } = this.state;
-    let idWO = '';
+    const { currentPage, division } = this.state;
+
     return (
       /*--------------------------------------------------------------------------------*/
       /* Used In Dashboard-4 [General]                                                  */
@@ -149,13 +165,15 @@ class Projects extends React.Component {
                   <option value={3}>Done</option>
                 </Input>
               </div>
-              <div className='dl batas-kanan'>
-                <Link to='/uploadWO'>
-                  <Button className='btn' color='success'>
-                    <i className='mdi mdi-plus' />
-                  </Button>{' '}
-                </Link>
-              </div>
+              {this.state.division === 'Corrective Maintenance' && (
+                <div className='dl batas-kanan'>
+                  <Link to='/uploadWO'>
+                    <Button className='btn' color='success'>
+                      <i className='mdi mdi-plus' />
+                    </Button>{' '}
+                  </Link>
+                </div>
+              )}
               <div className='dl'>
                 <InputGroup>
                   <Input placeholder='Search..' />
@@ -180,7 +198,9 @@ class Projects extends React.Component {
                 <th className='border-0'>Deadline</th>
                 <th className='border-0'>Status</th>
                 <th className='border-0'>Details</th>
-                <th className='border-0'>Action</th>
+                {this.state.division === 'Corrective Maintenance' && (
+                  <th className='border-0'>Action</th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -188,10 +208,9 @@ class Projects extends React.Component {
                 currentPage * this.pageSize,
                 (currentPage + 1) * this.pageSize
               ).map((data, id) => {
-                idWO = data._id;
                 return (
                   <tr key={id}>
-                    <td>{idWO.slice(0, 9).toUpperCase() + '...'}</td>
+                    <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
                     <td>
                       <div className='d-flex no-block align-items-center'>
                         <div className='mr-2'>

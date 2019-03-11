@@ -17,6 +17,7 @@ import {
   Tooltip
 } from 'reactstrap';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 import classnames from 'classnames';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
@@ -30,6 +31,7 @@ class Projects extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.state = {
+      division: '',
       WOs: [],
       query: 0,
       currentPage: 0,
@@ -48,6 +50,17 @@ class Projects extends React.Component {
 
   async componentDidMount() {
     await this.getWO();
+    await this.getCurrentUser();
+  }
+
+  getCurrentUser() {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      const current = jwt_decode(token);
+      this.setState({
+        division: current.division
+      });
+    }
   }
 
   async getWO() {
@@ -124,13 +137,15 @@ class Projects extends React.Component {
                   <option value={3}>Done</option>
                 </Input>
               </div>
-              <div className='dl batas-kanan'>
-                <Link to='/uploadWO'>
-                  <Button className='btn' color='success'>
-                    <i className='mdi mdi-plus' />
-                  </Button>{' '}
-                </Link>
-              </div>
+              {this.state.division === 'Patrols and Controls' && (
+                <div className='dl batas-kanan'>
+                  <Link to='/uploadWO'>
+                    <Button className='btn' color='success'>
+                      <i className='mdi mdi-plus' />
+                    </Button>{' '}
+                  </Link>
+                </div>
+              )}
               <div className='dl'>
                 <InputGroup>
                   <Input placeholder='Search..' />
@@ -155,7 +170,9 @@ class Projects extends React.Component {
                 <th className='border-0'>Deadline</th>
                 <th className='border-0'>Status</th>
                 <th className='border-0'>Details</th>
-                <th className='border-0'>Action</th>
+                {this.state.division === 'Patrols and Controls' && (
+                  <th className='border-0'>Action</th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -233,16 +250,18 @@ class Projects extends React.Component {
                         </Button>
                       </Link>
                     </td>
-                    <td>
-                      <Link to='/detailWO'>
-                        <Button
-                          className='profile-time-approved'
-                          outline
-                          color='danger'>
-                          <i className='mdi mdi-delete' />
-                        </Button>{' '}
-                      </Link>
-                    </td>
+                    {this.state.division === 'Patrols and Controls' && (
+                      <td>
+                        <Link to='/detailWO'>
+                          <Button
+                            className='profile-time-approved'
+                            outline
+                            color='danger'>
+                            <i className='mdi mdi-delete' />
+                          </Button>{' '}
+                        </Link>
+                      </td>
+                    )}
                   </tr>
                 );
               })}

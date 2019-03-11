@@ -28,63 +28,63 @@ router.get('/', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-  // User.findById(req.user.id)
-  //   .populate('role', 'name-_id')
-  //   .then(user => {
-  //     if (user.role.name != 'admin')
-  //       return res
-  //         .status(403)
-  //         .json({ access: 'Maaf, anda tidak mempunyai access untuk ini' });
-
-  const { errors, isValid } = validateRegisterInput(req.body);
-
-  if (!isValid) {
-    return res.status(400).json(errors);
-  }
-
-  User.findOne({
-    email: req.body.email
-  })
+  User.findById(req.user.id)
+    .populate('role', 'name-_id')
     .then(user => {
-      if (user) {
-        errors.email = 'Email sudah terdaftar';
+      if (user.role.name != 'admin')
+        return res
+          .status(403)
+          .json({ access: 'Sorry, you dont have access to add user' });
 
+      const { errors, isValid } = validateRegisterInput(req.body);
+
+      if (!isValid) {
         return res.status(400).json(errors);
       }
 
-      Role.findById(req.body.role)
-        .then(role => {
-          const avatar = gravatar.url(req.body.email, {
-            s: '200',
-            r: 'pg',
-            d: 'mm'
-          });
+      User.findOne({
+        email: req.body.email
+      })
+        .then(user => {
+          if (user) {
+            errors.email = 'Email is already taken';
 
-          const newUser = new User({
-            name: req.body.name,
-            email: req.body.email,
-            avatar,
-            role,
-            password: req.body.password
-          });
-
-          if (req.body.division) {
-            newUser.division = req.body.division;
+            return res.status(400).json(errors);
           }
 
-          bcrypt.genSalt(10, (err, salt) => {
-            if (err) return res.status(400).json(err);
-            bcrypt.hash(newUser.password, salt, (err, hash) => {
-              if (err) res.status(400).json(err);
-              newUser.password = hash;
-              newUser
-                .save()
-                .then(user => res.status(200).json(user))
-                .catch(err => res.status(400).json(err));
-            });
-          });
-          // })
-          // .catch(err => res.status(400).json(err));
+          Role.findById(req.body.role)
+            .then(role => {
+              const avatar = gravatar.url(req.body.email, {
+                s: '200',
+                r: 'pg',
+                d: 'mm'
+              });
+
+              const newUser = new User({
+                name: req.body.name,
+                email: req.body.email,
+                avatar,
+                role,
+                password: req.body.password
+              });
+
+              if (req.body.division) {
+                newUser.division = req.body.division;
+              }
+
+              bcrypt.genSalt(10, (err, salt) => {
+                if (err) return res.status(400).json(err);
+                bcrypt.hash(newUser.password, salt, (err, hash) => {
+                  if (err) res.status(400).json(err);
+                  newUser.password = hash;
+                  newUser
+                    .save()
+                    .then(user => res.status(200).json(user))
+                    .catch(err => res.status(400).json(err));
+                });
+              });
+            })
+            .catch(err => res.status(400).json(err));
         })
         .catch(err => res.status(400).json(err));
     })
@@ -104,9 +104,11 @@ router.post('/login', (req, res) => {
   User.findOne({
     email
   })
+    .populate('role')
+    .populate('division')
     .then(user => {
       if (!user) {
-        errors.email = 'User tidak ditemukan';
+        errors.email = 'User not found';
         return res.status(404).json(errors);
       }
 
@@ -117,7 +119,9 @@ router.post('/login', (req, res) => {
             const payload = {
               id: user._id,
               name: user.name,
-              avatar: user.avatar
+              avatar: user.avatar,
+              role: user.role.name,
+              division: user.division.name
             };
 
             return jwt.sign(payload, process.env.JWT_KEY, (err, token) => {
@@ -128,7 +132,7 @@ router.post('/login', (req, res) => {
             });
           }
 
-          errors.password = 'Kata sandi salah';
+          errors.password = 'Password is invalid';
 
           return res.status(400).json(errors);
         })
@@ -136,6 +140,8 @@ router.post('/login', (req, res) => {
     })
     .catch(err => res.status(400).json(err));
 });
+
+router.post('/logout', (req, res) => {});
 
 router.get(
   '/current',
@@ -184,9 +190,9 @@ router.patch(
       .populate('role', 'name-_id')
       .then(user => {
         if (user.role.name != 'admin')
-          return res
-            .status(403)
-            .json({ access: 'Maaf, anda tidak mempunyai access untuk ini' });
+          return res.status(403).json({
+            access: 'Sorry, you dont have access to update user data'
+          });
 
         User.findById(req.params.id)
           .then(user => {
@@ -217,9 +223,9 @@ router.delete(
       .populate('role', 'name-_id')
       .then(user => {
         if (user.role.name != 'admin')
-          return res
-            .status(403)
-            .json({ access: 'Maaf, anda tidak mempunyai access untuk ini' });
+          return res.status(403).json({
+            access: 'Sorry, you dont have access to delete user data'
+          });
 
         User.findByIdAndDelete(req.params.id)
           .then(user => {

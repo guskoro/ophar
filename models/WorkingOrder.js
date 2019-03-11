@@ -21,8 +21,8 @@ const workingOrderSchema = new Schema({
   },
   plans: [
     {
-      name: { type: String },
-      done: { type: Boolean, default: false }
+      name: String,
+      done: Boolean
     }
   ],
   title: {

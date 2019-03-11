@@ -81,7 +81,15 @@ class Register extends React.Component {
       division: this.state.division
     };
 
-    this.props.registerUser(newUser, this.props.history);
+    // this.props.registerUser(newUser, this.props.history);
+    axios
+      .post('/api/user/register', newUser)
+      .then(() => this.props.history.push('/register'))
+      .catch(err =>
+        this.setState({
+          errors: err.response.data
+        })
+      );
   }
 
   onChange(e) {
@@ -97,6 +105,10 @@ class Register extends React.Component {
       <Card>
         <CardBody>
           <Form onSubmit={this.onSubmit}>
+            <FormGroup>
+              <Input invalid={errors.access ? true : false} hidden />
+              <FormFeedback>{errors.access}</FormFeedback>
+            </FormGroup>
             <FormGroup>
               <Label for='name'>Name</Label>
               <Input
