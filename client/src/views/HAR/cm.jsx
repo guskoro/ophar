@@ -260,12 +260,6 @@ class Projects extends React.Component {
                       </Link>
                     </td>
                     <td>
-                      <Link
-                        to={{ pathname: '/detailWO', state: { id: data._id } }}>
-                        <Button className='btn' outline color='info'>
-                          <i className='mdi mdi-pencil' />
-                        </Button>{' '}
-                      </Link>
                       <Button
                         onClick={this.toggleModals}
                         className='profile-time-approved'
@@ -289,7 +283,7 @@ class Projects extends React.Component {
                             onClick={this.onDelete.bind(this, data)}>
                             Yes
                           </Button>{' '}
-                          <Button color='secondary' onClick={this.toggle}>
+                          <Button color='secondary' onClick={this.toggleModals}>
                             Cancel
                           </Button>
                         </ModalFooter>
