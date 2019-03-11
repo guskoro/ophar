@@ -10,12 +10,6 @@ const User = require('../../models/User');
 router.get('/', (req, res) => {
   let query = {};
 
-  if (req.query.division)
-    query.division = {
-      $regex: req.query.division,
-      $options: 'i'
-    };
-
   ToolsAsset.find(query)
     .populate({
       path: 'pic',
@@ -23,7 +17,7 @@ router.get('/', (req, res) => {
         path: 'division'
       }
     })
-    .then(ToolsAssets => res.json(ToolsAssets))
+    .then(toolsAssets => res.json(toolsAssets))
     .catch(err => res.status(404).json(err));
 });
 
