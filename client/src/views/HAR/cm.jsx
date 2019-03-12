@@ -35,6 +35,7 @@ class Projects extends React.Component {
     this.toggleModals = this.toggleModals.bind(this);
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
+
     this.state = {
       division: '',
       WOs: [],
