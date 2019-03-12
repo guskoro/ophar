@@ -30,6 +30,7 @@ class Projects extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleChange = this.handleChange.bind(this);
     this.pageSize = 5;
     this.toggleModals = this.toggleModals.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -37,11 +38,38 @@ class Projects extends React.Component {
     this.state = {
       division: '',
       WOs: [],
+      filtered: [],
       query: 0,
       currentPage: 0,
       pagesCount: 0,
       modal: false
     };
+  }
+
+  // Put data in filtered
+  // componentWillReceiveProps(nextProps) {
+  //   this.setState({
+  //     filtered: nextProps.items
+  //   });
+  // }
+
+  // Search
+  handleChange(e) {
+    let currentList = [];
+    let newList = [];
+    if (e.target.value !== '') {
+      currentList = this.state.WOs;
+      newList = currentList.filter(item => {
+        const lc = item.title.toLowerCase();
+        const filter = e.target.value.toLowerCase();
+        return lc.includes(filter);
+      });
+    } else {
+      newList = this.state.WOs;
+    }
+    this.setState({
+      filtered: newList
+    });
   }
 
   // Modals
@@ -92,6 +120,7 @@ class Projects extends React.Component {
       .then(res => {
         this.setState({
           WOs: res.data,
+          filtered: res.data,
           pagesCount: Math.ceil(res.data.length / this.pageSize)
         });
       })
@@ -140,6 +169,8 @@ class Projects extends React.Component {
 
   render() {
     const { currentPage, division } = this.state;
+    console.log(this.state.filtered);
+    console.log(this.state.WOs);
 
     return (
       /*--------------------------------------------------------------------------------*/
@@ -176,7 +207,12 @@ class Projects extends React.Component {
               )}
               <div className='dl'>
                 <InputGroup>
-                  <Input placeholder='Search..' />
+                  <Input
+                    type='text'
+                    className='input'
+                    onChange={this.handleChange}
+                    placeholder='Search..'
+                  />
                   <InputGroupAddon addonType='append'>
                     <Button color='biruicon'>
                       <i className='mdi mdi-magnify' />
@@ -204,117 +240,119 @@ class Projects extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {this.state.WOs.slice(
-                currentPage * this.pageSize,
-                (currentPage + 1) * this.pageSize
-              ).map((data, id) => {
-                return (
-                  <tr key={id}>
-                    <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
-                    <td>
-                      <div className='d-flex no-block align-items-center'>
-                        <div className='mr-2'>
-                          <img
-                            src={`https:${data.pic.avatar}`}
-                            alt='user'
-                            className='rounded-circle'
-                            width='45'
-                          />
+              {this.state.filtered
+                .slice(
+                  currentPage * this.pageSize,
+                  (currentPage + 1) * this.pageSize
+                )
+                .map((data, id) => {
+                  return (
+                    <tr key={id}>
+                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                      <td>
+                        <div className='d-flex no-block align-items-center'>
+                          <div className='mr-2'>
+                            <img
+                              src={`https:${data.pic.avatar}`}
+                              alt='user'
+                              className='rounded-circle'
+                              width='45'
+                            />
+                          </div>
+                          <div className=''>
+                            <h5 className='mb-0 font-16 font-medium'>
+                              {data.pic.name}
+                            </h5>
+                            <span>{data.pic.division.name}</span>
+                          </div>
                         </div>
-                        <div className=''>
-                          <h5 className='mb-0 font-16 font-medium'>
-                            {data.pic.name}
-                          </h5>
-                          <span>{data.pic.division.name}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>{data.type.name}</td>
-                    <td>{data.title}</td>
-                    <td>{data.priority.name}</td>
-                    <td>{data.program}</td>
-                    <td className='blue-grey-text  text-darken-4 font-medium'>
-                      {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
-                    </td>
-                    <td>
-                      <i
-                        className={classnames('fa fa-circle', {
-                          'text-danger': data.rejected,
-                          'text-warning': !(
+                      </td>
+                      <td>{data.type.name}</td>
+                      <td>{data.title}</td>
+                      <td>{data.priority.name}</td>
+                      <td>{data.program}</td>
+                      <td className='blue-grey-text  text-darken-4 font-medium'>
+                        {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
+                      </td>
+                      <td>
+                        <i
+                          className={classnames('fa fa-circle', {
+                            'text-danger': data.rejected,
+                            'text-warning': !(
+                              data.approved_by_spv &&
+                              data.approved_by_manager &&
+                              data.done
+                            ),
+                            'text-success':
+                              data.approved_by_spv &&
+                              data.approved_by_manager &&
+                              !data.done,
+                            'text-secondary': data.done
+                          })}
+                          id={`indicator-${id}`}
+                        />
+                        <Tooltip
+                          placement='top'
+                          isOpen={this.isToolTipOpen(`indicator-${id}`)}
+                          target={`indicator-${id}`}
+                          toggle={() => this.toggle(`indicator-${id}`)}>
+                          {data.rejected && 'Rejected'}
+                          {!(
                             data.approved_by_spv &&
                             data.approved_by_manager &&
                             data.done
-                          ),
-                          'text-success':
-                            data.approved_by_spv &&
+                          ) && 'Pending Approval'}
+                          {data.approved_by_spv &&
                             data.approved_by_manager &&
-                            !data.done,
-                          'text-secondary': data.done
-                        })}
-                        id={`indicator-${id}`}
-                      />
-                      <Tooltip
-                        placement='top'
-                        isOpen={this.isToolTipOpen(`indicator-${id}`)}
-                        target={`indicator-${id}`}
-                        toggle={() => this.toggle(`indicator-${id}`)}>
-                        {data.rejected && 'Rejected'}
-                        {!(
-                          data.approved_by_spv &&
-                          data.approved_by_manager &&
-                          data.done
-                        ) && 'Pending Approval'}
-                        {data.approved_by_spv &&
-                          data.approved_by_manager &&
-                          !data.done &&
-                          'On Progress'}
-                        {data.done && 'Done'}
-                      </Tooltip>
-                    </td>
-                    <td>
-                      <Link to={{ pathname: `/detailWO/${data._id}` }}>
-                        <Button className='btn' outline color='success'>
-                          Show
-                        </Button>
-                      </Link>
-                    </td>
-                    {this.state.division === 'Corrective Maintenance' && (
-                      <td>
-                        <Button
-                          onClick={this.toggleModals}
-                          className='profile-time-approved'
-                          outline
-                          color='danger'>
-                          <i className='mdi mdi-delete' />
-                        </Button>{' '}
-                        <Modal
-                          isOpen={this.state.modal}
-                          toggle={this.toggleModals}
-                          className={this.props.className}>
-                          <ModalHeader toggle={this.toggleModals}>
-                            Delete
-                          </ModalHeader>
-                          <ModalBody>
-                            Are you sure want to delete this data?
-                          </ModalBody>
-                          <ModalFooter>
-                            <Button
-                              color='primary'
-                              onClick={this.onDelete.bind(this, data)}>
-                              Yes
-                            </Button>{' '}
-                            <Button
-                              color='secondary'
-                              onClick={this.toggleModals}>
-                              Cancel
-                            </Button>
-                          </ModalFooter>
-                        </Modal>
+                            !data.done &&
+                            'On Progress'}
+                          {data.done && 'Done'}
+                        </Tooltip>
                       </td>
-                    )}
-                  </tr>
-                );
-              })}
+                      <td>
+                        <Link to={{ pathname: `/detailWO/${data._id}` }}>
+                          <Button className='btn' outline color='success'>
+                            Show
+                          </Button>
+                        </Link>
+                      </td>
+                      {this.state.division === 'Corrective Maintenance' && (
+                        <td>
+                          <Button
+                            onClick={this.toggleModals}
+                            className='profile-time-approved'
+                            outline
+                            color='danger'>
+                            <i className='mdi mdi-delete' />
+                          </Button>{' '}
+                          <Modal
+                            isOpen={this.state.modal}
+                            toggle={this.toggleModals}
+                            className={this.props.className}>
+                            <ModalHeader toggle={this.toggleModals}>
+                              Delete
+                            </ModalHeader>
+                            <ModalBody>
+                              Are you sure want to delete this data?
+                            </ModalBody>
+                            <ModalFooter>
+                              <Button
+                                color='primary'
+                                onClick={this.onDelete.bind(this, data)}>
+                                Yes
+                              </Button>{' '}
+                              <Button
+                                color='secondary'
+                                onClick={this.toggleModals}>
+                                Cancel
+                              </Button>
+                            </ModalFooter>
+                          </Modal>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })}
             </tbody>
           </Table>
           <Row>
