@@ -218,6 +218,7 @@ class Header extends React.Component {
                     <FormGroup className='batas-kanan'>
                       <Label for='email'>Email</Label>
                       <Input
+                        autoFocus
                         invalid={errors.email ? true : false}
                         type='email'
                         name='email'

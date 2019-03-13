@@ -6,6 +6,14 @@ import {
   CardBody,
   Col,
   CustomInput,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Nav,
   NavItem,
   NavLink,
@@ -14,6 +22,7 @@ import {
   TabPane,
   Table
 } from 'reactstrap';
+import isEmpty from '../../../validations/is-empty';
 import axios from 'axios';
 import confirm from 'reactstrap-confirm';
 import moment from 'moment';
@@ -24,7 +33,7 @@ export default class Example extends React.Component {
     super(props);
 
     this.toggleTab = this.toggleTab.bind(this);
-    this.toggleNote = this.toggleNote.bind(this);
+    this.onChange = this.onChange.bind(this);
 
     this.state = {
       currentUser: {},
@@ -32,7 +41,8 @@ export default class Example extends React.Component {
       isOpen: false,
       activeTab: '1',
       id: this.props.match.params.id,
-      modalNote: false
+      modalNote: false,
+      note: ''
     };
   }
 
@@ -49,11 +59,13 @@ export default class Example extends React.Component {
           currentUser: res.data
         });
       })
-      .catch(err => console.log(err.response.data));
+      .catch(err => {
+        if (err.response.status === 401) this.setState({ currentUser: {} });
+      });
   }
 
-  getDetailWO() {
-    return axios
+  async getDetailWO() {
+    await axios
       .get(`/api/working-order/${this.state.id}`)
       .then(res => {
         this.setState({
@@ -126,6 +138,24 @@ export default class Example extends React.Component {
     }
   }
 
+  async onAddNote(e, data) {
+    e.preventDefault();
+
+    const newWorkingOrder = {
+      note: this.state.note
+    };
+
+    await axios
+      .patch(`/api/working-order/${data._id}`, newWorkingOrder)
+      .then(res => {
+        if (res.status === 200) {
+          this.getDetailWO();
+          this.toggleNote(data);
+        }
+      })
+      .catch(err => console.log(err.response.data));
+  }
+
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -134,10 +164,17 @@ export default class Example extends React.Component {
     }
   }
 
-  toggleNote() {
+  toggleNote(data) {
     this.setState(prevState => ({
-      modalNote: !prevState.modalNote
+      modalNote: !prevState.modalNote,
+      note: data.note
     }));
+  }
+
+  onChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
   }
 
   render() {
@@ -280,12 +317,48 @@ export default class Example extends React.Component {
                         Approve
                       </Button>
                       <Button
-                        onClick={this.toggleNote}
+                        onClick={this.toggleNote.bind(this, detailWO)}
                         outline
                         color='secondary'
                         className='profile batas-kanan'>
                         Add Note
                       </Button>
+                      <Modal
+                        isOpen={this.state.modalNote}
+                        toggle={this.toggleNote.bind(this, detailWO)}
+                        className={this.props.className}>
+                        <ModalHeader
+                          toggle={this.toggleNote.bind(this, detailWO)}>
+                          Add a note
+                        </ModalHeader>
+                        <Form
+                          onSubmit={e => {
+                            this.onAddNote(e, detailWO);
+                          }}>
+                          <ModalBody>
+                            <FormGroup>
+                              <Label for='note'>Work Note</Label>
+                              <Input
+                                type='textarea'
+                                name='note'
+                                id='note'
+                                value={this.state.note}
+                                onChange={this.onChange}
+                              />
+                            </FormGroup>
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button color='biruicon' type='submit'>
+                              Submit
+                            </Button>
+                            <Button
+                              color='secondary'
+                              onClick={this.toggleNote.bind(this, detailWO)}>
+                              Cancel
+                            </Button>
+                          </ModalFooter>
+                        </Form>
+                      </Modal>
                     </React.Fragment>
                   ) : (
                     ''
@@ -341,7 +414,8 @@ export default class Example extends React.Component {
                                       <CustomInput
                                         disabled={
                                           currentUser.role === 'manager' ||
-                                          currentUser.role === 'supervisor'
+                                          currentUser.role === 'supervisor' ||
+                                          isEmpty(currentUser)
                                         }
                                         type='checkbox'
                                         id={plan._id}

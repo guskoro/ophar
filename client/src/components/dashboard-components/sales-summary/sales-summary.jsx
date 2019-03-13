@@ -26,7 +26,7 @@ class SalesSummary extends React.Component {
       completeWO: {
         datasets: [
           {
-            backgroundColor: ['rgba(118,172,219,.7)', 'rgba(0,55,104,.7)'],
+            backgroundColor: ['#5e72e4', '#001e6f'],
             data: [0, 100]
           }
         ],
@@ -35,7 +35,7 @@ class SalesSummary extends React.Component {
       approvedWO: {
         datasets: [
           {
-            backgroundColor: ['rgba(118,172,219,.7)', 'rgba(0,55,104,.7)'],
+            backgroundColor: ['#5e72e4', '#001e6f'],
             data: [0, 100]
           }
         ],

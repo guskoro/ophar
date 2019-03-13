@@ -33,6 +33,7 @@ class Projects extends React.Component {
     super(props);
 
     this.toggle = this.toggle.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.pageSize = 5;
     // this.onChange = this.onChange.bind(this);
     this.state = {
@@ -40,7 +41,9 @@ class Projects extends React.Component {
       currentPage: 0,
       pagesCount: 0,
       modal: false,
-      role: ''
+      role: '',
+      modalNote: false,
+      note: ''
     };
   }
 
@@ -102,7 +105,7 @@ class Projects extends React.Component {
             this.getWO();
           }
         })
-        .catch(err => err.response.data);
+        .catch(err => console.log(err.response.data));
     }
   }
 
@@ -127,10 +130,43 @@ class Projects extends React.Component {
     }
   }
 
+  async onAddNote(e, data) {
+    e.preventDefault();
+
+    console.log(this.state.note);
+
+    const newWorkingOrder = {
+      note: this.state.note
+    };
+
+    await axios
+      .patch(`/api/working-order/${data._id}`, newWorkingOrder)
+      .then(res => {
+        if (res.status === 200) {
+          this.getWO();
+          this.toggleNote(data);
+        }
+      })
+      .catch(err => console.log(err));
+  }
+
   toggle() {
     this.setState(prevState => ({
       modal: !prevState.modal
     }));
+  }
+
+  toggleNote(data) {
+    this.setState(prevState => ({
+      modalNote: !prevState.modalNote,
+      note: data.note
+    }));
+  }
+
+  onChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
   }
 
   render() {
@@ -241,36 +277,47 @@ class Projects extends React.Component {
                       </Button>
                     </td>
                     <td>
-                      <Button outline color='secondary' onClick={this.toggle}>
-                        {this.props.buttonLabel}Add a note
+                      <Button
+                        onClick={this.toggleNote.bind(this, data)}
+                        outline
+                        color='secondary'
+                        className='btn'>
+                        Add Note
                       </Button>
                       <Modal
-                        isOpen={this.state.modal}
-                        toggle={this.toggle}
+                        isOpen={this.state.modalNote}
+                        toggle={this.toggleNote.bind(this, data)}
                         className={this.props.className}>
-                        <ModalHeader toggle={this.toggle}>
+                        <ModalHeader toggle={this.toggleNote.bind(this, data)}>
                           Add a note
                         </ModalHeader>
-                        <ModalBody>
-                          <Form>
+                        <Form
+                          onSubmit={e => {
+                            this.onAddNote(e, data);
+                          }}>
+                          <ModalBody>
                             <FormGroup>
-                              <Label for='exampleText'>Work Note</Label>
+                              <Label for='note'>Work Note</Label>
                               <Input
                                 type='textarea'
-                                name='text'
-                                id='exampleText'
+                                name='note'
+                                id='note'
+                                value={this.state.note}
+                                onChange={this.onChange}
                               />
                             </FormGroup>
-                          </Form>
-                        </ModalBody>
-                        <ModalFooter>
-                          <Button color='biruicon' onClick={this.toggle}>
-                            Submit
-                          </Button>{' '}
-                          <Button color='secondary' onClick={this.toggle}>
-                            Cancel
-                          </Button>
-                        </ModalFooter>
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button color='biruicon' type='submit'>
+                              Submit
+                            </Button>
+                            <Button
+                              color='secondary'
+                              onClick={this.toggleNote.bind(this, data)}>
+                              Cancel
+                            </Button>
+                          </ModalFooter>
+                        </Form>
                       </Modal>
                     </td>
                   </tr>
