@@ -16,6 +16,7 @@ import {
   Table,
   Tooltip
 } from 'reactstrap';
+
 import axios from 'axios';
 import confirm from 'reactstrap-confirm';
 import classnames from 'classnames';
@@ -41,6 +42,7 @@ class Projects extends React.Component {
     };
   }
 
+  // Search
   handleChange(e) {
     let currentList = [];
     let newList = [];
@@ -58,6 +60,7 @@ class Projects extends React.Component {
       filtered: newList
     });
   }
+
   // Pagination
   handleClick(e, index) {
     e.preventDefault();

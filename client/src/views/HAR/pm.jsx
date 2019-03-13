@@ -21,6 +21,7 @@ import {
   Tooltip
 } from 'reactstrap';
 import axios from 'axios';
+import confirm from 'reactstrap-confirm';
 import classnames from 'classnames';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
@@ -118,6 +119,27 @@ class Projects extends React.Component {
         });
       })
       .catch(err => console.log(err.response.data));
+  }
+
+  async onDelete(data) {
+    const result = await confirm({
+      title: <React.Fragment>Delete Work Order</React.Fragment>,
+      message: 'Are you sure want to delete this work?',
+      confirmText: 'Yes',
+      confirmColor: 'info',
+      cancelColor: 'secondary'
+    });
+
+    if (result) {
+      await axios
+        .delete(`/api/working-order/${data._id}`)
+        .then(res => {
+          if (res.status === 200) {
+            this.getWO();
+          }
+        })
+        .catch(err => err.response.data);
+    }
   }
 
   async onChange(e) {
@@ -258,15 +280,15 @@ class Projects extends React.Component {
                           className={classnames('fa fa-circle', {
                             'text-danger': data.rejected,
                             'text-warning': !(
-                              data.approved_by_spv &&
-                              data.approved_by_manager &&
-                              data.done
+                              (data.approved_by_spv &&
+                                data.approved_by_manager) ||
+                              data.rejected
                             ),
                             'text-success':
                               data.approved_by_spv &&
                               data.approved_by_manager &&
                               !data.done,
-                            'text-secondary': data.done
+                            'text-biruicon': data.done
                           })}
                           id={`indicator-${id}`}
                         />
@@ -277,9 +299,9 @@ class Projects extends React.Component {
                           toggle={() => this.toggle(`indicator-${id}`)}>
                           {data.rejected && 'Rejected'}
                           {!(
-                            data.approved_by_spv &&
-                            data.approved_by_manager &&
-                            data.done
+                            (data.approved_by_spv &&
+                              data.approved_by_manager) ||
+                            data.rejected
                           ) && 'Pending Approval'}
                           {data.approved_by_spv &&
                             data.approved_by_manager &&
@@ -298,35 +320,13 @@ class Projects extends React.Component {
                       {this.state.division === 'Preventive Maintenance' && (
                         <td>
                           <Button
-                            onClick={this.toggleModals}
+                            disabled={data.approved_by_spv}
+                            onClick={this.onDelete.bind(this, data)}
                             className='profile-time-approved'
                             outline
                             color='danger'>
                             <i className='mdi mdi-delete' />
-                          </Button>{' '}
-                          <Modal
-                            isOpen={this.state.modal}
-                            toggle={this.toggleModals}
-                            className={this.props.className}>
-                            <ModalHeader toggle={this.toggleModals}>
-                              Delete
-                            </ModalHeader>
-                            <ModalBody>
-                              Are you sure want to delete this data?
-                            </ModalBody>
-                            <ModalFooter>
-                              <Button
-                                color='primary'
-                                onClick={this.onDelete.bind(this, data)}>
-                                Yes
-                              </Button>{' '}
-                              <Button
-                                color='secondary'
-                                onClick={this.toggleModals}>
-                                Cancel
-                              </Button>
-                            </ModalFooter>
-                          </Modal>
+                          </Button>
                         </td>
                       )}
                     </tr>

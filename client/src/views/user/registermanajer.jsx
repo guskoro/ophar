@@ -34,7 +34,7 @@ class Projects extends React.Component {
     super(props);
 
     this.pageSize = 5;
-
+    this.handleChange = this.handleChange.bind(this);
     this.state = {
       data: {},
       id: '',
@@ -46,6 +46,7 @@ class Projects extends React.Component {
       users: [],
       divisions: [],
       roles: [],
+      filtered: [],
       modal: false,
       modalDelete: false,
       currentPage: 0,
@@ -57,6 +58,25 @@ class Projects extends React.Component {
     this.toggleModals = this.toggleModals.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  // Search
+  handleChange(e) {
+    let currentList = [];
+    let newList = [];
+    if (e.target.value !== '') {
+      currentList = this.state.users;
+      newList = currentList.filter(item => {
+        const lc = item.name.toLowerCase();
+        const filter = e.target.value.toLowerCase();
+        return lc.includes(filter);
+      });
+    } else {
+      newList = this.state.users;
+    }
+    this.setState({
+      filtered: newList
+    });
   }
 
   componentDidMount = async () => {
@@ -71,6 +91,7 @@ class Projects extends React.Component {
       .then(res => {
         this.setState({
           users: res.data,
+          filtered: res.data,
           pagesCount: Math.ceil(res.data.length / this.pageSize)
         });
       })
@@ -190,6 +211,15 @@ class Projects extends React.Component {
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
               <div className='dl batas-kanan'>
+                <Input type='select' className='custom-select'>
+                  <option value='0'>All</option>
+                  <option value='1'>Corrective Maintenance</option>
+                  <option value='2'>Preventive Maintenance</option>
+                  <option value='3'>Assets</option>
+                  <option value='4'>Patrols and Controls</option>
+                </Input>
+              </div>
+              <div className='dl batas-kanan'>
                 <Link to='/registerform'>
                   <Button className='btn' color='success'>
                     <i className='mdi mdi-plus' />
@@ -198,22 +228,18 @@ class Projects extends React.Component {
               </div>
               <div className='dl batas-kanan'>
                 <InputGroup>
-                  <Input placeholder='Search..' />
+                  <Input
+                    type='text'
+                    className='input'
+                    onChange={this.handleChange}
+                    placeholder='Search..'
+                  />
                   <InputGroupAddon addonType='append'>
                     <Button color='biruicon'>
                       <i className='mdi mdi-magnify' />
                     </Button>
                   </InputGroupAddon>
                 </InputGroup>
-              </div>
-              <div className='dl batas-kanan'>
-                <Input type='select' className='custom-select'>
-                  <option value='0'>All</option>
-                  <option value='1'>Corrective Maintenance</option>
-                  <option value='2'>Preventive Maintenance</option>
-                  <option value='3'>Assets</option>
-                  <option value='4'>Patrols and Controls</option>
-                </Input>
               </div>
             </div>
           </div>
@@ -228,7 +254,7 @@ class Projects extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {this.state.users
+              {this.state.filtered
                 .slice(
                   currentPage * this.pageSize,
                   (currentPage + 1) * this.pageSize
