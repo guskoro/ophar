@@ -48,6 +48,10 @@ const workingOrderSchema = new Schema({
     type: Boolean,
     default: false
   },
+  rejected: {
+    type: Boolean,
+    default: false
+  },
   done: {
     type: Boolean,
     default: false

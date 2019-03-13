@@ -6,10 +6,6 @@ import {
   CardBody,
   Col,
   CustomInput,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Nav,
   NavItem,
   NavLink,
@@ -19,6 +15,7 @@ import {
   Table
 } from 'reactstrap';
 import axios from 'axios';
+import confirm from 'reactstrap-confirm';
 import moment from 'moment';
 import classnames from 'classnames';
 
@@ -27,16 +24,15 @@ export default class Example extends React.Component {
     super(props);
 
     this.toggleTab = this.toggleTab.bind(this);
-
-    this.toggle = this.toggle.bind(this);
+    this.toggleNote = this.toggleNote.bind(this);
 
     this.state = {
-      division: '',
+      currentUser: {},
       detailWO: {},
       isOpen: false,
       activeTab: '1',
-      modal: false,
-      id: this.props.match.params.id
+      id: this.props.match.params.id,
+      modalNote: false
     };
   }
 
@@ -50,7 +46,7 @@ export default class Example extends React.Component {
       .get('/api/user/current')
       .then(res => {
         this.setState({
-          division: res.data.division
+          currentUser: res.data
         });
       })
       .catch(err => console.log(err.response.data));
@@ -67,6 +63,69 @@ export default class Example extends React.Component {
       .catch(err => console.log(err.response.data));
   }
 
+  async onDone(data) {
+    const result = await confirm({
+      title: <React.Fragment>Done Work Order</React.Fragment>,
+      message: 'Are you sure want to done this work?',
+      confirmText: 'Yes',
+      confirmColor: 'info',
+      cancelColor: 'secondary'
+    });
+
+    if (result) {
+      await axios
+        .post(`/api/working-order/done/${data._id}`)
+        .then(res => {
+          if (res.status === 200) {
+            this.getDetailWO();
+          }
+        })
+        .catch(err => err.response.data);
+    }
+  }
+
+  async onReject(data) {
+    const result = await confirm({
+      title: <React.Fragment>Reject Work Order</React.Fragment>,
+      message: 'Are you sure want to reject this work?',
+      confirmText: 'Yes',
+      confirmColor: 'info',
+      cancelColor: 'secondary'
+    });
+
+    if (result) {
+      await axios
+        .post(`/api/working-order/reject/${data._id}`)
+        .then(res => {
+          if (res.status === 200) {
+            this.getDetailWO();
+          }
+        })
+        .catch(err => err.response.data);
+    }
+  }
+
+  async onApprove(data) {
+    const result = await confirm({
+      title: <React.Fragment>Approve Work Order</React.Fragment>,
+      message: 'Are you sure want to approve this work?',
+      confirmText: 'Yes',
+      confirmColor: 'info',
+      cancelColor: 'secondary'
+    });
+
+    if (result) {
+      await axios
+        .post(`/api/working-order/approve/${data._id}`)
+        .then(res => {
+          if (res.status === 200) {
+            this.getDetailWO();
+          }
+        })
+        .catch(err => err.response.data);
+    }
+  }
+
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -75,16 +134,14 @@ export default class Example extends React.Component {
     }
   }
 
-  toggle() {
+  toggleNote() {
     this.setState(prevState => ({
-      modal: !prevState.modal
+      modalNote: !prevState.modalNote
     }));
   }
 
   render() {
-    const { detailWO, division, modal } = this.state;
-
-    console.log(detailWO);
+    const { detailWO, currentUser } = this.state;
 
     return (
       <Card>
@@ -112,16 +169,20 @@ export default class Example extends React.Component {
               <div className='profile'>
                 <h1 className='mb-1 font-20 font-medium'>{detailWO.title}</h1>
               </div>
-              {detailWO.approved_by_manager ? (
+              {detailWO.rejected && (
                 <div className='profile'>
                   <h5>
-                    <Badge color='success' className='ml-0' pill>
-                      Approved at{' '}
-                      {moment(detailWO.start).format('DD-MM-YYYY HH:mm')}
+                    <Badge color='danger' className='ml-0' pill>
+                      Rejected
                     </Badge>
                   </h5>
                 </div>
-              ) : (
+              )}
+              {!(
+                detailWO.approved_by_spv ||
+                detailWO.approved_by_manager ||
+                detailWO.rejected
+              ) && (
                 <div className='profile'>
                   <h5>
                     <Badge color='warning' className='ml-0' pill>
@@ -130,86 +191,105 @@ export default class Example extends React.Component {
                   </h5>
                 </div>
               )}
-              <div className='profile'>
-                <h1 className='mb-0 font-16 font-medium' color='info'>
-                  Deadline{' '}
-                  {moment().isAfter(detailWO.deadline)
-                    ? 'is overdue'
-                    : moment().to(detailWO.deadline)}{' '}
-                  :
-                  <span className='profile-time-approved'>
-                    {moment(detailWO.deadline).format('DD-MM-YYYY HH:mm')}
-                  </span>
-                </h1>
-              </div>
+              {detailWO.approved_by_spv &&
+                !detailWO.approved_by_manager &&
+                !detailWO.done && (
+                  <div className='profile'>
+                    <h5>
+                      <Badge color='warning' className='ml-0' pill>
+                        Approved by Supervisor
+                      </Badge>
+                    </h5>
+                  </div>
+                )}
+              {detailWO.approved_by_spv &&
+                detailWO.approved_by_manager &&
+                !detailWO.done && (
+                  <div className='profile'>
+                    <h5>
+                      <Badge color='success' className='ml-0' pill>
+                        Approved by Manager at{' '}
+                        {moment(detailWO.start).format('DD-MM-YYYY HH:mm')}
+                      </Badge>
+                    </h5>
+                  </div>
+                )}
+              {detailWO.done && (
+                <div className='profile'>
+                  <h5>
+                    <Badge color='info' className='ml-0' pill>
+                      Done at {moment(detailWO.end).format('DD-MM-YYYY HH:mm')}
+                    </Badge>
+                  </h5>
+                </div>
+              )}
+              {!detailWO.done ||
+                (detailWO.rejected && (
+                  <div className='profile'>
+                    <h1 className='mb-0 font-16 font-medium' color='info'>
+                      Deadline{' '}
+                      {moment().isAfter(detailWO.deadline)
+                        ? 'is overdue'
+                        : moment().to(detailWO.deadline)}{' '}
+                      :
+                      <span className='profile-time-approved'>
+                        {moment(detailWO.deadline).format('DD-MM-YYYY HH:mm')}
+                      </span>
+                    </h1>
+                  </div>
+                ))}
               {/* Iki lek login berdasar divisine dewe2, lek gak, gak metu tombol e */}
-              {detailWO.done === false && (
+              {!detailWO.done && !detailWO.rejected && (
                 <div className='profile batas-kanan'>
-                  {division === detailWO.division &&
+                  {currentUser.division === detailWO.division &&
                     detailWO.approved_by_manager && (
+                      <React.Fragment>
+                        <Button
+                          onClick={this.onDone.bind(this, detailWO)}
+                          outline
+                          color='biruicon'
+                          className='profile batas-kanan'>
+                          Done
+                        </Button>
+                        <Button
+                          outline
+                          color='success'
+                          className='profile batas-kanan'>
+                          Save
+                        </Button>
+                      </React.Fragment>
+                    )}
+                  {(currentUser.role === 'manager' &&
+                    !detailWO.approved_by_manager &&
+                    detailWO.approved_by_spv) ||
+                  (currentUser.role === 'supervisor' &&
+                    !detailWO.approved_by_spv) ? (
+                    <React.Fragment>
                       <Button
+                        onClick={this.onReject.bind(this, detailWO)}
                         outline
                         color='danger'
-                        className='profile batas-kanan'
-                        onClick={this.toggle}>
-                        {this.props.buttonLabel}Done
+                        className='profile batas-kanan'>
+                        Reject
                       </Button>
-                    )}
-                  <Modal
-                    isOpen={modal}
-                    toggle={this.toggle}
-                    className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Done Work</ModalHeader>
-                    <ModalBody>Are you sure want to end this work?</ModalBody>
-                    <ModalFooter>
-                      <Button color='primary' onClick={this.toggle}>
-                        Yes
-                      </Button>{' '}
-                      <Button color='secondary' onClick={this.toggle}>
-                        Cancel
-                      </Button>
-                    </ModalFooter>
-                  </Modal>
-                  {/* Digawe lek user mitek edit nang halaman divisi */}
-                  {division === detailWO.division &&
-                    detailWO.approved_by_manager && (
                       <Button
+                        onClick={this.onApprove.bind(this, detailWO)}
                         outline
                         color='success'
                         className='profile batas-kanan'>
-                        Save
+                        Approve
                       </Button>
-                    )}
-                  <Button
-                    outline
-                    color='danger'
-                    className='profile batas-kanan'
-                    onClick={this.toggle}>
-                    {this.props.buttonLabel}Decline
-                  </Button>
-                  <Modal
-                    isOpen={modal}
-                    toggle={this.toggle}
-                    className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Decline Work</ModalHeader>
-                    <ModalBody>
-                      Are you sure want to decline this work?
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color='primary' onClick={this.toggle}>
-                        Yes
-                      </Button>{' '}
-                      <Button color='secondary' onClick={this.toggle}>
-                        Cancel
+                      <Button
+                        onClick={this.toggleNote}
+                        outline
+                        color='secondary'
+                        className='profile batas-kanan'>
+                        Add Note
                       </Button>
-                    </ModalFooter>
-                  </Modal>
-                  <Button
-                    outline
-                    color='success'
-                    className='profile batas-kanan'>
-                    Approve
-                  </Button>
+                    </React.Fragment>
+                  ) : (
+                    ''
+                  )}
                 </div>
               )}
             </Col>
@@ -249,22 +329,23 @@ export default class Example extends React.Component {
                           <thead>
                             <tr className='border-0'>
                               <th className='border-0'>Work Plan</th>
-                              <th className='border-0'>Status</th>
                             </tr>
                           </thead>
                           <tbody>
                             {detailWO.plans &&
-                              detailWO.plans.map(plan => {
+                              detailWO.plans.map((plan, id) => {
                                 return (
-                                  <tr>
-                                    <td>{plan.name}</td>
+                                  <tr key={id}>
+                                    {/* <td>{plan.name}</td> */}
                                     <td>
                                       <CustomInput
-                                        type='checkbox'
-                                        id='exampleCustomCheckbox1'
-                                        label={
-                                          plan.done ? 'Done' : 'On Progress'
+                                        disabled={
+                                          currentUser.role === 'manager' ||
+                                          currentUser.role === 'supervisor'
                                         }
+                                        type='checkbox'
+                                        id={plan._id}
+                                        label={plan.name}
                                       />
                                     </td>
                                   </tr>
@@ -275,7 +356,6 @@ export default class Example extends React.Component {
                       </Col>
                     </Row>
                   </TabPane>
-
                   <TabPane tabId='2'>
                     <Row>
                       <Col sm='12'>
