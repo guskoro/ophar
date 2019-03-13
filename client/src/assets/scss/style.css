@@ -2624,7 +2624,7 @@ input[type="button"].btn-block {
   display: none;
   float: left;
   min-width: 10rem;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0 0 0;
   margin: 0.125rem 0 0;
   font-size: 0.875rem;
   color: #3e5569;
@@ -2632,7 +2632,7 @@ input[type="button"].btn-block {
   list-style: none;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid #e9ecef;
+  border: 1px solid #001e6f;
   border-radius: 2px;
   box-shadow: 0 50px 100px rgba(50, 50, 93, 0.1), 0 15px 35px rgba(50, 50, 93, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1); }
 
@@ -2666,6 +2666,7 @@ input[type="button"].btn-block {
   right: auto;
   left: 100%;
   margin-top: 0;
+  margin-bottom: 0;
   margin-left: 0.125rem; }
 
 .dropright .dropdown-toggle::after {
@@ -2691,6 +2692,7 @@ input[type="button"].btn-block {
   right: 100%;
   left: auto;
   margin-top: 0;
+  margin-bottom: 0;
   margin-right: 0.125rem; }
 
 .dropleft .dropdown-toggle::after {
@@ -2737,19 +2739,20 @@ input[type="button"].btn-block {
   padding: 0.65rem 1rem;
   clear: both;
   font-weight: 400;
-  color: #212529;
+  color: #fff;
   text-align: inherit;
   white-space: nowrap;
-  background-color: #f3f5fa;
+  background-color: #001e6f;
   border: 0; }
   .dropdown-item:hover, .dropdown-item:focus {
-    color: #f3f5fa;
+    color: #fff;
+    text-decoration: underline;
     text-decoration: none;
-    background-color: #001e6f; }
+    background-color: #021241; }
   .dropdown-item.active, .dropdown-item:active {
     color: #fff;
     text-decoration: none;
-    background-color: #2962ff; }
+    background-color: #021241; }
   .dropdown-item.disabled, .dropdown-item:disabled {
     color: #8898aa;
     background-color: transparent; }

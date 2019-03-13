@@ -256,11 +256,15 @@ class Projects extends React.Component {
                           className={classnames('fa fa-circle', {
                             'text-danger': data.rejected,
                             'text-warning': !(
-                              data.approved_by_spv && data.approved_by_manager
+                              (data.approved_by_spv &&
+                                data.approved_by_manager) ||
+                              data.rejected
                             ),
                             'text-success':
-                              data.approved_by_spv && data.approved_by_manager,
-                            'text-secondary': data.done
+                              data.approved_by_spv &&
+                              data.approved_by_manager &&
+                              !data.done,
+                            'text-biruicon': data.done
                           })}
                           id={`indicator-${id}`}
                         />
@@ -271,10 +275,13 @@ class Projects extends React.Component {
                           toggle={() => this.toggle(`indicator-${id}`)}>
                           {data.rejected && 'Rejected'}
                           {!(
-                            data.approved_by_spv && data.approved_by_manager
+                            (data.approved_by_spv &&
+                              data.approved_by_manager) ||
+                            data.rejected
                           ) && 'Pending Approval'}
                           {data.approved_by_spv &&
                             data.approved_by_manager &&
+                            !data.done &&
                             'On Progress'}
                           {data.done && 'Done'}
                         </Tooltip>
@@ -289,7 +296,7 @@ class Projects extends React.Component {
                       {this.state.division === data.division && (
                         <td>
                           <Button
-                            disabled={data.approved_by_spv}
+                            disabled={data.approved_by_spv && !data.done}
                             onClick={this.onDelete.bind(this, data)}
                             className='profile-time-approved'
                             outline

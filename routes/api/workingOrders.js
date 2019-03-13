@@ -17,6 +17,7 @@ router.get('/', (req, res) => {
   if (req.query.approved_by_spv)
     query.approved_by_spv = req.query.approved_by_spv;
   if (req.query.done) query.done = req.query.done;
+  if (req.query.rejected) query.rejected = req.query.rejected;
   if (req.query.division)
     query.division = {
       $regex: req.query.division,
@@ -110,7 +111,7 @@ router.get('/:id', (req, res) => {
     .populate('priority', 'name-_id')
     .then(workingOrder => {
       const woCustom = {
-        _id: WorkingOrder._id,
+        _id: workingOrder._id,
         title: workingOrder.title,
         description: workingOrder.description,
         division: workingOrder.division,
@@ -121,6 +122,7 @@ router.get('/:id', (req, res) => {
         note: workingOrder.note,
         approved_by_spv: workingOrder.approved_by_spv,
         approved_by_manager: workingOrder.approved_by_manager,
+        rejected: workingOrder.rejected,
         done: workingOrder.done,
         start: workingOrder.start,
         deadline: workingOrder.deadline,
@@ -199,6 +201,39 @@ router.post(
 );
 
 router.post(
+  '/reject/:id',
+  passport.authenticate('jwt', {
+    session: false
+  }),
+  (req, res) => {
+    WorkingOrder.findById(req.params.id)
+      .then(workingOrder => {
+        User.findById(req.user.id)
+          .populate('role', 'name-_id')
+          .then(user => {
+            if (
+              user.role.name === 'manager' ||
+              user.role.name === 'supervisor'
+            ) {
+              workingOrder.rejected = !workingOrder.rejected;
+            } else {
+              return res.status(403).json({
+                message:
+                  'Maaf, anda tidak mempunyai otoritas untuk reject working order'
+              });
+            }
+            workingOrder
+              .save()
+              .then(newWorkingOrder => res.status(200).json(newWorkingOrder))
+              .catch(err => res.status(400).json(err));
+          })
+          .catch(err => res.status(404).json(err));
+      })
+      .catch(err => res.status(404).json(err));
+  }
+);
+
+router.post(
   '/done/:id',
   passport.authenticate('jwt', {
     session: false
@@ -218,13 +253,17 @@ router.post(
             if (
               !(
                 workingOrder.approved_by_manager && workingOrder.approved_by_spv
-              )
+              ) ||
+              workingOrder.rejected
             ) {
               return res.status(400).json({
-                message: 'Maaf, working order anda belum di-approve'
+                message:
+                  'Maaf, working order anda belum di-approve atau telah di-reject'
               });
             }
-
+            workingOrder.plans.map(plan => {
+              plan.done = true;
+            });
             workingOrder.done = !workingOrder.done;
             workingOrder.end = new Date();
             workingOrder

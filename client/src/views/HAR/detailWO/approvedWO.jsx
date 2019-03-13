@@ -69,9 +69,9 @@ class Projects extends React.Component {
   }
 
   async getWO() {
-    let query = 'approved_by_spv=false';
+    let query = 'approved_by_spv=false&rejected=false';
     if (this.state.role === 'manager') {
-      query = 'approved_by_spv=true&approved_by_manager=false';
+      query = 'approved_by_spv=true&approved_by_manager=false&rejected=false';
     }
 
     await axios
@@ -99,7 +99,27 @@ class Projects extends React.Component {
         .post(`/api/working-order/approve/${data._id}`)
         .then(res => {
           if (res.status === 200) {
-            // this.toggleA();
+            this.getWO();
+          }
+        })
+        .catch(err => err.response.data);
+    }
+  }
+
+  async onReject(data) {
+    const result = await confirm({
+      title: <React.Fragment>Reject Work Order</React.Fragment>,
+      message: 'Are you sure want to reject this work?',
+      confirmText: 'Yes',
+      confirmColor: 'info',
+      cancelColor: 'secondary'
+    });
+
+    if (result) {
+      await axios
+        .post(`/api/working-order/reject/${data._id}`)
+        .then(res => {
+          if (res.status === 200) {
             this.getWO();
           }
         })
@@ -216,8 +236,7 @@ class Projects extends React.Component {
                         className='profile-time-approved'
                         outline
                         color='danger'
-                        // onClick={this.toggleR}
-                      >
+                        onClick={this.onReject.bind(this, data)}>
                         <i className='mdi mdi-close' />
                       </Button>
                     </td>
