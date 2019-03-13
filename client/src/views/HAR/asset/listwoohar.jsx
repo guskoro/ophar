@@ -282,15 +282,15 @@ class HarWO extends React.Component {
                           className={classnames('fa fa-circle', {
                             'text-danger': data.rejected,
                             'text-warning': !(
-                              data.approved_by_spv &&
-                              data.approved_by_manager &&
-                              data.done
+                              (data.approved_by_spv &&
+                                data.approved_by_manager) ||
+                              data.rejected
                             ),
                             'text-success':
                               data.approved_by_spv &&
                               data.approved_by_manager &&
                               !data.done,
-                            'text-secondary': data.done
+                            'text-biruicon': data.done
                           })}
                           id={`indicator-${id}`}
                         />
@@ -301,9 +301,9 @@ class HarWO extends React.Component {
                           toggle={() => this.toggle(`indicator-${id}`)}>
                           {data.rejected && 'Rejected'}
                           {!(
-                            data.approved_by_spv &&
-                            data.approved_by_manager &&
-                            data.done
+                            (data.approved_by_spv &&
+                              data.approved_by_manager) ||
+                            data.rejected
                           ) && 'Pending Approval'}
                           {data.approved_by_spv &&
                             data.approved_by_manager &&

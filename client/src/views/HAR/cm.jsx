@@ -42,6 +42,7 @@ class Projects extends React.Component {
     };
   }
 
+  // Search
   handleChange(e) {
     let currentList = [];
     let newList = [];
@@ -59,6 +60,7 @@ class Projects extends React.Component {
       filtered: newList
     });
   }
+
   // Pagination
   handleClick(e, index) {
     e.preventDefault();

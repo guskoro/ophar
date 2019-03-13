@@ -32,16 +32,37 @@ class Projects extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleChange = this.handleChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.pageSize = 5;
     // this.onChange = this.onChange.bind(this);
     this.state = {
       WOs: [],
+      filtered: [],
       currentPage: 0,
       pagesCount: 0,
       modal: false,
       role: ''
     };
+  }
+
+  // Search
+  handleChange(e) {
+    let currentList = [];
+    let newList = [];
+    if (e.target.value !== '') {
+      currentList = this.state.WOs;
+      newList = currentList.filter(item => {
+        const lc = item.title.toLowerCase();
+        const filter = e.target.value.toLowerCase();
+        return lc.includes(filter);
+      });
+    } else {
+      newList = this.state.WOs;
+    }
+    this.setState({
+      filtered: newList
+    });
   }
 
   handleClick(e, index) {
@@ -79,6 +100,7 @@ class Projects extends React.Component {
       .then(res => {
         this.setState({
           WOs: res.data,
+          filtered: res.data,
           pagesCount: Math.ceil(res.data.length / this.pageSize)
         });
       })
@@ -160,7 +182,12 @@ class Projects extends React.Component {
               <div className='dl'>
                 <InputGroup>
                   <InputGroupAddon addonType='append'>
-                    <Input placeholder='Search..' />
+                    <Input
+                      type='text'
+                      className='input'
+                      onChange={this.handleChange}
+                      placeholder='Search..'
+                    />
                     <Button color='biruicon'>
                       <i className='mdi mdi-magnify' />
                     </Button>
@@ -185,97 +212,99 @@ class Projects extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {WOs.slice(
-                currentPage * this.pageSize,
-                (currentPage + 1) * this.pageSize
-              ).map((data, id) => {
-                return (
-                  <tr key={id}>
-                    <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
-                    <td>
-                      <div className='d-flex no-block align-items-center'>
-                        <div className='mr-2'>
-                          <img
-                            src={`https:${data.pic.avatar}`}
-                            alt='user'
-                            className='rounded-circle'
-                            width='45'
-                          />
+              {this.state.filtered
+                .slice(
+                  currentPage * this.pageSize,
+                  (currentPage + 1) * this.pageSize
+                )
+                .map((data, id) => {
+                  return (
+                    <tr key={id}>
+                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                      <td>
+                        <div className='d-flex no-block align-items-center'>
+                          <div className='mr-2'>
+                            <img
+                              src={`https:${data.pic.avatar}`}
+                              alt='user'
+                              className='rounded-circle'
+                              width='45'
+                            />
+                          </div>
+                          <div className=''>
+                            <h5 className='mb-0 font-16 font-medium'>
+                              {data.pic.name}
+                            </h5>
+                            <span>{data.division}</span>
+                          </div>
                         </div>
-                        <div className=''>
-                          <h5 className='mb-0 font-16 font-medium'>
-                            {data.pic.name}
-                          </h5>
-                          <span>{data.division}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>{data.type.name}</td>
-                    <td>{data.title}</td>
-                    <td>{data.priority.name}</td>
-                    <td>{data.program}</td>
-                    <td className='blue-grey-text  text-darken-4 font-medium'>
-                      {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
-                    </td>
-                    <td>
-                      <Link to={{ pathname: `/detailWO/${data._id}` }}>
-                        <Button className='btn' outline color='success'>
-                          Show
-                        </Button>
-                      </Link>
-                    </td>
-                    <td>
-                      <Button
-                        className='btn'
-                        outline
-                        color='biruicon'
-                        onClick={this.onApprove.bind(this, data)}>
-                        <i className='mdi mdi-check' />
-                      </Button>
-                      <Button
-                        className='profile-time-approved'
-                        outline
-                        color='danger'
-                        onClick={this.onReject.bind(this, data)}>
-                        <i className='mdi mdi-close' />
-                      </Button>
-                    </td>
-                    <td>
-                      <Button outline color='secondary' onClick={this.toggle}>
-                        {this.props.buttonLabel}Add a note
-                      </Button>
-                      <Modal
-                        isOpen={this.state.modal}
-                        toggle={this.toggle}
-                        className={this.props.className}>
-                        <ModalHeader toggle={this.toggle}>
-                          Add a note
-                        </ModalHeader>
-                        <ModalBody>
-                          <Form>
-                            <FormGroup>
-                              <Label for='exampleText'>Work Note</Label>
-                              <Input
-                                type='textarea'
-                                name='text'
-                                id='exampleText'
-                              />
-                            </FormGroup>
-                          </Form>
-                        </ModalBody>
-                        <ModalFooter>
-                          <Button color='biruicon' onClick={this.toggle}>
-                            Submit
-                          </Button>{' '}
-                          <Button color='secondary' onClick={this.toggle}>
-                            Cancel
+                      </td>
+                      <td>{data.type.name}</td>
+                      <td>{data.title}</td>
+                      <td>{data.priority.name}</td>
+                      <td>{data.program}</td>
+                      <td className='blue-grey-text  text-darken-4 font-medium'>
+                        {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
+                      </td>
+                      <td>
+                        <Link to={{ pathname: `/detailWO/${data._id}` }}>
+                          <Button className='btn' outline color='success'>
+                            Show
                           </Button>
-                        </ModalFooter>
-                      </Modal>
-                    </td>
-                  </tr>
-                );
-              })}
+                        </Link>
+                      </td>
+                      <td>
+                        <Button
+                          className='btn'
+                          outline
+                          color='biruicon'
+                          onClick={this.onApprove.bind(this, data)}>
+                          <i className='mdi mdi-check' />
+                        </Button>
+                        <Button
+                          className='profile-time-approved'
+                          outline
+                          color='danger'
+                          onClick={this.onReject.bind(this, data)}>
+                          <i className='mdi mdi-close' />
+                        </Button>
+                      </td>
+                      <td>
+                        <Button outline color='secondary' onClick={this.toggle}>
+                          {this.props.buttonLabel}Add a note
+                        </Button>
+                        <Modal
+                          isOpen={this.state.modal}
+                          toggle={this.toggle}
+                          className={this.props.className}>
+                          <ModalHeader toggle={this.toggle}>
+                            Add a note
+                          </ModalHeader>
+                          <ModalBody>
+                            <Form>
+                              <FormGroup>
+                                <Label for='exampleText'>Work Note</Label>
+                                <Input
+                                  type='textarea'
+                                  name='text'
+                                  id='exampleText'
+                                />
+                              </FormGroup>
+                            </Form>
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button color='biruicon' onClick={this.toggle}>
+                              Submit
+                            </Button>{' '}
+                            <Button color='secondary' onClick={this.toggle}>
+                              Cancel
+                            </Button>
+                          </ModalFooter>
+                        </Modal>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </Table>
           <Row>
