@@ -9,10 +9,6 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Pagination,
   PaginationItem,
   PaginationLink,
@@ -21,6 +17,7 @@ import {
   Tooltip
 } from 'reactstrap';
 import axios from 'axios';
+import confirm from 'reactstrap-confirm';
 import jwt_decode from 'jwt-decode';
 import classnames from 'classnames';
 import moment from 'moment';
@@ -115,6 +112,27 @@ class Projects extends React.Component {
         });
       })
       .catch(err => console.log(err.response.data));
+  }
+
+  async onDelete(data) {
+    const result = await confirm({
+      title: <React.Fragment>Delete Work Order</React.Fragment>,
+      message: 'Are you sure want to delete this work?',
+      confirmText: 'Yes',
+      confirmColor: 'info',
+      cancelColor: 'secondary'
+    });
+
+    if (result) {
+      await axios
+        .delete(`/api/working-order/${data._id}`)
+        .then(res => {
+          if (res.status === 200) {
+            this.getWO();
+          }
+        })
+        .catch(err => err.response.data);
+    }
   }
 
   async onChange(e) {
@@ -295,35 +313,13 @@ class Projects extends React.Component {
                       {this.state.division === 'Patrols and Controls' && (
                         <td>
                           <Button
-                            onClick={this.toggleModals}
+                            disabled={data.approved_by_spv}
+                            onClick={this.onDelete.bind(this, data)}
                             className='profile-time-approved'
                             outline
                             color='danger'>
                             <i className='mdi mdi-delete' />
-                          </Button>{' '}
-                          <Modal
-                            isOpen={this.state.modal}
-                            toggle={this.toggleModals}
-                            className={this.props.className}>
-                            <ModalHeader toggle={this.toggleModals}>
-                              Delete
-                            </ModalHeader>
-                            <ModalBody>
-                              Are you sure want to delete this data?
-                            </ModalBody>
-                            <ModalFooter>
-                              <Button
-                                color='primary'
-                                onClick={this.onDelete.bind(this, data)}>
-                                Yes
-                              </Button>{' '}
-                              <Button
-                                color='secondary'
-                                onClick={this.toggleModals}>
-                                Cancel
-                              </Button>
-                            </ModalFooter>
-                          </Modal>
+                          </Button>
                         </td>
                       )}
                     </tr>

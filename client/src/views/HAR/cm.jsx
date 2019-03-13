@@ -9,10 +9,6 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Pagination,
   PaginationItem,
   PaginationLink,
@@ -20,6 +16,7 @@ import {
   Table,
   Tooltip
 } from 'reactstrap';
+
 import axios from 'axios';
 import confirm from 'reactstrap-confirm';
 import classnames from 'classnames';
