@@ -23,7 +23,7 @@
     "react-perfect-scrollbar": "1.2.0",
     "react-redux": "^6.0.1",
     "react-router-dom": "4.2.2",
-    "react-scripts": "^2.1.5",
+    "react-scripts": "^2.1.8",
     "react-select": "^2.4.1",
     "reactstrap": "6.4.0",
     "reactstrap-confirm": "^1.0.4",
