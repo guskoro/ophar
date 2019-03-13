@@ -17,12 +17,13 @@ import {
   Nav,
   Navbar,
   NavbarBrand,
+  NavItem,
   UncontrolledDropdown
 } from 'reactstrap';
 
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
-import { NavLink, withRouter } from 'react-router-dom';
+import { Link, NavLink, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { loginUser } from '../../actions/authAction';
@@ -42,6 +43,7 @@ class Header extends React.Component {
     this.toggleLogin = this.toggleLogin.bind(this);
 
     this.toggle = this.toggle.bind(this);
+    this.logout = this.logout.bind(this);
     this.showMobilemenu = this.showMobilemenu.bind(this);
     this.state = {
       errors: [],
@@ -74,14 +76,26 @@ class Header extends React.Component {
 
   getCurrentUser() {
     const token = localStorage.getItem('jwtToken');
+    setAuthToken(token);
     if (token) {
-      setAuthToken(token);
       const current = jwt_decode(token);
       this.setState({
         currentUser: current,
         isAuthenticated: true
       });
+    } else {
+      this.setState({
+        currentUser: {},
+        isAuthenticated: false
+      });
     }
+  }
+
+  logout() {
+    this.props.history.push('/');
+    localStorage.removeItem('jwtToken');
+    this.getCurrentUser();
+    this.toggle();
   }
 
   onSubmit(e) {
@@ -187,9 +201,12 @@ class Header extends React.Component {
             <Nav className='ml-auto float-right' navbar>
               {/* Tombol gawe lek gak login */}
               {isAuthenticated == false && (
-                <Button color='biruicon' onClick={this.toggleLogin}>
+                <NavLink
+                  className='nav-item-custom mr-3'
+                  to=''
+                  onClick={this.toggleLogin}>
                   Login
-                </Button>
+                </NavLink>
               )}
               <Modal
                 isOpen={this.state.modal}
@@ -236,8 +253,13 @@ class Header extends React.Component {
                 </Form>
               </Modal>
               {/* <NavItem>
-								<a href="" className="btn btn-danger mr-2" style={{ marginTop: '15px' }}>Upgrade to Pro</a>
-							</NavItem> */}
+                <a
+                  href=''
+                  className='btn btn-danger mr-2'
+                  style={{ marginTop: '15px' }}>
+                  Upgrade to Pro
+                </a>
+              </NavItem> */}
               {/*--------------------------------------------------------------------------------*/}
               {/* Start Profile Dropdown                                                         */}
               {/*--------------------------------------------------------------------------------*/}
@@ -245,6 +267,7 @@ class Header extends React.Component {
                 <UncontrolledDropdown nav inNavbar>
                   {/* Logo gawe lek wes login tok */}
                   <DropdownToggle nav caret className='pro-pic'>
+                    <p className='text-logo batas-kanan'>{currentUser.name}</p>
                     <img
                       src={`https:${currentUser.avatar}`}
                       alt='user'
@@ -255,31 +278,24 @@ class Header extends React.Component {
                   <DropdownMenu right className='user-dd'>
                     {(currentUser.role === 'manager' ||
                       currentUser.role === 'supervisor') && (
-                      <NavLink to='/newWO'>
-                        <DropdownItem divider />
-                        <Button
-                          color='ndewo'
-                          className='btn-rounded ml-3 mb-2 mt-2'>
-                          New Workordes
-                        </Button>
-                      </NavLink>
+                      <Link to='/newWO'>
+                        <DropdownItem className='dropdown-item-custom'>
+                          New Work Orders
+                        </DropdownItem>
+                      </Link>
                     )}
                     {currentUser.role === 'admin' && (
-                      <NavLink to='/register'>
-                        <DropdownItem divider />
-                        <Button
-                          color='ndewo'
-                          className='btn-rounded ml-3 mb-2 mt-2'>
-                          Users
-                        </Button>
-                      </NavLink>
+                      <Link to='/register'>
+                        <DropdownItem className='dropdown-item-custom'>
+                          List Users
+                        </DropdownItem>
+                      </Link>
                     )}
-                    <DropdownItem divider />
-                    <Button
-                      color='ndewo'
-                      className='btn-rounded ml-3 mb-2 mt-2'>
+                    <DropdownItem
+                      className='dropdown-item-custom'
+                      onClick={this.logout}>
                       Logout
-                    </Button>
+                    </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
               )}

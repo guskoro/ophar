@@ -17,7 +17,6 @@ import {
   Tooltip
 } from 'reactstrap';
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 import classnames from 'classnames';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
@@ -54,13 +53,14 @@ class Projects extends React.Component {
   }
 
   getCurrentUser() {
-    const token = localStorage.getItem('jwtToken');
-    if (token) {
-      const current = jwt_decode(token);
-      this.setState({
-        division: current.division
-      });
-    }
+    axios
+      .get('/api/user/current')
+      .then(currentUser => {
+        this.setState({
+          division: currentUser.data.division
+        });
+      })
+      .catch(err => console.log(err.response.data));
   }
 
   async getWO() {

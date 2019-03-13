@@ -10,17 +10,20 @@
     -moz-transform: translateY(-1px);
     -o-transform: translateY(-1px);
   }
+
   &:focus,
   &.focus {
     outline: 0;
     box-shadow: none;
   }
 }
+
 .btn-circle {
   border-radius: 100%;
   width: 40px;
   height: 40px;
   padding: 10px;
+
   &:not(:disabled):not(.disabled):active,
   &:not(:disabled):not(.disabled).active {
     @include box-shadow($btn-active-box-shadow);
@@ -29,12 +32,14 @@
       @include box-shadow($btn-focus-box-shadow, $btn-active-box-shadow);
     }
   }
+
   &.btn-sm {
     width: 35px;
     height: 35px;
     padding: 8px 10px;
     font-size: 14px;
   }
+
   &.btn-lg {
     width: 50px;
     height: 50px;
@@ -42,6 +47,7 @@
     font-size: 18px;
     line-height: 23px;
   }
+
   &.btn-xl {
     width: 70px;
     height: 70px;
@@ -52,6 +58,7 @@
 
 .btn-rounded {
   border-radius: 60px;
+
   &:not(:disabled):not(.disabled):active,
   &:not(:disabled):not(.disabled).active {
     @include box-shadow($btn-active-box-shadow);
@@ -60,21 +67,26 @@
       @include box-shadow($btn-focus-box-shadow, $btn-active-box-shadow);
     }
   }
+
   &.btn-lg {
     padding: 0.75rem 1.5rem;
   }
+
   &.btn-sm {
     padding: 0.25rem 0.75rem;
     font-size: 12px;
   }
+
   &.btn-md {
     padding: 12px 35px;
     font-size: 16px;
   }
 }
+
 // Brand buttons
 
-@each $color, $value in $brand-colors {
+@each $color,
+$value in $brand-colors {
   .btn-#{$color} {
     @include button-variant($value, $value);
   }
