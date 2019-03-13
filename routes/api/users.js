@@ -21,75 +21,82 @@ router.get('/', (req, res) => {
   if (req.query.role) query.role = req.query.role;
 
   User.find(query)
-    .populate('role', 'name-_id')
-    .populate('division', 'name-_id')
+    .select('-password')
+    .populate('role', 'name')
+    .populate('division', 'name')
     .then(users => res.status(200).json(users))
     .catch(err => res.status(400).json(err));
 });
 
-router.post('/register', (req, res) => {
-  User.findById(req.user.id)
-    .populate('role', 'name-_id')
-    .then(user => {
-      if (user.role.name != 'admin')
-        return res
-          .status(403)
-          .json({ access: 'Sorry, you dont have access to add user' });
+router.post(
+  '/register',
+  passport.authenticate('jwt', {
+    session: false
+  }),
+  (req, res) => {
+    User.findById(req.user.id)
+      .populate('role', 'name-_id')
+      .then(user => {
+        if (user.role.name != 'admin')
+          return res
+            .status(403)
+            .json({ access: 'Sorry, you dont have access to add user' });
 
-      const { errors, isValid } = validateRegisterInput(req.body);
+        const { errors, isValid } = validateRegisterInput(req.body);
 
-      if (!isValid) {
-        return res.status(400).json(errors);
-      }
+        if (!isValid) {
+          return res.status(400).json(errors);
+        }
 
-      User.findOne({
-        email: req.body.email
-      })
-        .then(user => {
-          if (user) {
-            errors.email = 'Email is already taken';
-
-            return res.status(400).json(errors);
-          }
-
-          Role.findById(req.body.role)
-            .then(role => {
-              const avatar = gravatar.url(req.body.email, {
-                s: '200',
-                r: 'pg',
-                d: 'mm'
-              });
-
-              const newUser = new User({
-                name: req.body.name,
-                email: req.body.email,
-                avatar,
-                role,
-                password: req.body.password
-              });
-
-              if (req.body.division) {
-                newUser.division = req.body.division;
-              }
-
-              bcrypt.genSalt(10, (err, salt) => {
-                if (err) return res.status(400).json(err);
-                bcrypt.hash(newUser.password, salt, (err, hash) => {
-                  if (err) res.status(400).json(err);
-                  newUser.password = hash;
-                  newUser
-                    .save()
-                    .then(user => res.status(200).json(user))
-                    .catch(err => res.status(400).json(err));
-                });
-              });
-            })
-            .catch(err => res.status(400).json(err));
+        User.findOne({
+          email: req.body.email
         })
-        .catch(err => res.status(400).json(err));
-    })
-    .catch(err => res.status(404).json(err));
-});
+          .then(user => {
+            if (user) {
+              errors.email = 'Email is already taken';
+
+              return res.status(400).json(errors);
+            }
+
+            Role.findById(req.body.role)
+              .then(role => {
+                const avatar = gravatar.url(req.body.email, {
+                  s: '200',
+                  r: 'pg',
+                  d: 'mm'
+                });
+
+                const newUser = new User({
+                  name: req.body.name,
+                  email: req.body.email,
+                  avatar,
+                  role,
+                  password: req.body.password
+                });
+
+                if (req.body.division) {
+                  newUser.division = req.body.division;
+                }
+
+                bcrypt.genSalt(10, (err, salt) => {
+                  if (err) return res.status(400).json(err);
+                  bcrypt.hash(newUser.password, salt, (err, hash) => {
+                    if (err) res.status(400).json(err);
+                    newUser.password = hash;
+                    newUser
+                      .save()
+                      .then(user => res.status(200).json(user))
+                      .catch(err => res.status(400).json(err));
+                  });
+                });
+              })
+              .catch(err => res.status(400).json(err));
+          })
+          .catch(err => res.status(400).json(err));
+      })
+      .catch(err => res.status(404).json(err));
+  }
+);
 
 router.post('/login', (req, res) => {
   const { errors, isValid } = validateLoginInput(req.body);
@@ -120,8 +127,7 @@ router.post('/login', (req, res) => {
               id: user._id,
               name: user.name,
               avatar: user.avatar,
-              role: user.role.name,
-              division: user.division.name
+              role: user.role.name
             };
 
             return jwt.sign(payload, process.env.JWT_KEY, (err, token) => {
@@ -141,43 +147,37 @@ router.post('/login', (req, res) => {
     .catch(err => res.status(400).json(err));
 });
 
-router.post('/logout', (req, res) => {});
-
 router.get(
   '/current',
   passport.authenticate('jwt', {
     session: false
   }),
   (req, res) => {
-    let user = {};
+    User.findById(req.user.id)
+      .select('-password')
+      .populate('role', 'name-_id')
+      .populate('division', 'name-_id')
+      .then(user => {
+        let userResponse = {};
 
-    Role.findById(req.user.role)
-      .then(role => {
-        user.role = role;
+        userResponse._id = user._id;
+        userResponse.name = user.name;
+        userResponse.email = user.email;
+        userResponse.avatar = user.avatar;
+        userResponse.role = user.role.name;
 
-        Division.findById(req.user.division)
-          .then(division => {
-            user.division = division;
-
-            res.json({
-              _id: req.user.id,
-              name: req.user.name,
-              email: req.user.email,
-              avatar: req.user.avatar,
-              role: user.role.name,
-              division: user.division.name
-            });
-          })
-          .catch(err => res.status(404).json(err));
+        if (user.division) {
+          userResponse.division = user.division.name;
+        }
+        res.json(userResponse);
       })
       .catch(err => res.status(404).json(err));
-
-    console.log(user);
   }
 );
 
 router.get('/:id', (req, res) => {
   User.findById(req.params.id)
+    .select('-password')
     .then(user => res.status(200).json(user))
     .catch(err => res.status(404).json(err));
 });
@@ -199,8 +199,12 @@ router.patch(
             if (req.body._id) {
               delete req.body._id;
             }
+            if (req.body.division) {
+              delete req.body.division;
+            }
             for (let i in req.body) {
               user[i] = req.body[i];
+              console.log(i);
             }
             user
               .save()

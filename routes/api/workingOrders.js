@@ -108,7 +108,31 @@ router.get('/:id', (req, res) => {
     .populate('pic')
     .populate('type', 'name-_id')
     .populate('priority', 'name-_id')
-    .then(workingOrder => res.json(workingOrder))
+    .then(workingOrder => {
+      const woCustom = {
+        _id: WorkingOrder._id,
+        title: workingOrder.title,
+        description: workingOrder.description,
+        division: workingOrder.division,
+        type: workingOrder.type.name,
+        priority: workingOrder.priority.name,
+        plans: workingOrder.plans,
+        program: workingOrder.program,
+        note: workingOrder.note,
+        approved_by_spv: workingOrder.approved_by_spv,
+        approved_by_manager: workingOrder.approved_by_manager,
+        done: workingOrder.done,
+        start: workingOrder.start,
+        deadline: workingOrder.deadline,
+        end: workingOrder.end,
+        created_at: workingOrder.created_at,
+        pic_name: workingOrder.pic.name,
+        pic_email: workingOrder.pic.email,
+        pic_avatar: workingOrder.pic.avatar
+      };
+
+      return res.json(woCustom);
+    })
     .catch(err => res.status(404).json(err));
 });
 
@@ -219,16 +243,19 @@ router.delete(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     User.findById(req.user.id)
-      .populate('role', 'name-_id')
+      .populate('division', 'name-_id')
       .then(user => {
-        if (user.role.name != 'admin')
-          return res
-            .status(403)
-            .json({ access: 'Maaf, anda tidak mempunyai access untuk ini' });
-
-        WorkingOrder.findByIdAndDelete(req.params.id)
+        WorkingOrder.findById(req.params.id)
           .then(workingOrder => {
-            res.json(workingOrder);
+            if (user.division.name != workingOrder.division)
+              return res.status(403).json({
+                access:
+                  'Sorry, you dont have access to delete this working order'
+              });
+
+            workingOrder.delete();
+            workingOrder.save();
+            return res.json(workingOrder);
           })
           .catch(err => res.status(404).json(err));
       })

@@ -64,6 +64,7 @@
 
   .dropdown-toggle {
     @include caret(right);
+
     &::after {
       vertical-align: 0;
     }
@@ -81,6 +82,7 @@
 
   .dropdown-toggle {
     @include caret(left);
+
     &::before {
       vertical-align: 0;
     }
@@ -90,6 +92,7 @@
 // When enabled Popper.js, reset basic dropdown position
 // stylelint-disable no-duplicate-selectors
 .dropdown-menu {
+
   &[x-placement^="top"],
   &[x-placement^="right"],
   &[x-placement^="bottom"],
@@ -98,6 +101,7 @@
     bottom: auto;
   }
 }
+
 // stylelint-enable no-duplicate-selectors
 
 // Dividers (basically an `<hr>`) within the dropdown
@@ -117,13 +121,14 @@
   color: $dropdown-link-color;
   text-align: inherit; // For `<button>`s
   white-space: nowrap; // prevent links from randomly breaking onto new lines
-  background-color: transparent; // For `<button>`s
+  background-color: #f3f5fa; // For `<button>`s
   border: 0; // For `<button>`s
 
   @include hover-focus {
-    color: $dropdown-link-hover-color;
+    color: #f3f5fa;
+    // background-color: #001e6f;
     text-decoration: none;
-    @include gradient-bg($dropdown-link-hover-bg);
+    @include gradient-bg(#001e6f);
   }
 
   &.active,
@@ -137,6 +142,7 @@
   &:disabled {
     color: $dropdown-link-disabled-color;
     background-color: transparent;
+
     // Remove CSS gradients if they're enabled
     @if $enable-gradients {
       background-image: none;

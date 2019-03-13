@@ -1,7 +1,5 @@
 import React from 'react';
 
-import img1 from '../../assets/images/users/1.jpg';
-
 import {
   Badge,
   Button,
@@ -12,6 +10,7 @@ import {
   Col,
   Form,
   FormGroup,
+  FormFeedback,
   Input,
   InputGroup,
   InputGroupAddon,
@@ -37,17 +36,33 @@ class Projects extends React.Component {
     this.pageSize = 5;
 
     this.state = {
+      data: {},
+      id: '',
+      name: '',
+      email: '',
+      password: '',
+      role: '',
+      division: '',
       users: [],
+      divisions: [],
+      roles: [],
       modal: false,
+      modalDelete: false,
       currentPage: 0,
-      pagesCount: 0
+      pagesCount: 0,
+      errors: {}
     };
 
     this.toggle = this.toggle.bind(this);
+    this.toggleModals = this.toggleModals.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   componentDidMount = async () => {
     await this.getUsers();
+    await this.getRoles();
+    await this.getDivisions();
   };
 
   getUsers = async () => {
@@ -62,6 +77,70 @@ class Projects extends React.Component {
       .catch(err => console.log(err.response.data));
   };
 
+  async getRoles() {
+    await axios
+      .get('/api/role')
+      .then(res => {
+        this.setState({
+          roles: res.data
+        });
+      })
+      .catch(err => console.log(err.response.data));
+  }
+
+  async getDivisions() {
+    await axios
+      .get('/api/division')
+      .then(res => {
+        this.setState({
+          divisions: res.data
+        });
+      })
+      .catch(err => console.log(err.response.data));
+  }
+
+  async onDelete(data) {
+    await axios
+      .delete(`/api/user/${data._id}`)
+      .then(res => {
+        if (res.status === 200) {
+          this.toggleModals();
+          this.getUsers();
+        }
+      })
+      .catch(err => err.response.data);
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+
+    const updateUser = {
+      name: this.state.name,
+      email: this.state.email,
+      password: this.state.password,
+      role: this.state.role
+      // division: this.state.division
+    };
+
+    axios
+      .patch(`/api/user/${this.state.id}`, updateUser)
+      .then(() => {
+        this.toggle.bind(this, this.state.data);
+        this.getUsers();
+      })
+      .catch(err =>
+        this.setState({
+          errors: err.response.data
+        })
+      );
+  }
+
+  onChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
   handleClick(e, index) {
     e.preventDefault();
 
@@ -70,14 +149,32 @@ class Projects extends React.Component {
     });
   }
 
-  toggle() {
+  toggleModals() {
     this.setState(prevState => ({
-      modal: !prevState.modal
+      modalDelete: !prevState.modalDelete
     }));
   }
 
+  toggle(data) {
+    this.setState(prevState => ({
+      modal: !prevState.modal,
+      id: data._id,
+      name: data.name,
+      email: data.email,
+      // password: data.password,
+      role: data.role._id,
+      data: data,
+      division: ''
+    }));
+    if (data.division) {
+      this.setState({
+        division: data.division._id
+      });
+    }
+  }
+
   render() {
-    const { currentPage } = this.state;
+    const { currentPage, errors } = this.state;
 
     return (
       /*--------------------------------------------------------------------------------*/
@@ -88,7 +185,7 @@ class Projects extends React.Component {
         <CardBody>
           <div className='d-flex align-items-center'>
             <div>
-              <CardTitle>Register for Admin</CardTitle>
+              <CardTitle>List Users</CardTitle>
               <CardSubtitle>HAR</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
@@ -180,82 +277,152 @@ class Projects extends React.Component {
                           className='btn'
                           outline
                           color='biruicon'
-                          onClick={this.toggle}>
+                          onClick={this.toggle.bind(this, data)}>
                           {this.props.buttonLabel}
                           <i className='mdi mdi-pencil' />
                         </Button>
                         <Modal
                           isOpen={this.state.modal}
-                          toggle={this.toggle}
+                          toggle={this.toggle.bind(this, data)}
                           className={this.props.className}>
-                          <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
-                          <ModalBody>
-                            <Form>
+                          <ModalHeader toggle={this.toggle.bind(this, data)}>
+                            Edit
+                          </ModalHeader>
+                          <Form onSubmit={this.onSubmit}>
+                            <ModalBody>
                               <FormGroup>
-                                <Label for='exampleEmail'>Name</Label>
-                                <Input />
+                                <Input
+                                  invalid={errors.access ? true : false}
+                                  hidden
+                                />
+                                <FormFeedback>{errors.access}</FormFeedback>
                               </FormGroup>
                               <FormGroup>
-                                <Label for='exampleEmail'>Email</Label>
+                                <Label for='name'>Name</Label>
                                 <Input
+                                  invalid={errors.name ? true : false}
+                                  type='text'
+                                  name='name'
+                                  id='name'
+                                  placeholder='Name'
+                                  value={this.state.name}
+                                  onChange={this.onChange}
+                                />
+                                <FormFeedback>{errors.name}</FormFeedback>
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='email'>Email</Label>
+                                <Input
+                                  invalid={errors.email ? true : false}
                                   type='email'
                                   name='email'
-                                  id='exampleEmail'
+                                  id='email'
                                   placeholder='Email'
+                                  value={this.state.email}
+                                  onChange={this.onChange}
                                 />
+                                <FormFeedback>{errors.email}</FormFeedback>
                               </FormGroup>
                               <FormGroup>
-                                <Label for='examplePassword'>Password</Label>
+                                <Label for='password'>Password</Label>
                                 <Input
+                                  invalid={errors.password ? true : false}
                                   type='password'
                                   name='password'
-                                  id='examplePassword'
+                                  id='password'
                                   placeholder='Password'
+                                  value={this.state.password}
+                                  onChange={this.onChange}
                                 />
+                                <FormFeedback>{errors.password}</FormFeedback>
                               </FormGroup>
                               <FormGroup>
-                                <Label for='exampleSelect'>Role</Label>
+                                <Label for='role'>Role</Label>
                                 <Input
+                                  invalid={errors.role ? true : false}
                                   type='select'
-                                  name='select'
-                                  id='exampleSelect'>
-                                  <option>...</option>
-                                  <option>Admin</option>
-                                  <option>Manager</option>
-                                  <option>Supervisor</option>
-                                  <option>Engineer</option>
+                                  name='role'
+                                  id='role'
+                                  value={this.state.role}
+                                  onChange={this.onChange}>
+                                  <option value='' disabled>
+                                    Select role
+                                  </option>
+                                  {this.state.roles.map((role, id) => {
+                                    return (
+                                      <option key={id} value={role._id}>
+                                        {role.name}
+                                      </option>
+                                    );
+                                  })}
                                 </Input>
+                                <FormFeedback>{errors.role}</FormFeedback>
                               </FormGroup>
                               <FormGroup>
-                                <Label for='exampleSelect'>Division</Label>
+                                <Label for='division'>Division</Label>
                                 <Input
+                                  invalid={errors.division ? true : false}
                                   type='select'
-                                  name='select'
-                                  id='exampleSelect'>
-                                  <option>...</option>
-                                  <option>PM</option>
-                                  <option>CM</option>
-                                  <option>Asset</option>
-                                  <option>P3ak</option>
+                                  name='division'
+                                  id='division'
+                                  value={this.state.division}
+                                  onChange={this.onChange}>
+                                  <option value='' disabled>
+                                    Select division
+                                  </option>
+                                  {this.state.divisions.map((division, id) => {
+                                    return (
+                                      <option key={id} value={division._id}>
+                                        {division.name}
+                                      </option>
+                                    );
+                                  })}
                                 </Input>
+                                <FormFeedback>{errors.division}</FormFeedback>
                               </FormGroup>
-                            </Form>
-                          </ModalBody>
-                          <ModalFooter>
-                            <Button color='biruicon' onClick={this.toggle}>
-                              Submit
-                            </Button>{' '}
-                            <Button color='secondary' onClick={this.toggle}>
-                              Cancel
-                            </Button>
-                          </ModalFooter>
+                            </ModalBody>
+                            <ModalFooter>
+                              <Button color='biruicon' type='submit'>
+                                Submit
+                              </Button>{' '}
+                              <Button
+                                color='secondary'
+                                onClick={this.toggle.bind(this, data)}>
+                                Cancel
+                              </Button>
+                            </ModalFooter>
+                          </Form>
                         </Modal>
                         <Button
+                          onClick={this.toggleModals}
                           className='profile-time-approved'
                           outline
                           color='danger'>
                           <i className='mdi mdi-delete' />
-                        </Button>{' '}
+                        </Button>
+                        <Modal
+                          isOpen={this.state.modalDelete}
+                          toggle={this.toggleModals}
+                          className={this.props.className}>
+                          <ModalHeader toggle={this.toggleModals}>
+                            Delete
+                          </ModalHeader>
+                          <ModalBody>
+                            Are you sure want to delete this data?
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button
+                              color='primary'
+                              onClick={this.onDelete.bind(this, data)}>
+                              Yes
+                            </Button>{' '}
+                            <Button
+                              color='secondary'
+                              onClick={this.toggleModals}>
+                              Cancel
+                            </Button>
+                          </ModalFooter>
+                        </Modal>
                       </td>
                     </tr>
                   );

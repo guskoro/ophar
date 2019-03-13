@@ -2195,12 +2195,12 @@ input[type="button"].btn-block {
   color: #212529;
   text-align: inherit;
   white-space: nowrap;
-  background-color: transparent;
+  background-color: #f3f5fa;
   border: 0; }
   .dropdown-item:hover, .dropdown-item:focus {
-    color: #16181b;
+    color: #f3f5fa;
     text-decoration: none;
-    background-color: #f8f9fa; }
+    background-color: #001e6f; }
   .dropdown-item.active, .dropdown-item:active {
     color: #fff;
     text-decoration: none;

@@ -54,13 +54,14 @@ class Projects extends React.Component {
   }
 
   getCurrentUser() {
-    const token = localStorage.getItem('jwtToken');
-    if (token) {
-      const current = jwt_decode(token);
-      this.setState({
-        division: current.division
-      });
-    }
+    axios
+      .get('/api/user/current')
+      .then(currentUser => {
+        this.setState({
+          division: currentUser.data.division
+        });
+      })
+      .catch(err => console.log(err.response.data));
   }
 
   async getWO() {

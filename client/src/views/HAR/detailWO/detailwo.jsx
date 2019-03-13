@@ -19,7 +19,6 @@ import {
   Table
 } from 'reactstrap';
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 import moment from 'moment';
 import classnames from 'classnames';
 
@@ -47,13 +46,14 @@ export default class Example extends React.Component {
   }
 
   getCurrentUser() {
-    const token = localStorage.getItem('jwtToken');
-    if (token) {
-      const current = jwt_decode(token);
-      this.setState({
-        division: current.division
-      });
-    }
+    axios
+      .get('/api/user/current')
+      .then(res => {
+        this.setState({
+          division: res.data.division
+        });
+      })
+      .catch(err => console.log(err.response.data));
   }
 
   getDetailWO() {
@@ -95,7 +95,7 @@ export default class Example extends React.Component {
                 <div className='d-flex no-block align-items-center'>
                   <div className='mr-2'>
                     <img
-                      src='https://imgix.ranker.com/user_node_img/50007/1000136055/original/yao-ming-rage-face-photo-u2?w=650&q=50&fm=pjpg&fit=crop&crop=faces'
+                      src={`https:${detailWO.pic_avatar}`}
                       alt='user'
                       className='rounded-circle'
                       width='100'
@@ -103,9 +103,9 @@ export default class Example extends React.Component {
                   </div>
                   <div className=''>
                     <h1 className='mb-0 font-28 font-medium'>
-                      {/* {detailWO.pic.name} */}
+                      {detailWO.pic_name}
                     </h1>
-                    <span>hgover@gmail.com</span>
+                    <span>{detailWO.division}</span>
                   </div>
                 </div>
               </div>
@@ -145,15 +145,16 @@ export default class Example extends React.Component {
               {/* Iki lek login berdasar divisine dewe2, lek gak, gak metu tombol e */}
               {detailWO.done === false && (
                 <div className='profile batas-kanan'>
-                  {division === detailWO.division && (
-                    <Button
-                      outline
-                      color='danger'
-                      className='profile batas-kanan'
-                      onClick={this.toggle}>
-                      {this.props.buttonLabel}Done
-                    </Button>
-                  )}
+                  {division === detailWO.division &&
+                    detailWO.approved_by_manager && (
+                      <Button
+                        outline
+                        color='danger'
+                        className='profile batas-kanan'
+                        onClick={this.toggle}>
+                        {this.props.buttonLabel}Done
+                      </Button>
+                    )}
                   <Modal
                     isOpen={modal}
                     toggle={this.toggle}
@@ -170,14 +171,15 @@ export default class Example extends React.Component {
                     </ModalFooter>
                   </Modal>
                   {/* Digawe lek user mitek edit nang halaman divisi */}
-                  {division === detailWO.division && (
-                    <Button
-                      outline
-                      color='success'
-                      className='profile batas-kanan'>
-                      Save
-                    </Button>
-                  )}
+                  {division === detailWO.division &&
+                    detailWO.approved_by_manager && (
+                      <Button
+                        outline
+                        color='success'
+                        className='profile batas-kanan'>
+                        Save
+                      </Button>
+                    )}
                   <Button
                     outline
                     color='danger'
@@ -251,20 +253,23 @@ export default class Example extends React.Component {
                             </tr>
                           </thead>
                           <tbody>
-                            {/* {detailWO.plans.map(plan => {
-                              return (
-                                <tr>
-                                  <td>{plan.name}</td>
-                                  <td>
-                                    <CustomInput
-                                      type='checkbox'
-                                      id='exampleCustomCheckbox1'
-                                      label='Done'
-                                    />
-                                  </td>
-                                </tr>
-                              );
-                            })} */}
+                            {detailWO.plans &&
+                              detailWO.plans.map(plan => {
+                                return (
+                                  <tr>
+                                    <td>{plan.name}</td>
+                                    <td>
+                                      <CustomInput
+                                        type='checkbox'
+                                        id='exampleCustomCheckbox1'
+                                        label={
+                                          plan.done ? 'Done' : 'On Progress'
+                                        }
+                                      />
+                                    </td>
+                                  </tr>
+                                );
+                              })}
                           </tbody>
                         </Table>
                       </Col>
@@ -278,7 +283,7 @@ export default class Example extends React.Component {
                           <tbody>
                             <tr>
                               <td>Work Type</td>
-                              <td>FOC</td>
+                              <td>{detailWO.type}</td>
                             </tr>
                             <tr>
                               <td>Work Program</td>
@@ -286,7 +291,7 @@ export default class Example extends React.Component {
                             </tr>
                             <tr>
                               <td>Priority</td>
-                              <td>Ciritcal</td>
+                              <td>{detailWO.priority}</td>
                             </tr>
                             <tr>
                               <td>Work Description</td>

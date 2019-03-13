@@ -2740,12 +2740,12 @@ input[type="button"].btn-block {
   color: #212529;
   text-align: inherit;
   white-space: nowrap;
-  background-color: transparent;
+  background-color: #f3f5fa;
   border: 0; }
   .dropdown-item:hover, .dropdown-item:focus {
-    color: #16181b;
+    color: #f3f5fa;
     text-decoration: none;
-    background-color: #f6f9fc; }
+    background-color: #001e6f; }
   .dropdown-item.active, .dropdown-item:active {
     color: #fff;
     text-decoration: none;
@@ -9037,7 +9037,7 @@ Preloader
         background: rgba(0, 0, 0, 0.03); }
   .topbar .user-dd,
   .topbar .mailbox {
-    min-width: 280px; }
+    min-width: 270px; }
   .topbar .nav-toggler,
   .topbar .topbartoggler {
     color: #fff;

@@ -16,8 +16,7 @@ module.exports = validateWorkingOrderInput = data => {
 
   if (
     !Validator.isLength(data.description, {
-      min: 3,
-      max: 30
+      min: 3
     })
   )
     errors.description = 'Description must be atleast 3 characters';

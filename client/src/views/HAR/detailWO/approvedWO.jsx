@@ -1,6 +1,4 @@
 import React from 'react';
-
-import img1 from '../../../assets/images/users/1.jpg';
 import {
   Button,
   Card,
@@ -25,7 +23,9 @@ import {
   Table,
   Tooltip
 } from 'reactstrap';
+import confirm from 'reactstrap-confirm';
 import axios from 'axios';
+import moment from 'moment';
 import { Link } from 'react-router-dom';
 
 class Projects extends React.Component {
@@ -33,20 +33,78 @@ class Projects extends React.Component {
     super(props);
 
     this.toggle = this.toggle.bind(this);
-    // Reject Modal & Approve Modal
-    this.toggleR = this.toggleR.bind(this);
-    this.toggleA = this.toggleA.bind(this);
-
-    this.toggle10 = this.toggle10.bind(this);
-    this.toggle20 = this.toggle20.bind(this);
-    this.toggle30 = this.toggle30.bind(this);
-    this.toggle40 = this.toggle40.bind(this);
+    this.pageSize = 5;
+    // this.onChange = this.onChange.bind(this);
     this.state = {
-      tooltipOpen10: false,
-      tooltipOpen20: false,
-      tooltipOpen30: false,
-      tooltipOpen40: false
+      WOs: [],
+      currentPage: 0,
+      pagesCount: 0,
+      modal: false,
+      role: ''
     };
+  }
+
+  handleClick(e, index) {
+    e.preventDefault();
+
+    this.setState({
+      currentPage: index
+    });
+  }
+
+  async componentDidMount() {
+    await this.getCurrentUser();
+    await this.getWO();
+  }
+
+  async getCurrentUser() {
+    await axios
+      .get('/api/user/current')
+      .then(res => {
+        this.setState({
+          role: res.data.role
+        });
+      })
+      .catch(err => console.log(err.response.data));
+  }
+
+  async getWO() {
+    let query = 'approved_by_spv=false';
+    if (this.state.role === 'manager') {
+      query = 'approved_by_spv=true&approved_by_manager=false';
+    }
+
+    await axios
+      .get(`/api/working-order?${query}`)
+      .then(res => {
+        this.setState({
+          WOs: res.data,
+          pagesCount: Math.ceil(res.data.length / this.pageSize)
+        });
+      })
+      .catch(err => console.log(err.response.data));
+  }
+
+  async onApprove(data) {
+    const result = await confirm({
+      title: <React.Fragment>Approve Work Order</React.Fragment>,
+      message: 'Are you sure want to approve this work?',
+      confirmText: 'Yes',
+      confirmColor: 'info',
+      cancelColor: 'secondary'
+    });
+
+    if (result) {
+      await axios
+        .post(`/api/working-order/approve/${data._id}`)
+        .then(res => {
+          if (res.status === 200) {
+            // this.toggleA();
+            this.getWO();
+          }
+        })
+        .catch(err => err.response.data);
+    }
   }
 
   toggle() {
@@ -55,43 +113,9 @@ class Projects extends React.Component {
     }));
   }
 
-  toggleR() {
-    this.setState(prevState => ({
-      modalR: !prevState.modalR
-    }));
-  }
-
-  toggleA() {
-    this.setState(prevState => ({
-      modalA: !prevState.modalA
-    }));
-  }
-
-  toggle10() {
-    this.setState({
-      tooltipOpen10: !this.state.tooltipOpen10
-    });
-  }
-
-  toggle20() {
-    this.setState({
-      tooltipOpen20: !this.state.tooltipOpen20
-    });
-  }
-
-  toggle30() {
-    this.setState({
-      tooltipOpen30: !this.state.tooltipOpen30
-    });
-  }
-
-  toggle40() {
-    this.setState({
-      tooltipOpen40: !this.state.tooltipOpen40
-    });
-  }
-
   render() {
+    const { currentPage, WOs } = this.state;
+
     return (
       /*--------------------------------------------------------------------------------*/
       /* Used In Dashboard-4 [General]                                                  */
@@ -100,16 +124,17 @@ class Projects extends React.Component {
         <CardBody>
           <div className='d-flex align-items-center'>
             <div>
-              <CardTitle>New Workorders</CardTitle>
-              <CardSubtitle>HAR | Asset</CardSubtitle>
+              <CardTitle>New Work Orders</CardTitle>
+              <CardSubtitle>HAR</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
-              <div className='dl'>
+              <div className='dl batas-kanan'>
                 <Input type='select' className='custom-select'>
-                  <option value='0'>Monthly</option>
-                  <option value='1'>Daily</option>
-                  <option value='2'>Weekly</option>
-                  <option value='3'>Yearly</option>
+                  <option value='0'>All</option>
+                  <option value='1'>Corrective Maintenance</option>
+                  <option value='2'>Preventive Maintenance</option>
+                  <option value='3'>Assets</option>
+                  <option value='4'>Patrols and Controls</option>
                 </Input>
               </div>
               <div className='dl'>
@@ -132,167 +157,135 @@ class Projects extends React.Component {
                 <th className='border-0'>Type</th>
                 <th className='border-0'>Description</th>
                 <th className='border-0'>Priority</th>
-                <th className='border-0'>Assigned User</th>
-                <th className='border-0'>Target Date</th>
-                <th className='border-0'>Status</th>
+                <th className='border-0'>Program</th>
+                <th className='border-0'>Deadline</th>
                 <th className='border-0'>Details</th>
                 <th className='border-0'>Action</th>
                 <th className='border-0'>Note</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>012SAKX</td>
-                <td>
-                  <div className='d-flex no-block align-items-center'>
-                    <div className='mr-2'>
-                      <img
-                        src={img1}
-                        alt='user'
-                        className='rounded-circle'
-                        width='45'
-                      />
-                    </div>
-                    <div className=''>
-                      <h5 className='mb-0 font-16 font-medium'>Hanna Gover</h5>
-                      <span>hgover@gmail.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>Elite Admin</td>
-                <td>Elite Admin</td>
-                <td>Low</td>
-                <td>Guskoro, Puguh</td>
-                <td className='blue-grey-text  text-darken-4 font-medium'>
-                  $96K
-                </td>
-                <td>
-                  <i className='fa fa-circle text-muted' id='tlp4' />
-                  <Tooltip
-                    placement='top'
-                    isOpen={this.state.tooltipOpen40}
-                    target='tlp4'
-                    toggle={this.toggle40}>
-                    WO Done
-                  </Tooltip>
-                </td>
-                <td>
-                  <Link to='/detailWO'>
-                    <Button className='btn' outline color='success'>
-                      Show
-                    </Button>
-                  </Link>
-                </td>
-                <td>
-                  <Button
-                    className='btn'
-                    outline
-                    color='biruicon'
-                    onClick={this.toggleA}>
-                    {this.props.buttonLabel}
-                    <i className='mdi mdi-check' />
-                  </Button>{' '}
-                  <Modal
-                    isOpen={this.state.modalA}
-                    toggle={this.toggleA}
-                    className={this.props.className}>
-                    <ModalHeader toggle={this.toggleA}>
-                      Approve Workorders
-                    </ModalHeader>
-                    <ModalBody>
-                      Are you sure want to approve this work?
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color='biruicon' onClick={this.toggleA}>
-                        Yes
-                      </Button>{' '}
-                      <Button color='secondary' onClick={this.toggleA}>
-                        Cancel
+              {WOs.slice(
+                currentPage * this.pageSize,
+                (currentPage + 1) * this.pageSize
+              ).map((data, id) => {
+                return (
+                  <tr key={id}>
+                    <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                    <td>
+                      <div className='d-flex no-block align-items-center'>
+                        <div className='mr-2'>
+                          <img
+                            src={`https:${data.pic.avatar}`}
+                            alt='user'
+                            className='rounded-circle'
+                            width='45'
+                          />
+                        </div>
+                        <div className=''>
+                          <h5 className='mb-0 font-16 font-medium'>
+                            {data.pic.name}
+                          </h5>
+                          <span>{data.division}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{data.type.name}</td>
+                    <td>{data.title}</td>
+                    <td>{data.priority.name}</td>
+                    <td>{data.program}</td>
+                    <td className='blue-grey-text  text-darken-4 font-medium'>
+                      {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
+                    </td>
+                    <td>
+                      <Link to={{ pathname: `/detailWO/${data._id}` }}>
+                        <Button className='btn' outline color='success'>
+                          Show
+                        </Button>
+                      </Link>
+                    </td>
+                    <td>
+                      <Button
+                        className='btn'
+                        outline
+                        color='biruicon'
+                        onClick={this.onApprove.bind(this, data)}>
+                        <i className='mdi mdi-check' />
                       </Button>
-                    </ModalFooter>
-                  </Modal>
-                  <Button
-                    className='profile-time-approved'
-                    outline
-                    color='danger'
-                    onClick={this.toggleR}>
-                    {this.props.buttonLabel}
-                    <i className='mdi mdi-close' />
-                  </Button>{' '}
-                  <Modal
-                    isOpen={this.state.modalR}
-                    toggle={this.toggleR}
-                    className={this.props.className}>
-                    <ModalHeader toggle={this.toggleR}>
-                      Reject Workorders
-                    </ModalHeader>
-                    <ModalBody>
-                      Are you sure want to reject this work?
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color='biruicon' onClick={this.toggleR}>
-                        Yes
-                      </Button>{' '}
-                      <Button color='secondary' onClick={this.toggleR}>
-                        Cancel
+                      <Button
+                        className='profile-time-approved'
+                        outline
+                        color='danger'
+                        // onClick={this.toggleR}
+                      >
+                        <i className='mdi mdi-close' />
                       </Button>
-                    </ModalFooter>
-                  </Modal>
-                </td>
-                <td>
-                  <Button outline color='secondary' onClick={this.toggle}>
-                    {this.props.buttonLabel}Add a note
-                  </Button>
-                  <Modal
-                    isOpen={this.state.modal}
-                    toggle={this.toggle}
-                    className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Add a note</ModalHeader>
-                    <ModalBody>
-                      <Form>
-                        <FormGroup>
-                          <Label for='exampleText'>Work Note</Label>
-                          <Input type='textarea' name='text' id='exampleText' />
-                        </FormGroup>
-                      </Form>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color='biruicon' onClick={this.toggle}>
-                        Submit
-                      </Button>{' '}
-                      <Button color='secondary' onClick={this.toggle}>
-                        Cancel
+                    </td>
+                    <td>
+                      <Button outline color='secondary' onClick={this.toggle}>
+                        {this.props.buttonLabel}Add a note
                       </Button>
-                    </ModalFooter>
-                  </Modal>
-                </td>
-              </tr>
+                      <Modal
+                        isOpen={this.state.modal}
+                        toggle={this.toggle}
+                        className={this.props.className}>
+                        <ModalHeader toggle={this.toggle}>
+                          Add a note
+                        </ModalHeader>
+                        <ModalBody>
+                          <Form>
+                            <FormGroup>
+                              <Label for='exampleText'>Work Note</Label>
+                              <Input
+                                type='textarea'
+                                name='text'
+                                id='exampleText'
+                              />
+                            </FormGroup>
+                          </Form>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button color='biruicon' onClick={this.toggle}>
+                            Submit
+                          </Button>{' '}
+                          <Button color='secondary' onClick={this.toggle}>
+                            Cancel
+                          </Button>
+                        </ModalFooter>
+                      </Modal>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
           <Row>
             <Col xs='12' md='12'>
               <CardBody className='border-top'>
                 <Pagination aria-label='Page navigation example'>
-                  <PaginationItem disabled>
-                    <PaginationLink previous href='#' />
+                  <PaginationItem disabled={currentPage <= 0}>
+                    <PaginationLink
+                      onClick={e => this.handleClick(e, currentPage - 1)}
+                      previous
+                      href='#'
+                    />
                   </PaginationItem>
-                  <PaginationItem active>
-                    <PaginationLink href='#'>1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href='#'>5</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink next href='#' />
+                  {[...Array(this.state.pagesCount)].map((page, i) => (
+                    <PaginationItem active={i === currentPage} key={i}>
+                      <PaginationLink
+                        onClick={e => this.handleClick(e, i)}
+                        href='#'>
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem
+                    disabled={currentPage >= this.state.pagesCount - 1}>
+                    <PaginationLink
+                      onClick={e => this.handleClick(e, currentPage + 1)}
+                      next
+                      href='#'
+                    />
                   </PaginationItem>
                 </Pagination>
               </CardBody>
