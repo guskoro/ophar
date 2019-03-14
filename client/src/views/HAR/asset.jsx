@@ -52,7 +52,7 @@ class Projects extends React.Component {
                   onClick={() => {
                     this.toggleTab('1');
                   }}>
-                  On Progress
+                  All Workorders
                 </NavLink>
               </NavItem>
               <NavItem>

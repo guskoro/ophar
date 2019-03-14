@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   Button,
   Card,
@@ -17,7 +16,9 @@ import {
   Table,
   Tooltip
 } from 'reactstrap';
+
 import axios from 'axios';
+import confirm from 'reactstrap-confirm';
 import moment from 'moment';
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -26,10 +27,14 @@ class Projects extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleChangeSearch = this.handleChangeSearch.bind(this);
+    this.handleChangeFilter = this.handleChangeFilter.bind(this);
     this.pageSize = 5;
-    this.handleChange = this.handleChange.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
+
     this.state = {
+      division: '',
       WOs: [],
       filtered: [],
       query: 0,
@@ -39,7 +44,7 @@ class Projects extends React.Component {
   }
 
   // Search
-  handleChange(e) {
+  handleChangeSearch(e) {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
@@ -53,10 +58,46 @@ class Projects extends React.Component {
       newList = this.state.WOs;
     }
     this.setState({
-      filtered: newList
+      filtered: newList,
+      pagesCount: Math.ceil(newList.length / this.pageSize)
     });
   }
 
+  // Filter
+  handleChangeFilter(e) {
+    let currentList = [];
+    let newList = [];
+    if (e.target.value !== '') {
+      currentList = this.state.WOs;
+      newList = currentList.filter(item => {
+        switch (e.target.value) {
+          case 'pending-approval':
+            return (
+              (!item.approved_by_manager || !item.approved_by_spv) &&
+              !item.rejected
+            );
+          case 'on-progress':
+            return (
+              item.approved_by_manager && item.approved_by_spv && !item.done
+            );
+          case 'rejected':
+            return item.rejected;
+          case 'done':
+            return item.done;
+          default:
+            return item;
+        }
+      });
+    } else {
+      newList = this.state.WOs;
+    }
+    this.setState({
+      filtered: newList,
+      pagesCount: Math.ceil(newList.length / this.pageSize)
+    });
+  }
+
+  // Pagination
   handleClick(e, index) {
     e.preventDefault();
 
@@ -70,15 +111,8 @@ class Projects extends React.Component {
   }
 
   async getWO() {
-    const query = [
-      '',
-      '&approved_by_spv=false&approved_by_manager=false',
-      '&approved_by_spv=true&approved_by_manager=true',
-      '&done=true'
-    ];
-
     await axios
-      .get(`/api/working-order?${query[this.state.query]}`)
+      .get(`/api/working-order`)
       .then(res => {
         this.setState({
           WOs: res.data,
@@ -135,11 +169,16 @@ class Projects extends React.Component {
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
               <div className='dl batas-kanan'>
-                <Input type='select' className='custom-select'>
-                  <option value='0'>Approved</option>
-                  <option value='1'>Pending Approval</option>
-                  <option value='2'>Rejected</option>
-                  <option value='3'>Done</option>
+                <Input
+                  type='select'
+                  name='filter'
+                  className='custom-select'
+                  onChange={this.handleChangeFilter}>
+                  <option value=''>All</option>
+                  <option value='pending-approval'>Pending Approval</option>
+                  <option value='on-progress'>On Progress</option>
+                  <option value='rejected'>Rejected</option>
+                  <option value='done'>Done</option>
                 </Input>
               </div>
               <div className='dlbatas-kanan'>
@@ -148,7 +187,7 @@ class Projects extends React.Component {
                     <Input
                       type='text'
                       className='input'
-                      onChange={this.handleChange}
+                      onChange={this.handleChangeSearch}
                       placeholder='Search..'
                     />
                     <Button color='biruicon'>
