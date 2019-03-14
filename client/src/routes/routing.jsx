@@ -19,6 +19,7 @@ import RegisterForm from '../views/user/register.jsx';
 import DetailWo from '../views/HAR/detailWO/detailwo.jsx';
 import NewWo from '../views/HAR/detailWO/approvedWO.jsx';
 import UploadWO from '../views/HAR/detailWO/uploadwo.jsx';
+import Kinerja from '../views/HAR/kinerja.jsx';
 
 var ThemeRoutes = [
   {
@@ -50,6 +51,12 @@ var ThemeRoutes = [
     name: 'Patrols and Controls',
     icon: 'mdi mdi-bullhorn',
     component: P3ak
+  },
+  {
+    path: '/kinerja',
+    name: 'Work Performance',
+    icon: 'mdi mdi-speedometer',
+    component: Kinerja
   },
   {
     path: '/register',

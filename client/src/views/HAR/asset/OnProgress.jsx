@@ -23,7 +23,7 @@ import classnames from 'classnames';
 import moment from 'moment';
 import axios from 'axios';
 
-class HarWO extends React.Component {
+class OnProgress extends React.Component {
   constructor(props) {
     super(props);
 
@@ -36,6 +36,7 @@ class HarWO extends React.Component {
 
     this.state = {
       division: '',
+      status: '',
       WOs: [],
       filtered: [],
       query: 0,
@@ -101,6 +102,17 @@ class HarWO extends React.Component {
       .then(currentUser => {
         this.setState({
           division: currentUser.data.division
+        });
+      })
+      .catch(err => console.log(err.response.data));
+  }
+
+  getCurrentStatus() {
+    axios
+      .get('/api/workingOrders/approve')
+      .then(currentStatus => {
+        this.setState({
+          status: currentStatus.data.role
         });
       })
       .catch(err => console.log(err.response.data));
@@ -235,7 +247,9 @@ class HarWO extends React.Component {
                 <th className='border-0'>Priority</th>
                 <th className='border-0'>Program</th>
                 <th className='border-0'>Deadline</th>
-                <th className='border-0'>Status</th>
+                {this.state.role === 'manager' && 'supervisor' && (
+                  <th className='border-0'>Status</th>
+                )}
                 <th className='border-0'>Details</th>
                 {this.state.division === 'Assets' && (
                   <th className='border-0'>Action</th>
@@ -374,4 +388,4 @@ class HarWO extends React.Component {
   }
 }
 
-export default HarWO;
+export default OnProgress;
