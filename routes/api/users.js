@@ -199,12 +199,11 @@ router.patch(
             if (req.body._id) {
               delete req.body._id;
             }
-            if (req.body.division) {
+            if (req.body.division === '') {
               delete req.body.division;
             }
             for (let i in req.body) {
               user[i] = req.body[i];
-              console.log(i);
             }
             user
               .save()
