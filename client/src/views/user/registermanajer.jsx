@@ -26,6 +26,7 @@ import {
   Table
 } from 'reactstrap';
 import axios from 'axios';
+import confirm from 'reactstrap-confirm';
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
 
@@ -55,7 +56,6 @@ class Projects extends React.Component {
     };
 
     this.toggle = this.toggle.bind(this);
-    this.toggleModals = this.toggleModals.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
@@ -121,15 +121,24 @@ class Projects extends React.Component {
   }
 
   async onDelete(data) {
-    await axios
-      .delete(`/api/user/${data._id}`)
-      .then(res => {
-        if (res.status === 200) {
-          this.toggleModals();
-          this.getUsers();
-        }
-      })
-      .catch(err => err.response.data);
+    const result = await confirm({
+      title: <React.Fragment>Delete Work Order</React.Fragment>,
+      message: 'Are you sure want to delete this work?',
+      confirmText: 'Yes',
+      confirmColor: 'info',
+      cancelColor: 'secondary'
+    });
+
+    if (result) {
+      await axios
+        .delete(`/api/user/${data._id}`)
+        .then(res => {
+          if (res.status === 200) {
+            this.getUsers();
+          }
+        })
+        .catch(err => err.response.data);
+    }
   }
 
   onSubmit(e) {
@@ -138,15 +147,14 @@ class Projects extends React.Component {
     const updateUser = {
       name: this.state.name,
       email: this.state.email,
-      password: this.state.password,
-      role: this.state.role
-      // division: this.state.division
+      role: this.state.role,
+      division: this.state.division
     };
 
     axios
       .patch(`/api/user/${this.state.id}`, updateUser)
       .then(() => {
-        this.toggle.bind(this, this.state.data);
+        this.toggle(this.state.data);
         this.getUsers();
       })
       .catch(err =>
@@ -168,12 +176,6 @@ class Projects extends React.Component {
     this.setState({
       currentPage: index
     });
-  }
-
-  toggleModals() {
-    this.setState(prevState => ({
-      modalDelete: !prevState.modalDelete
-    }));
   }
 
   toggle(data) {
@@ -317,13 +319,6 @@ class Projects extends React.Component {
                           <Form onSubmit={this.onSubmit}>
                             <ModalBody>
                               <FormGroup>
-                                <Input
-                                  invalid={errors.access ? true : false}
-                                  hidden
-                                />
-                                <FormFeedback>{errors.access}</FormFeedback>
-                              </FormGroup>
-                              <FormGroup>
                                 <Label for='name'>Name</Label>
                                 <Input
                                   invalid={errors.name ? true : false}
@@ -348,19 +343,6 @@ class Projects extends React.Component {
                                   onChange={this.onChange}
                                 />
                                 <FormFeedback>{errors.email}</FormFeedback>
-                              </FormGroup>
-                              <FormGroup>
-                                <Label for='password'>Password</Label>
-                                <Input
-                                  invalid={errors.password ? true : false}
-                                  type='password'
-                                  name='password'
-                                  id='password'
-                                  placeholder='Password'
-                                  value={this.state.password}
-                                  onChange={this.onChange}
-                                />
-                                <FormFeedback>{errors.password}</FormFeedback>
                               </FormGroup>
                               <FormGroup>
                                 <Label for='role'>Role</Label>
@@ -420,35 +402,12 @@ class Projects extends React.Component {
                           </Form>
                         </Modal>
                         <Button
-                          onClick={this.toggleModals}
+                          onClick={this.onDelete.bind(this, data)}
                           className='profile-time-approved'
                           outline
                           color='danger'>
                           <i className='mdi mdi-delete' />
                         </Button>
-                        <Modal
-                          isOpen={this.state.modalDelete}
-                          toggle={this.toggleModals}
-                          className={this.props.className}>
-                          <ModalHeader toggle={this.toggleModals}>
-                            Delete
-                          </ModalHeader>
-                          <ModalBody>
-                            Are you sure want to delete this data?
-                          </ModalBody>
-                          <ModalFooter>
-                            <Button
-                              color='primary'
-                              onClick={this.onDelete.bind(this, data)}>
-                              Yes
-                            </Button>{' '}
-                            <Button
-                              color='secondary'
-                              onClick={this.toggleModals}>
-                              Cancel
-                            </Button>
-                          </ModalFooter>
-                        </Modal>
                       </td>
                     </tr>
                   );
