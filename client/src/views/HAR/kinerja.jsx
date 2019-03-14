@@ -9,9 +9,8 @@ import {
   TabPane
 } from 'reactstrap';
 import classnames from 'classnames';
-import HarTools from './asset/Pending.jsx';
-import HarK3 from './asset/Done.jsx';
-import OnProgress from './asset/OnProgress.jsx';
+import Duration from './kinerja/duration.jsx';
+import Ticket from './kinerja/ticket.jsx';
 
 class Projects extends React.Component {
   constructor(props) {
@@ -52,7 +51,7 @@ class Projects extends React.Component {
                   onClick={() => {
                     this.toggleTab('1');
                   }}>
-                  On Progress
+                  Total Duration
                 </NavLink>
               </NavItem>
               <NavItem>
@@ -63,29 +62,7 @@ class Projects extends React.Component {
                   onClick={() => {
                     this.toggleTab('2');
                   }}>
-                  Pending
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  className={classnames('pointer-hover', {
-                    active: this.state.activeTab === '3'
-                  })}
-                  onClick={() => {
-                    this.toggleTab('3');
-                  }}>
-                  Done
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  className={classnames('pointer-hover', {
-                    active: this.state.activeTab === '3'
-                  })}
-                  onClick={() => {
-                    this.toggleTab('4');
-                  }}>
-                  Rejected
+                  Total Ticket
                 </NavLink>
               </NavItem>
             </Nav>
@@ -93,19 +70,11 @@ class Projects extends React.Component {
             <TabContent activeTab={this.state.activeTab}>
               {/* Tiap tap */}
               <TabPane tabId='1'>
-                <OnProgress />
+                <Duration />
               </TabPane>
 
               <TabPane tabId='2'>
-                <HarTools />
-              </TabPane>
-
-              <TabPane tabId='3'>
-                <HarK3 />
-              </TabPane>
-
-              <TabPane tabId='4'>
-                <HarK3 />
+                <Ticket />
               </TabPane>
             </TabContent>
           </div>
