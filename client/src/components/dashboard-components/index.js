@@ -5,9 +5,9 @@ import Divisions from './divisions/divisions';
 import DivisionProgress from './progress/progress';
 
 export {
-    SalesSummary,
-    // Projects,
-    Feeds,
-    Divisions,
-    DivisionProgress
+  SalesSummary,
+  // Projects,
+  Feeds,
+  Divisions,
+  DivisionProgress
 };
