@@ -81,16 +81,14 @@ class Register extends React.Component {
       division: this.state.division
     };
 
-    console.log(newUser);
-
-    // axios
-    //   .post('/api/user/register', newUser)
-    //   .then(() => this.props.history.push('/register'))
-    //   .catch(err =>
-    //     this.setState({
-    //       errors: err.response.data
-    //     })
-    //   );
+    axios
+      .post('/api/user/register', newUser)
+      .then(() => this.props.history.push('/register'))
+      .catch(err =>
+        this.setState({
+          errors: err.response.data
+        })
+      );
   }
 
   onChange(e) {

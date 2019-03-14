@@ -12,7 +12,6 @@ const validateLoginInput = require('../../validations/login');
 
 const User = require('../../models/User');
 const Role = require('../../models/Role');
-const Division = require('../../models/Division');
 
 router.get('/', (req, res) => {
   let query = {};
@@ -21,6 +20,7 @@ router.get('/', (req, res) => {
   if (req.query.role) query.role = req.query.role;
 
   User.find(query)
+    .sort('-created_at')
     .select('-password')
     .populate('role', 'name')
     .populate('division', 'name')

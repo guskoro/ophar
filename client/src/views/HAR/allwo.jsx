@@ -202,7 +202,11 @@ class Projects extends React.Component {
                         </div>
                       </td>
                       <td>{data.type.name}</td>
-                      <td>{data.title}</td>
+                      <td>
+                        {data.title.length < 36
+                          ? data.title
+                          : data.title.slice(0, 36) + '...'}
+                      </td>
                       <td>{data.priority.name}</td>
                       <td>{data.program}</td>
                       <td className='blue-grey-text  text-darken-4 font-medium'>

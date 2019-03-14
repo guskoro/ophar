@@ -32,6 +32,7 @@ router.get('/', (req, res) => {
         path: 'division'
       }
     })
+    .sort('-created_at')
     .populate('type', 'name-_id')
     .populate('priority', 'name-_id')
     .then(workingOrders => res.json(workingOrders))
@@ -148,8 +149,8 @@ router.patch(
           delete req.body._id;
         }
         if (req.body.plans) {
-          plans.map(plan => {
-            newWorkingOrder.plans.push({ name: plan.value, done: plan.done });
+          req.body.plans.map((plan, id) => {
+            workingOrder.plans[id].done = plan.done;
           });
           delete req.body.plans;
         }

@@ -27,7 +27,8 @@ class Projects extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleChangeSearch = this.handleChangeSearch.bind(this);
+    this.handleChangeFilter = this.handleChangeFilter.bind(this);
     this.pageSize = 5;
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -43,7 +44,7 @@ class Projects extends React.Component {
   }
 
   // Search
-  handleChange(e) {
+  handleChangeSearch(e) {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
@@ -57,7 +58,41 @@ class Projects extends React.Component {
       newList = this.state.WOs;
     }
     this.setState({
-      filtered: newList
+      filtered: newList,
+      pagesCount: Math.ceil(newList.length / this.pageSize)
+    });
+  }
+
+  handleChangeFilter(e) {
+    let currentList = [];
+    let newList = [];
+    if (e.target.value !== '') {
+      currentList = this.state.WOs;
+      newList = currentList.filter(item => {
+        switch (e.target.value) {
+          case 'pending-approval':
+            return (
+              (!item.approved_by_manager || !item.approved_by_spv) &&
+              !item.rejected
+            );
+          case 'on-progress':
+            return (
+              item.approved_by_manager && item.approved_by_spv && !item.done
+            );
+          case 'rejected':
+            return item.rejected;
+          case 'done':
+            return item.done;
+          default:
+            return item;
+        }
+      });
+    } else {
+      newList = this.state.WOs;
+    }
+    this.setState({
+      filtered: newList,
+      pagesCount: Math.ceil(newList.length / this.pageSize)
     });
   }
 
@@ -168,11 +203,12 @@ class Projects extends React.Component {
                   type='select'
                   name='filter'
                   className='custom-select'
-                  onChange={this.onChange}>
-                  <option value={0}>All</option>
-                  <option value={1}>Pending Approval</option>
-                  <option value={2}>On Progress</option>
-                  <option value={3}>Done</option>
+                  onChange={this.handleChangeFilter}>
+                  <option value=''>All</option>
+                  <option value='pending-approval'>Pending Approval</option>
+                  <option value='on-progress'>On Progress</option>
+                  <option value='rejected'>Rejected</option>
+                  <option value='done'>Done</option>
                 </Input>
               </div>
               {this.state.division === 'Corrective Maintenance' && (
@@ -189,7 +225,7 @@ class Projects extends React.Component {
                   <Input
                     type='text'
                     className='input'
-                    onChange={this.handleChange}
+                    onChange={this.handleChangeSearch}
                     placeholder='Search..'
                   />
                   <InputGroupAddon addonType='append'>
@@ -247,7 +283,11 @@ class Projects extends React.Component {
                         </div>
                       </td>
                       <td>{data.type.name}</td>
-                      <td>{data.title}</td>
+                      <td>
+                        {data.title.length < 36
+                          ? data.title
+                          : data.title.slice(0, 36) + '...'}
+                      </td>
                       <td>{data.priority.name}</td>
                       <td>{data.program}</td>
                       <td className='blue-grey-text  text-darken-4 font-medium'>

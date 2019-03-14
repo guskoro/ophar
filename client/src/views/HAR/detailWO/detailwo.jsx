@@ -34,6 +34,7 @@ export default class Example extends React.Component {
 
     this.toggleTab = this.toggleTab.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onChangeCheckbox = this.onChangeCheckbox.bind(this);
 
     this.state = {
       currentUser: {},
@@ -42,7 +43,8 @@ export default class Example extends React.Component {
       activeTab: '1',
       id: this.props.match.params.id,
       modalNote: false,
-      note: ''
+      note: '',
+      plans: []
     };
   }
 
@@ -69,7 +71,8 @@ export default class Example extends React.Component {
       .get(`/api/working-order/${this.state.id}`)
       .then(res => {
         this.setState({
-          detailWO: res.data
+          detailWO: res.data,
+          plans: res.data.plans
         });
       })
       .catch(err => console.log(err.response.data));
@@ -177,6 +180,29 @@ export default class Example extends React.Component {
     });
   }
 
+  onChangeCheckbox(e) {
+    const plans = this.state.plans;
+
+    plans[e.target.id].done = e.target.checked;
+
+    this.setState({
+      plans: plans
+    });
+
+    const newWorkingOrder = {
+      plans: this.state.plans
+    };
+
+    axios
+      .patch(`/api/working-order/${this.state.id}`, newWorkingOrder)
+      .then(() => {
+        this.getDetailWO();
+      })
+      .catch(err => console.log(err.response.data));
+
+    // console.log(plans, e.target.id, e.target.checked, plans[0]);
+  }
+
   render() {
     const { detailWO, currentUser } = this.state;
 
@@ -260,21 +286,20 @@ export default class Example extends React.Component {
                   </h5>
                 </div>
               )}
-              {!detailWO.done ||
-                (detailWO.rejected && (
-                  <div className='profile'>
-                    <h1 className='mb-0 font-16 font-medium' color='info'>
-                      Deadline{' '}
-                      {moment().isAfter(detailWO.deadline)
-                        ? 'is overdue'
-                        : moment().to(detailWO.deadline)}{' '}
-                      :
-                      <span className='profile-time-approved'>
-                        {moment(detailWO.deadline).format('DD-MM-YYYY HH:mm')}
-                      </span>
-                    </h1>
-                  </div>
-                ))}
+              {!detailWO.done && !detailWO.rejected && (
+                <div className='profile'>
+                  <h1 className='mb-0 font-16 font-medium' color='info'>
+                    Deadline{' '}
+                    {moment().isAfter(detailWO.deadline)
+                      ? 'is overdue'
+                      : moment().to(detailWO.deadline)}{' '}
+                    :
+                    <span className='profile-time-approved'>
+                      {moment(detailWO.deadline).format('DD-MM-YYYY HH:mm')}
+                    </span>
+                  </h1>
+                </div>
+              )}
               {/* Iki lek login berdasar divisine dewe2, lek gak, gak metu tombol e */}
               {!detailWO.done && !detailWO.rejected && (
                 <div className='profile batas-kanan'>
@@ -287,12 +312,6 @@ export default class Example extends React.Component {
                           color='biruicon'
                           className='profile batas-kanan'>
                           Done
-                        </Button>
-                        <Button
-                          outline
-                          color='success'
-                          className='profile batas-kanan'>
-                          Save
                         </Button>
                       </React.Fragment>
                     )}
@@ -409,16 +428,22 @@ export default class Example extends React.Component {
                               detailWO.plans.map((plan, id) => {
                                 return (
                                   <tr key={id}>
-                                    {/* <td>{plan.name}</td> */}
                                     <td>
                                       <CustomInput
+                                        checked={this.state.plans[id].done}
+                                        onChange={this.onChangeCheckbox}
                                         disabled={
                                           currentUser.role === 'manager' ||
                                           currentUser.role === 'supervisor' ||
-                                          isEmpty(currentUser)
+                                          isEmpty(currentUser) ||
+                                          currentUser.division !==
+                                            detailWO.division ||
+                                          detailWO.rejected ||
+                                          detailWO.done
                                         }
+                                        id={id}
                                         type='checkbox'
-                                        id={plan._id}
+                                        name={id}
                                         label={plan.name}
                                       />
                                     </td>
