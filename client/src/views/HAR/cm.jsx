@@ -63,6 +63,7 @@ class Projects extends React.Component {
     });
   }
 
+  // Filter
   handleChangeFilter(e) {
     let currentList = [];
     let newList = [];
@@ -184,7 +185,7 @@ class Projects extends React.Component {
   };
 
   render() {
-    const { currentPage, WOs } = this.state;
+    const { currentPage } = this.state;
 
     return (
       /*--------------------------------------------------------------------------------*/

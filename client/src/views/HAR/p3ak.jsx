@@ -16,9 +16,9 @@ import {
   Table,
   Tooltip
 } from 'reactstrap';
+
 import axios from 'axios';
 import confirm from 'reactstrap-confirm';
-import jwt_decode from 'jwt-decode';
 import classnames from 'classnames';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
@@ -27,24 +27,24 @@ class Projects extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleChangeSearch = this.handleChangeSearch.bind(this);
+    this.handleChangeFilter = this.handleChangeFilter.bind(this);
     this.pageSize = 5;
-    this.toggleModals = this.toggleModals.bind(this);
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
+
     this.state = {
       division: '',
       WOs: [],
       filtered: [],
       query: 0,
       currentPage: 0,
-      pagesCount: 0,
-      modal: false
+      pagesCount: 0
     };
   }
 
   // Search
-  handleChange(e) {
+  handleChangeSearch(e) {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
@@ -58,15 +58,43 @@ class Projects extends React.Component {
       newList = this.state.WOs;
     }
     this.setState({
-      filtered: newList
+      filtered: newList,
+      pagesCount: Math.ceil(newList.length / this.pageSize)
     });
   }
 
-  // Modals
-  toggleModals() {
-    this.setState(prevState => ({
-      modal: !prevState.modal
-    }));
+  // Filter
+  handleChangeFilter(e) {
+    let currentList = [];
+    let newList = [];
+    if (e.target.value !== '') {
+      currentList = this.state.WOs;
+      newList = currentList.filter(item => {
+        switch (e.target.value) {
+          case 'pending-approval':
+            return (
+              (!item.approved_by_manager || !item.approved_by_spv) &&
+              !item.rejected
+            );
+          case 'on-progress':
+            return (
+              item.approved_by_manager && item.approved_by_spv && !item.done
+            );
+          case 'rejected':
+            return item.rejected;
+          case 'done':
+            return item.done;
+          default:
+            return item;
+        }
+      });
+    } else {
+      newList = this.state.WOs;
+    }
+    this.setState({
+      filtered: newList,
+      pagesCount: Math.ceil(newList.length / this.pageSize)
+    });
   }
 
   // Pagination
@@ -86,24 +114,17 @@ class Projects extends React.Component {
   getCurrentUser() {
     axios
       .get('/api/user/current')
-      .then(currentUser => {
+      .then(res => {
         this.setState({
-          division: currentUser.data.division
+          division: res.data.division
         });
       })
       .catch(err => console.log(err.response.data));
   }
 
   async getWO() {
-    const query = [
-      '',
-      '&approved_by_spv=false&approved_by_manager=false',
-      '&approved_by_spv=true&approved_by_manager=true',
-      '&done=true'
-    ];
-
     await axios
-      .get(`/api/working-order?division=control${query[this.state.query]}`)
+      .get(`/api/working-order?division=control`)
       .then(res => {
         this.setState({
           WOs: res.data,
@@ -135,11 +156,10 @@ class Projects extends React.Component {
     }
   }
 
-  async onChange(e) {
+  onChange(e) {
     this.setState({
       [e.target.name]: e.target.value
     });
-    console.log(this.state.query);
   }
 
   toggle = targetName => {
@@ -166,6 +186,7 @@ class Projects extends React.Component {
 
   render() {
     const { currentPage } = this.state;
+
     return (
       /*--------------------------------------------------------------------------------*/
       /* Used In Dashboard-4 [General]                                                  */
@@ -183,11 +204,12 @@ class Projects extends React.Component {
                   type='select'
                   name='filter'
                   className='custom-select'
-                  onChange={this.onChange}>
-                  <option value={0}>All</option>
-                  <option value={1}>Pending Approval</option>
-                  <option value={2}>On Progress</option>
-                  <option value={3}>Done</option>
+                  onChange={this.handleChangeFilter}>
+                  <option value=''>All</option>
+                  <option value='pending-approval'>Pending Approval</option>
+                  <option value='on-progress'>On Progress</option>
+                  <option value='rejected'>Rejected</option>
+                  <option value='done'>Done</option>
                 </Input>
               </div>
               {this.state.division === 'Patrols and Controls' && (
@@ -204,7 +226,7 @@ class Projects extends React.Component {
                   <Input
                     type='text'
                     className='input'
-                    onChange={this.handleChange}
+                    onChange={this.handleChangeSearch}
                     placeholder='Search..'
                   />
                   <InputGroupAddon addonType='append'>
@@ -262,7 +284,11 @@ class Projects extends React.Component {
                         </div>
                       </td>
                       <td>{data.type.name}</td>
-                      <td>{data.title}</td>
+                      <td>
+                        {data.title.length < 36
+                          ? data.title
+                          : data.title.slice(0, 36) + '...'}
+                      </td>
                       <td>{data.priority.name}</td>
                       <td>{data.program}</td>
                       <td className='blue-grey-text  text-darken-4 font-medium'>
