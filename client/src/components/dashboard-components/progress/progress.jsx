@@ -282,6 +282,7 @@ class DivisionProgress extends Component {
   }
 
   render() {
+    // Data Line Chart
     const data = {
       labels: [
         'January',

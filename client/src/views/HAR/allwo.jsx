@@ -18,7 +18,6 @@ import {
 } from 'reactstrap';
 
 import axios from 'axios';
-import confirm from 'reactstrap-confirm';
 import moment from 'moment';
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -127,7 +126,6 @@ class Projects extends React.Component {
     this.setState({
       [e.target.name]: e.target.value
     });
-    console.log(this.state.query);
   }
 
   toggle = targetName => {

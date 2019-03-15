@@ -12,6 +12,7 @@ import {
 
 import Countup from 'react-countup';
 import axios from 'axios';
+import { Pie } from 'react-chartjs-2';
 
 import { NavLink } from 'react-router-dom';
 
@@ -89,6 +90,28 @@ class Divisions extends Component {
   }
 
   render() {
+    // Data Pie Chart
+    const dataScada = {
+      labels: ['FOC', 'FOT', 'PS'],
+      datasets: [
+        {
+          data: [300, 50, 100],
+          backgroundColor: ['#5e66ff', '#ff5e5e', '#f7ff5e'],
+          hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+        }
+      ]
+    };
+    const dataNonScada = {
+      labels: ['Andop', 'FOC', 'FOT', 'PS'],
+      datasets: [
+        {
+          data: [300, 50, 100, 20],
+          backgroundColor: ['#ccd1cc', '#5e66ff', '#ff5e5e', '#f7ff5e'],
+          hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+        }
+      ]
+    };
+
     return (
       <div>
         <Row>
@@ -153,6 +176,32 @@ class Divisions extends Component {
                 <NavLink to='/p3ak'>
                   <Button color='danger'>Let me in</Button>
                 </NavLink>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs='12' md='6'>
+            <Card>
+              <CardBody>
+                <div>
+                  <CardTitle>Scada Total Disturbance</CardTitle>
+                </div>
+                <div>
+                  <Pie data={dataScada} />
+                </div>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col xs='12' md='6'>
+            <Card>
+              <CardBody>
+                <div>
+                  <CardTitle>Non Scada Total Disturbance</CardTitle>
+                </div>
+                <div>
+                  <Pie data={dataNonScada} />
+                </div>
               </CardBody>
             </Card>
           </Col>

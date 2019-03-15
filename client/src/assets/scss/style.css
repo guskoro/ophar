@@ -93,6 +93,7 @@ File: scss
   --inverse: #32325d;
   --biruicon: #001e6f;
   --ndewo: #f3f5fa;
+  --nyoba: #ccd1cc;
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
@@ -1401,6 +1402,17 @@ pre {
   .table-hover .table-ndewo:hover > th {
     background-color: #e9e9f8; }
 
+.table-nyoba,
+.table-nyoba > th,
+.table-nyoba > td {
+  background-color: #f1f2f1; }
+
+.table-hover .table-nyoba:hover {
+  background-color: #e4e6e4; }
+  .table-hover .table-nyoba:hover > td,
+  .table-hover .table-nyoba:hover > th {
+    background-color: #e4e6e4; }
+
 .table-active,
 .table-active > th,
 .table-active > td {
@@ -2213,6 +2225,30 @@ fieldset:disabled a.btn {
     .show > .btn-ndewo.dropdown-toggle:focus {
       box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125), 0 0 0 0.2rem rgba(243, 245, 250, 0.5); }
 
+.btn-nyoba {
+  color: #212529;
+  background-color: #ccd1cc;
+  border-color: #ccd1cc;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08); }
+  .btn-nyoba:hover {
+    color: #212529;
+    background-color: #b8bfb8;
+    border-color: #b1b9b1; }
+  .btn-nyoba:focus, .btn-nyoba.focus {
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 0.2rem rgba(204, 209, 204, 0.5); }
+  .btn-nyoba.disabled, .btn-nyoba:disabled {
+    color: #212529;
+    background-color: #ccd1cc;
+    border-color: #ccd1cc; }
+  .btn-nyoba:not(:disabled):not(.disabled):active, .btn-nyoba:not(:disabled):not(.disabled).active,
+  .show > .btn-nyoba.dropdown-toggle {
+    color: #212529;
+    background-color: #b1b9b1;
+    border-color: #aab3aa; }
+    .btn-nyoba:not(:disabled):not(.disabled):active:focus, .btn-nyoba:not(:disabled):not(.disabled).active:focus,
+    .show > .btn-nyoba.dropdown-toggle:focus {
+      box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125), 0 0 0 0.2rem rgba(204, 209, 204, 0.5); }
+
 .btn-outline-primary {
   color: #5e72e4;
   background-color: transparent;
@@ -2534,6 +2570,29 @@ fieldset:disabled a.btn {
     .btn-outline-ndewo:not(:disabled):not(.disabled):active:focus, .btn-outline-ndewo:not(:disabled):not(.disabled).active:focus,
     .show > .btn-outline-ndewo.dropdown-toggle:focus {
       box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125), 0 0 0 0.2rem rgba(243, 245, 250, 0.5); }
+
+.btn-outline-nyoba {
+  color: #ccd1cc;
+  background-color: transparent;
+  background-image: none;
+  border-color: #ccd1cc; }
+  .btn-outline-nyoba:hover {
+    color: #212529;
+    background-color: #ccd1cc;
+    border-color: #ccd1cc; }
+  .btn-outline-nyoba:focus, .btn-outline-nyoba.focus {
+    box-shadow: 0 0 0 0.2rem rgba(204, 209, 204, 0.5); }
+  .btn-outline-nyoba.disabled, .btn-outline-nyoba:disabled {
+    color: #ccd1cc;
+    background-color: transparent; }
+  .btn-outline-nyoba:not(:disabled):not(.disabled):active, .btn-outline-nyoba:not(:disabled):not(.disabled).active,
+  .show > .btn-outline-nyoba.dropdown-toggle {
+    color: #212529;
+    background-color: #ccd1cc;
+    border-color: #ccd1cc; }
+    .btn-outline-nyoba:not(:disabled):not(.disabled):active:focus, .btn-outline-nyoba:not(:disabled):not(.disabled).active:focus,
+    .show > .btn-outline-nyoba.dropdown-toggle:focus {
+      box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125), 0 0 0 0.2rem rgba(204, 209, 204, 0.5); }
 
 .btn-link {
   font-weight: 400;
@@ -4068,6 +4127,14 @@ input[type="button"].btn-block {
     text-decoration: none;
     background-color: #cfd7eb; }
 
+.badge-nyoba {
+  color: #212529;
+  background-color: #ccd1cc; }
+  .badge-nyoba[href]:hover, .badge-nyoba[href]:focus {
+    color: #212529;
+    text-decoration: none;
+    background-color: #b1b9b1; }
+
 .jumbotron {
   padding: 2rem 1rem;
   margin-bottom: 2rem;
@@ -4229,6 +4296,15 @@ input[type="button"].btn-block {
     border-top-color: #e9e9f8; }
   .alert-ndewo .alert-link {
     color: #656668; }
+
+.alert-nyoba {
+  color: #6a6d6a;
+  background-color: #f5f6f5;
+  border-color: #f1f2f1; }
+  .alert-nyoba hr {
+    border-top-color: #e4e6e4; }
+  .alert-nyoba .alert-link {
+    color: #515351; }
 
 @keyframes progress-bar-stripes {
   from {
@@ -4480,6 +4556,17 @@ input[type="button"].btn-block {
     color: #fff;
     background-color: #7e7f82;
     border-color: #7e7f82; }
+
+.list-group-item-nyoba {
+  color: #6a6d6a;
+  background-color: #f1f2f1; }
+  .list-group-item-nyoba.list-group-item-action:hover, .list-group-item-nyoba.list-group-item-action:focus {
+    color: #6a6d6a;
+    background-color: #e4e6e4; }
+  .list-group-item-nyoba.list-group-item-action.active {
+    color: #fff;
+    background-color: #6a6d6a;
+    border-color: #6a6d6a; }
 
 .close {
   float: right;
@@ -5153,6 +5240,14 @@ button.bg-ndewo:hover,
 button.bg-ndewo:focus {
   background-color: #cfd7eb !important; }
 
+.bg-nyoba {
+  background-color: #ccd1cc !important; }
+
+a.bg-nyoba:hover, a.bg-nyoba:focus,
+button.bg-nyoba:hover,
+button.bg-nyoba:focus {
+  background-color: #b1b9b1 !important; }
+
 .bg-white {
   background-color: #fff !important; }
 
@@ -5230,6 +5325,9 @@ button.bg-ndewo:focus {
 
 .border-ndewo {
   border-color: #f3f5fa !important; }
+
+.border-nyoba {
+  border-color: #ccd1cc !important; }
 
 .border-white {
   border-color: #fff !important; }
@@ -7385,6 +7483,12 @@ a.text-biruicon:hover, a.text-biruicon:focus {
 a.text-ndewo:hover, a.text-ndewo:focus {
   color: #cfd7eb !important; }
 
+.text-nyoba {
+  color: #ccd1cc !important; }
+
+a.text-nyoba:hover, a.text-nyoba:focus {
+  color: #b1b9b1 !important; }
+
 .text-body {
   color: #3e5569 !important; }
 
@@ -7586,6 +7690,12 @@ a.text-ndewo:hover, a.text-ndewo:focus {
 .stroke-ndewo {
   stroke: #f3f5fa; }
 
+.fill-nyoba {
+  fill: #ccd1cc; }
+
+.stroke-nyoba {
+  stroke: #ccd1cc; }
+
 .bg-gradient-primary {
   background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%) !important; }
 
@@ -7627,6 +7737,9 @@ a.text-ndewo:hover, a.text-ndewo:focus {
 
 .bg-gradient-ndewo {
   background: linear-gradient(87deg, #f3f5fa 0, #f4f3fa 100%) !important; }
+
+.bg-gradient-nyoba {
+  background: linear-gradient(87deg, #ccd1cc 0, #ccd1ce 100%) !important; }
 
 .fill-primary {
   fill: #5e72e4; }
@@ -7711,6 +7824,12 @@ a.text-ndewo:hover, a.text-ndewo:focus {
 
 .stroke-ndewo {
   stroke: #f3f5fa; }
+
+.fill-nyoba {
+  fill: #ccd1cc; }
+
+.stroke-nyoba {
+  stroke: #ccd1cc; }
 
 .floating {
   animation: floating 3s ease infinite;

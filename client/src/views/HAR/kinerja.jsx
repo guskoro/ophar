@@ -65,6 +65,17 @@ class Projects extends React.Component {
                   Total Ticket
                 </NavLink>
               </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames('pointer-hover', {
+                    active: this.state.activeTab === '3'
+                  })}
+                  onClick={() => {
+                    this.toggleTab('3');
+                  }}>
+                  Total Disturbance
+                </NavLink>
+              </NavItem>
             </Nav>
             {/* ISI Tab Lur */}
             <TabContent activeTab={this.state.activeTab}>
@@ -74,6 +85,10 @@ class Projects extends React.Component {
               </TabPane>
 
               <TabPane tabId='2'>
+                <Ticket />
+              </TabPane>
+
+              <TabPane tabId='3'>
                 <Ticket />
               </TabPane>
             </TabContent>
