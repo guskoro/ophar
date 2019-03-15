@@ -12,8 +12,15 @@ import {
 
 import Countup from 'react-countup';
 import axios from 'axios';
-
+import Pusher from 'pusher-js';
 import { NavLink } from 'react-router-dom';
+
+const pusher = new Pusher('12f41be129ba1c0d7a3c', {
+  cluster: 'ap1',
+  forceTLS: true
+});
+
+const channel = pusher.subscribe('ophar-app');
 
 class Divisions extends Component {
   _isMounted = false;
@@ -38,6 +45,32 @@ class Divisions extends Component {
     await this.getPMTotalWO();
     await this.getAssetsTotalWO();
     await this.getControlsTotalWO();
+    await this.getPusher();
+  }
+
+  async getPusher() {
+    await channel.bind('add-wo', data => {
+      if (data.division === 'Corrective Maintenance') {
+        this.setState({
+          cmWOs: [...this.state.cmWOs, data]
+        });
+      }
+      if (data.division === 'Preventive Maintenance') {
+        this.setState({
+          pmWOs: [...this.state.pmWOs, data]
+        });
+      }
+      if (data.division === 'Assets') {
+        this.setState({
+          assetsWOs: [...this.state.assetsWOs, data]
+        });
+      }
+      if (data.division === 'Patrols and Controls') {
+        this.setState({
+          controlsWOs: [...this.state.controlsWOs, data]
+        });
+      }
+    });
   }
 
   getCMTotalWO() {

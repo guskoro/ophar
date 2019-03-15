@@ -23,10 +23,18 @@ import {
   Table,
   Tooltip
 } from 'reactstrap';
-import confirm from 'reactstrap-confirm';
+import swal from 'sweetalert';
 import axios from 'axios';
+import Pusher from 'pusher-js';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+
+const pusher = new Pusher('12f41be129ba1c0d7a3c', {
+  cluster: 'ap1',
+  forceTLS: true
+});
+
+const channel = pusher.subscribe('ophar-app');
 
 class Projects extends React.Component {
   constructor(props) {
@@ -79,6 +87,19 @@ class Projects extends React.Component {
   async componentDidMount() {
     await this.getCurrentUser();
     await this.getWO();
+    await this.getPusher();
+  }
+
+  async getPusher() {
+    await channel.bind('add-wo', data => {
+      let WOs = this.state.WOs;
+      let newWOs = [data].concat(WOs);
+      this.setState({
+        WOs: newWOs,
+        filtered: newWOs,
+        pagesCount: Math.ceil(this.state.WOs.length / this.pageSize)
+      });
+    });
   }
 
   async getCurrentUser() {
@@ -111,45 +132,50 @@ class Projects extends React.Component {
   }
 
   async onApprove(data) {
-    const result = await confirm({
-      title: <React.Fragment>Approve Work Order</React.Fragment>,
-      message: 'Are you sure want to approve this work?',
-      confirmText: 'Yes',
-      confirmColor: 'info',
-      cancelColor: 'secondary'
+    await swal({
+      title: 'Approve work order',
+      text: 'Are you sure to approve this work order?',
+      icon: 'info',
+      buttons: true
+    }).then(result => {
+      if (result) {
+        return axios
+          .post(`/api/working-order/approve/${data._id}`)
+          .then(res => {
+            if (res.status === 200) {
+              swal('Yey! This work order is approved!', {
+                icon: 'success'
+              });
+              this.getWO();
+            }
+          })
+          .catch(err => err.response.data);
+      }
     });
-
-    if (result) {
-      await axios
-        .post(`/api/working-order/approve/${data._id}`)
-        .then(res => {
-          if (res.status === 200) {
-            this.getWO();
-          }
-        })
-        .catch(err => console.log(err.response.data));
-    }
   }
 
   async onReject(data) {
-    const result = await confirm({
-      title: <React.Fragment>Reject Work Order</React.Fragment>,
-      message: 'Are you sure want to reject this work?',
-      confirmText: 'Yes',
-      confirmColor: 'info',
-      cancelColor: 'secondary'
+    await swal({
+      title: 'Reject work order',
+      text: 'Are you sure to reject this work order?',
+      icon: 'warning',
+      buttons: true,
+      dangerMode: true
+    }).then(result => {
+      if (result) {
+        return axios
+          .post(`/api/working-order/reject/${data._id}`)
+          .then(res => {
+            if (res.status === 200) {
+              swal('Ohh! This work order is rejected!', {
+                icon: 'success'
+              });
+              this.getWO();
+            }
+          })
+          .catch(err => err.response.data);
+      }
     });
-
-    if (result) {
-      await axios
-        .post(`/api/working-order/reject/${data._id}`)
-        .then(res => {
-          if (res.status === 200) {
-            this.getWO();
-          }
-        })
-        .catch(err => err.response.data);
-    }
   }
 
   async onAddNote(e, data) {

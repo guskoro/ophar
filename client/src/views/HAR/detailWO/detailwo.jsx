@@ -24,7 +24,7 @@ import {
 } from 'reactstrap';
 import isEmpty from '../../../validations/is-empty';
 import axios from 'axios';
-import confirm from 'reactstrap-confirm';
+import swal from 'sweetalert';
 import moment from 'moment';
 import classnames from 'classnames';
 
@@ -79,66 +79,73 @@ export default class Example extends React.Component {
   }
 
   async onDone(data) {
-    const result = await confirm({
-      title: <React.Fragment>Done Work Order</React.Fragment>,
-      message: 'Are you sure want to done this work?',
-      confirmText: 'Yes',
-      confirmColor: 'info',
-      cancelColor: 'secondary'
+    await swal({
+      title: 'Done work order',
+      text: 'Are you sure to done this work order?',
+      icon: 'info',
+      buttons: true
+    }).then(result => {
+      if (result) {
+        return axios
+          .post(`/api/working-order/done/${data._id}`)
+          .then(res => {
+            if (res.status === 200) {
+              swal('Good! Your work order is done!', {
+                icon: 'success'
+              });
+              this.getDetailWO();
+            }
+          })
+          .catch(err => err.response.data);
+      }
     });
-
-    if (result) {
-      await axios
-        .post(`/api/working-order/done/${data._id}`)
-        .then(res => {
-          if (res.status === 200) {
-            this.getDetailWO();
-          }
-        })
-        .catch(err => err.response.data);
-    }
   }
 
   async onReject(data) {
-    const result = await confirm({
-      title: <React.Fragment>Reject Work Order</React.Fragment>,
-      message: 'Are you sure want to reject this work?',
-      confirmText: 'Yes',
-      confirmColor: 'info',
-      cancelColor: 'secondary'
+    await swal({
+      title: 'Reject work order',
+      text: 'Are you sure to reject this work order?',
+      icon: 'warning',
+      buttons: true,
+      dangerMode: true
+    }).then(result => {
+      if (result) {
+        return axios
+          .post(`/api/working-order/reject/${data._id}`)
+          .then(res => {
+            if (res.status === 200) {
+              swal('Ohh! This work order is rejected!', {
+                icon: 'success'
+              });
+              this.getDetailWO();
+            }
+          })
+          .catch(err => err.response.data);
+      }
     });
-
-    if (result) {
-      await axios
-        .post(`/api/working-order/reject/${data._id}`)
-        .then(res => {
-          if (res.status === 200) {
-            this.getDetailWO();
-          }
-        })
-        .catch(err => err.response.data);
-    }
   }
 
   async onApprove(data) {
-    const result = await confirm({
-      title: <React.Fragment>Approve Work Order</React.Fragment>,
-      message: 'Are you sure want to approve this work?',
-      confirmText: 'Yes',
-      confirmColor: 'info',
-      cancelColor: 'secondary'
+    await swal({
+      title: 'Approve work order',
+      text: 'Are you sure to approve this work order?',
+      icon: 'info',
+      buttons: true
+    }).then(result => {
+      if (result) {
+        return axios
+          .post(`/api/working-order/approve/${data._id}`)
+          .then(res => {
+            if (res.status === 200) {
+              swal('Yey! This work order is approved!', {
+                icon: 'success'
+              });
+              this.getDetailWO();
+            }
+          })
+          .catch(err => err.response.data);
+      }
     });
-
-    if (result) {
-      await axios
-        .post(`/api/working-order/approve/${data._id}`)
-        .then(res => {
-          if (res.status === 200) {
-            this.getDetailWO();
-          }
-        })
-        .catch(err => err.response.data);
-    }
   }
 
   async onAddNote(e, data) {
@@ -256,7 +263,8 @@ export default class Example extends React.Component {
               )}
               {detailWO.approved_by_spv &&
                 !detailWO.approved_by_manager &&
-                !detailWO.done && (
+                !detailWO.done &&
+                !detailWO.rejected && (
                   <div className='profile'>
                     <h5>
                       <Badge color='warning' className='ml-0' pill>
@@ -439,7 +447,11 @@ export default class Example extends React.Component {
                                           currentUser.division !==
                                             detailWO.division ||
                                           detailWO.rejected ||
-                                          detailWO.done
+                                          detailWO.done ||
+                                          !(
+                                            detailWO.approved_by_manager &&
+                                            detailWO.approved_by_spv
+                                          )
                                         }
                                         id={id}
                                         type='checkbox'

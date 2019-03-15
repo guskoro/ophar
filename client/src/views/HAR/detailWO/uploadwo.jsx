@@ -11,6 +11,7 @@ import {
   FormFeedback
 } from 'reactstrap';
 import CreatableSelect from 'react-select/lib/Creatable';
+import swal from 'sweetalert';
 import axios from 'axios';
 
 const components = {
@@ -121,7 +122,24 @@ export default class Example extends Component {
     axios
       .post('/api/working-order', newWO)
       .then(() => {
-        this.props.history.push('/dashboard');
+        swal({
+          title: 'Success!',
+          text: 'You added a new work order!',
+          icon: 'success',
+          button: 'OK!'
+        });
+        this.setState({
+          errors: [],
+          inputValue: '',
+          plans: [],
+          type: '',
+          priority: '',
+          title: '',
+          plans: '',
+          description: '',
+          program: '',
+          deadline: ''
+        });
       })
       .catch(err => {
         if (err.response.status === 401) {

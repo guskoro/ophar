@@ -18,10 +18,18 @@ import {
 } from 'reactstrap';
 
 import axios from 'axios';
-import confirm from 'reactstrap-confirm';
+import swal from 'sweetalert';
 import classnames from 'classnames';
 import moment from 'moment';
+import Pusher from 'pusher-js';
 import { Link } from 'react-router-dom';
+
+const pusher = new Pusher('12f41be129ba1c0d7a3c', {
+  cluster: 'ap1',
+  forceTLS: true
+});
+
+const channel = pusher.subscribe('ophar-app');
 
 class Projects extends React.Component {
   constructor(props) {
@@ -109,6 +117,21 @@ class Projects extends React.Component {
   async componentDidMount() {
     await this.getWO();
     await this.getCurrentUser();
+    await this.getPusher();
+  }
+
+  async getPusher() {
+    await channel.bind('add-wo', data => {
+      if (data.division === 'Assets') {
+        let WOs = this.state.WOs;
+        let newWOs = [data].concat(WOs);
+        this.setState({
+          WOs: newWOs,
+          filtered: newWOs,
+          pagesCount: Math.ceil(this.state.WOs.length / this.pageSize)
+        });
+      }
+    });
   }
 
   getCurrentUser() {
@@ -136,24 +159,27 @@ class Projects extends React.Component {
   }
 
   async onDelete(data) {
-    const result = await confirm({
-      title: <React.Fragment>Delete Work Order</React.Fragment>,
-      message: 'Are you sure want to delete this work?',
-      confirmText: 'Yes',
-      confirmColor: 'info',
-      cancelColor: 'secondary'
+    await swal({
+      title: 'Delete work order',
+      text: 'Are you sure to delete this work order?',
+      icon: 'warning',
+      buttons: true,
+      dangerMode: true
+    }).then(result => {
+      if (result) {
+        return axios
+          .delete(`/api/working-order/${data._id}`)
+          .then(res => {
+            if (res.status === 200) {
+              swal('Poof! Your work order has been deleted!', {
+                icon: 'success'
+              });
+              this.getWO();
+            }
+          })
+          .catch(err => err.response.data);
+      }
     });
-
-    if (result) {
-      await axios
-        .delete(`/api/working-order/${data._id}`)
-        .then(res => {
-          if (res.status === 200) {
-            this.getWO();
-          }
-        })
-        .catch(err => err.response.data);
-    }
   }
 
   onChange(e) {
@@ -212,7 +238,7 @@ class Projects extends React.Component {
                   <option value='done'>Done</option>
                 </Input>
               </div>
-              {this.state.division === 'Corrective Maintenance' && (
+              {this.state.division === 'Assets' && (
                 <div className='dl batas-kanan'>
                   <Link to='/uploadWO'>
                     <Button className='btn' color='success'>

@@ -11,18 +11,27 @@ import {
 
 import { Doughnut } from 'react-chartjs-2';
 import axios from 'axios';
-import Buttons from '../../../views/ui-components/button';
+import Pusher from 'pusher-js';
 import { NavLink } from 'react-router-dom';
+
+Pusher.logToConsole = true;
+
+const pusher = new Pusher('12f41be129ba1c0d7a3c', {
+  cluster: 'ap1',
+  forceTLS: true
+});
+
+const channel = pusher.subscribe('ophar-app');
 
 class SalesSummary extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      complete: 0,
-      incomplete: 0,
-      approved: 0,
-      pending: 0,
+      complete: [],
+      incomplete: [],
+      approved: [],
+      pending: [],
       completeWO: {
         datasets: [
           {
@@ -48,6 +57,35 @@ class SalesSummary extends React.Component {
   async componentDidMount() {
     await this.getCompleteWO();
     await this.getApprovedWO();
+    await this.getPusher();
+  }
+
+  async getPusher() {
+    const completeDatasets = this.state.completeWO.datasets.slice(0);
+    const approvedDatasets = this.state.approvedWO.datasets.slice(0);
+    const newComplete = completeDatasets[0].data.slice(0);
+    const newApproved = approvedDatasets[0].data.slice(0);
+
+    await channel.bind('add-wo', data => {
+      if (data) {
+        this.setState({
+          incomplete: [...this.state.incomplete, data],
+          pending: [...this.state.pending, data]
+        });
+        newComplete[1] = this.state.incomplete.length;
+        newApproved[1] = this.state.pending.length;
+        completeDatasets[0].data = newComplete;
+        approvedDatasets[0].data = newApproved;
+        this.setState({
+          completeWO: Object.assign({}, this.state.completeWO, {
+            datasets: completeDatasets
+          }),
+          approvedWO: Object.assign({}, this.state.approvedWO, {
+            datasets: approvedDatasets
+          })
+        });
+      }
+    });
   }
 
   async getCompleteWO() {
@@ -57,14 +95,16 @@ class SalesSummary extends React.Component {
     await axios
       .get('/api/working-order?done=true')
       .then(WOs => {
-        newComplete[0] = WOs.data.length;
+        this.state.complete = WOs.data;
+        newComplete[0] = this.state.complete.length;
       })
       .catch(err => console.log(err));
 
     await axios
       .get('/api/working-order?done=false')
       .then(WOs => {
-        newComplete[1] = WOs.data.length;
+        this.state.incomplete = WOs.data;
+        newComplete[1] = this.state.incomplete.length;
       })
       .catch(err => console.log(err));
 
@@ -84,14 +124,16 @@ class SalesSummary extends React.Component {
     await axios
       .get('/api/working-order?approved_by_manager=true&approved_by_spv=true')
       .then(WOs => {
-        newApproved[0] = WOs.data.length;
+        this.state.approved = WOs.data;
+        newApproved[0] = this.state.approved.length;
       })
       .catch(err => console.log(err));
 
     await axios
       .get('/api/working-order?approved_by_manager=false&approved_by_spv=false')
       .then(WOs => {
-        newApproved[1] = WOs.data.length;
+        this.state.pending = WOs.data;
+        newApproved[1] = this.state.pending.length;
       })
       .catch(err => console.log(err));
 

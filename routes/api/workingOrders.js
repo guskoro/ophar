@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const Pusher = require('pusher');
 
 const validateWorkingOrderInput = require('../../validations/working-order');
 
@@ -8,6 +9,14 @@ const WorkingOrder = require('../../models/WorkingOrder');
 const Priority = require('../../models/Priority');
 const User = require('../../models/User');
 const Type = require('../../models/Type');
+
+const pusher = new Pusher({
+  appId: '735656',
+  key: '12f41be129ba1c0d7a3c',
+  secret: '553907407b97d9a87bd9',
+  cluster: 'ap1',
+  encrypted: true
+});
 
 router.get('/', (req, res) => {
   let query = {};
@@ -93,7 +102,8 @@ router.post(
                 newWorkingOrder
                   .save()
                   .then(newWorkingOrder => {
-                    res.status(201).json(newWorkingOrder);
+                    pusher.trigger('ophar-app', 'add-wo', newWorkingOrder);
+                    return res.status(201).json(newWorkingOrder);
                   })
                   .catch(err => res.status(400).json(err));
               })

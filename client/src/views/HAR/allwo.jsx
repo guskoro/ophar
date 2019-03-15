@@ -18,10 +18,17 @@ import {
 } from 'reactstrap';
 
 import axios from 'axios';
-import confirm from 'reactstrap-confirm';
+import Pusher from 'pusher-js';
 import moment from 'moment';
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
+
+const pusher = new Pusher('12f41be129ba1c0d7a3c', {
+  cluster: 'ap1',
+  forceTLS: true
+});
+
+const channel = pusher.subscribe('ophar-app');
 
 class Projects extends React.Component {
   constructor(props) {
@@ -108,6 +115,19 @@ class Projects extends React.Component {
 
   async componentDidMount() {
     await this.getWO();
+    await this.getPusher();
+  }
+
+  async getPusher() {
+    await channel.bind('add-wo', data => {
+      let WOs = this.state.WOs;
+      let newWOs = [data].concat(WOs);
+      this.setState({
+        WOs: newWOs,
+        filtered: newWOs,
+        pagesCount: Math.ceil(this.state.WOs.length / this.pageSize)
+      });
+    });
   }
 
   async getWO() {

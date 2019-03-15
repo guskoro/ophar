@@ -10,6 +10,14 @@ import {
   Tooltip
 } from 'reactstrap';
 import axios from 'axios';
+import Pusher from 'pusher-js';
+
+const pusher = new Pusher('12f41be129ba1c0d7a3c', {
+  cluster: 'ap1',
+  forceTLS: true
+});
+
+const channel = pusher.subscribe('ophar-app');
 
 class DivisionProgress extends Component {
   constructor(props) {
@@ -61,6 +69,76 @@ class DivisionProgress extends Component {
     await this.pmProgressUp();
     await this.assetsProgressUp();
     await this.controlsProgressUp();
+    await this.getPusher();
+  }
+
+  async getPusher() {
+    await channel.bind('add-wo', data => {
+      if (data.division === 'Corrective Maintenance') {
+        let newData = JSON.parse(JSON.stringify(this.state.cmData));
+        newData.all = this.state.cmData.all + 1;
+        this.setState({
+          cmData: newData
+        });
+        let done = this.state.cmData.done;
+        let all = this.state.cmData.all;
+
+        if (done !== 0) {
+          newData.max = (done / all) * 100;
+          this.setState({
+            cmData: newData
+          });
+        }
+      }
+      if (data.division === 'Preventive Maintenance') {
+        let newData = JSON.parse(JSON.stringify(this.state.pmData));
+        newData.all = this.state.pmData.all + 1;
+        this.setState({
+          pmData: newData
+        });
+        let done = this.state.pmData.done;
+        let all = this.state.pmData.all;
+
+        if (done !== 0) {
+          newData.max = (done / all) * 100;
+          this.setState({
+            pmData: newData
+          });
+        }
+      }
+      if (data.division === 'Assets') {
+        let newData = JSON.parse(JSON.stringify(this.state.assetsData));
+        newData.all = this.state.assetsData.all + 1;
+        this.setState({
+          assetsData: newData
+        });
+        let done = this.state.assetsData.done;
+        let all = this.state.assetsData.all;
+
+        if (done !== 0) {
+          newData.max = (done / all) * 100;
+          this.setState({
+            assetsData: newData
+          });
+        }
+      }
+      if (data.division === 'Patrols and Controls') {
+        let newData = JSON.parse(JSON.stringify(this.state.controlsData));
+        newData.all = this.state.controlsData.all + 1;
+        this.setState({
+          controlsData: newData
+        });
+        let done = this.state.controlsData.done;
+        let all = this.state.controlsData.all;
+
+        if (done !== 0) {
+          newData.max = (done / all) * 100;
+          this.setState({
+            controlsData: newData
+          });
+        }
+      }
+    });
   }
 
   async getCMProgress() {
