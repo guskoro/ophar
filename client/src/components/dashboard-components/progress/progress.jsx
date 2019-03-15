@@ -9,6 +9,8 @@ import {
   Progress,
   Tooltip
 } from 'reactstrap';
+
+import { Line } from 'react-chartjs-2';
 import axios from 'axios';
 import Pusher from 'pusher-js';
 
@@ -358,6 +360,68 @@ class DivisionProgress extends Component {
   }
 
   render() {
+    // Data Line Chart
+    const data = {
+      labels: [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+      ],
+      datasets: [
+        {
+          label: 'MTTR Target',
+          fill: true,
+          lineTension: 0,
+          backgroundColor: 'rgba(255, 247, 0,0.4)',
+          borderColor: 'rgba(255, 247, 0,0.4)',
+          borderCapStyle: 'butt',
+          borderDash: [],
+          borderDashOffset: 0.0,
+          borderJoinStyle: 'miter',
+          pointBorderColor: 'rgba(255, 247, 0,1)',
+          pointBackgroundColor: '#fff',
+          pointBorderWidth: 1,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+          pointHoverBorderColor: 'rgba(220,220,220,1)',
+          pointHoverBorderWidth: 2,
+          pointRadius: 1,
+          pointHitRadius: 10,
+          data: [57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57, 57]
+        },
+        {
+          label: 'MTTR SCADA SBU SEMARANG',
+          fill: false,
+          lineTension: 0.1,
+          backgroundColor: 'rgba(0,30,111,1)',
+          borderColor: 'rgba(0,30,111,1)',
+          borderCapStyle: 'butt',
+          borderDash: [],
+          borderDashOffset: 0.0,
+          borderJoinStyle: 'miter',
+          pointBorderColor: 'rgba(0,30,111,1)',
+          pointBackgroundColor: '#fff',
+          pointBorderWidth: 1,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+          pointHoverBorderColor: 'rgba(220,220,220,1)',
+          pointHoverBorderWidth: 2,
+          pointRadius: 1,
+          pointHitRadius: 10,
+          data: [25, 79, 50, 101, 76, 75, 80, 55, 60, 80, 90, 100]
+        }
+      ]
+    };
+
     return (
       <div>
         <Card>
@@ -452,6 +516,26 @@ class DivisionProgress extends Component {
                   </Tooltip>
                 </Col>
               </Row>
+            </div>
+          </CardBody>
+        </Card>
+        <Card>
+          <CardBody>
+            <div>
+              <CardTitle>MTTR Scada Progress</CardTitle>
+            </div>
+            <div style={{ width: '100%' }}>
+              <Line ref='chart' data={data} width='1000%' />
+            </div>
+          </CardBody>
+        </Card>
+        <Card>
+          <CardBody>
+            <div>
+              <CardTitle>MTTR Non Scada Progress</CardTitle>
+            </div>
+            <div style={{ width: '100%' }}>
+              <Line ref='chart' data={data} width='1000%' />
             </div>
           </CardBody>
         </Card>

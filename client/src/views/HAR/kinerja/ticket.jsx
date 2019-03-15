@@ -13,26 +13,26 @@ import {
   Pagination,
   PaginationItem,
   PaginationLink,
-  Table,
-  Tooltip
+  Table
 } from 'reactstrap';
 
 import { Link } from 'react-router-dom';
-
-import classnames from 'classnames';
 import moment from 'moment';
 import axios from 'axios';
 
 class Ticket extends React.Component {
   constructor(props) {
     super(props);
-    this.toggleTab = this.toggleTab.bind(this);
-    this.pageSize = 5;
 
+    this.pageSize = 5;
+    this.handleChangeSearch = this.handleChangeSearch.bind(this);
+    this.handleChangeFilter = this.handleChangeFilter.bind(this);
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
+
     this.state = {
       WOs: [],
+      filtered: [],
       query: 0,
       currentPage: 0,
       pagesCount: 0,
@@ -40,13 +40,58 @@ class Ticket extends React.Component {
     };
   }
 
-  // Tab
-  toggleTab(tab) {
-    if (this.state.activeTab !== tab) {
-      this.setState({
-        activeTab: tab
+  // Search
+  handleChangeSearch(e) {
+    let currentList = [];
+    let newList = [];
+    if (e.target.value !== '') {
+      currentList = this.state.WOs;
+      newList = currentList.filter(item => {
+        const lc = item.title.toLowerCase();
+        const filter = e.target.value.toLowerCase();
+        return lc.includes(filter);
       });
+    } else {
+      newList = this.state.WOs;
     }
+    this.setState({
+      filtered: newList,
+      pagesCount: Math.ceil(newList.length / this.pageSize)
+    });
+  }
+
+  // Filter
+  handleChangeFilter(e) {
+    let currentList = [];
+    let newList = [];
+    if (e.target.value !== '') {
+      currentList = this.state.WOs;
+      newList = currentList.filter(item => {
+        switch (e.target.value) {
+          case 'pending-approval':
+            return (
+              (!item.approved_by_manager || !item.approved_by_spv) &&
+              !item.rejected
+            );
+          case 'on-progress':
+            return (
+              item.approved_by_manager && item.approved_by_spv && !item.done
+            );
+          case 'rejected':
+            return item.rejected;
+          case 'done':
+            return item.done;
+          default:
+            return item;
+        }
+      });
+    } else {
+      newList = this.state.WOs;
+    }
+    this.setState({
+      filtered: newList,
+      pagesCount: Math.ceil(newList.length / this.pageSize)
+    });
   }
 
   // Pagination
@@ -63,29 +108,22 @@ class Ticket extends React.Component {
   }
 
   async getWO() {
-    const query = [
-      '',
-      '&approved_by_spv=false&approved_by_manager=false',
-      '&approved_by_spv=true&approved_by_manager=true',
-      '&done=true'
-    ];
-
     await axios
-      .get(`/api/working-order?division=assets${query[this.state.query]}`)
+      .get(`/api/working-order`)
       .then(res => {
         this.setState({
           WOs: res.data,
+          filtered: res.data,
           pagesCount: Math.ceil(res.data.length / this.pageSize)
         });
       })
       .catch(err => console.log(err.response.data));
   }
 
-  async onChange(e) {
+  onChange(e) {
     this.setState({
       [e.target.name]: e.target.value
     });
-    console.log(this.state.query);
   }
 
   toggle = targetName => {
@@ -121,18 +159,33 @@ class Ticket extends React.Component {
               <CardSubtitle>HAR | Performance</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
-              {this.state.division === 'Corrective Maintenance' && (
-                <div className='dl batas-kanan'>
-                  <Link to='/uploadWO'>
-                    <Button className='btn' color='success'>
-                      <i className='mdi mdi-upload' />
-                    </Button>{' '}
-                  </Link>
-                </div>
-              )}
+              <div className='dl batas-kanan'>
+                <Input
+                  type='select'
+                  name='filter'
+                  className='custom-select'
+                  onChange={this.handleChangeFilter}>
+                  <option value=''>All</option>
+                  <option value='FOT'>FOT</option>
+                  <option value='FOC'>FOC</option>
+                  <option value='PS'>PS</option>
+                </Input>
+              </div>
+              <div className='dl batas-kanan'>
+                <Link to='/uploadWO'>
+                  <Button className='btn' color='success'>
+                    <i className='mdi mdi-upload' />
+                  </Button>{' '}
+                </Link>
+              </div>
               <div className='dl'>
                 <InputGroup>
-                  <Input placeholder='Search..' />
+                  <Input
+                    type='text'
+                    className='input'
+                    onChange={this.handleChangeSearch}
+                    placeholder='Search..'
+                  />
                   <InputGroupAddon addonType='append'>
                     <Button color='biruicon'>
                       <i className='mdi mdi-magnify' />
@@ -155,24 +208,26 @@ class Ticket extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {this.state.WOs.slice(
-                currentPage * this.pageSize,
-                (currentPage + 1) * this.pageSize
-              ).map((data, id) => {
-                return (
-                  <tr key={id}>
-                    <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
-                    <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
-                    <td>{data.type.name}</td>
-                    <td>{data.title}</td>
-                    <td>{data.priority.name}</td>
-                    <td>{data.program}</td>
-                    <td className='blue-grey-text  text-darken-4 font-medium'>
-                      {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
-                    </td>
-                  </tr>
-                );
-              })}
+              {this.state.filtered
+                .slice(
+                  currentPage * this.pageSize,
+                  (currentPage + 1) * this.pageSize
+                )
+                .map((data, id) => {
+                  return (
+                    <tr key={id}>
+                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                      <td>{data.type.name}</td>
+                      <td>{data.title}</td>
+                      <td>{data.priority.name}</td>
+                      <td>{data.program}</td>
+                      <td className='blue-grey-text  text-darken-4 font-medium'>
+                        {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </Table>
           <Row>
