@@ -86,6 +86,21 @@ class SalesSummary extends React.Component {
         });
       }
     });
+
+    await channel.bind('done-wo', data => {
+      if (data) {
+        this.setState({
+          complete: [...this.state.complete, data]
+        });
+        newComplete[0] = this.state.complete.length;
+        completeDatasets[0].data = newComplete;
+        this.setState({
+          completeWO: Object.assign({}, this.state.completeWO, {
+            datasets: completeDatasets
+          })
+        });
+      }
+    });
   }
 
   async getCompleteWO() {

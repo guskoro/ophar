@@ -143,6 +143,25 @@ class Projects extends React.Component {
         });
       }
     });
+
+    await channel.bind('done-wo', data => {
+      if (data.division === 'Corrective Maintenance') {
+        this.setState(state => {
+          const WOs = state.WOs.map(wo => {
+            if (wo._id === data._id) {
+              return data;
+            } else {
+              return wo;
+            }
+          });
+          return {
+            WOs,
+            filtered: WOs,
+            pagesCount: Math.ceil(WOs.length / this.pageSize)
+          };
+        });
+      }
+    });
   }
 
   getCurrentUser() {
@@ -223,6 +242,8 @@ class Projects extends React.Component {
 
   render() {
     const { currentPage } = this.state;
+
+    console.log(this.state.WOs, this.state.filtered);
 
     return (
       /*--------------------------------------------------------------------------------*/

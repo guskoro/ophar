@@ -24,9 +24,17 @@ import {
 } from 'reactstrap';
 import isEmpty from '../../../validations/is-empty';
 import axios from 'axios';
+import Pusher from 'pusher-js';
 import swal from 'sweetalert';
 import moment from 'moment';
 import classnames from 'classnames';
+
+const pusher = new Pusher('12f41be129ba1c0d7a3c', {
+  cluster: 'ap1',
+  forceTLS: true
+});
+
+const channel = pusher.subscribe('ophar-app');
 
 export default class Example extends React.Component {
   constructor(props) {
@@ -51,6 +59,41 @@ export default class Example extends React.Component {
   async componentDidMount() {
     await this.getDetailWO();
     await this.getCurrentUser();
+    await this.getPusher();
+  }
+
+  async getPusher() {
+    await channel.bind('done-wo', data => {
+      if (data._id === this.state.detailWO._id) {
+        const woCustom = {
+          _id: data._id,
+          title: data.title,
+          description: data.description,
+          division: data.division,
+          type: data.type.name,
+          priority: data.priority.name,
+          plans: data.plans,
+          program: data.program,
+          note: data.note,
+          approved_by_spv: data.approved_by_spv,
+          approved_by_manager: data.approved_by_manager,
+          rejected: data.rejected,
+          done: data.done,
+          start: data.start,
+          deadline: data.deadline,
+          end: data.end,
+          created_at: data.created_at,
+          pic_name: data.pic.name,
+          pic_email: data.pic.email,
+          pic_avatar: data.pic.avatar
+        };
+
+        this.setState({
+          detailWO: woCustom,
+          plans: woCustom.plans
+        });
+      }
+    });
   }
 
   getCurrentUser() {

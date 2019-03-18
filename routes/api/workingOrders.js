@@ -170,7 +170,8 @@ router.patch(
         workingOrder
           .save()
           .then(updatedWorkingOrder => {
-            res.json(updatedWorkingOrder);
+            pusher.trigger('ophar-app', 'update-wo', newWorkingOrder);
+            return res.json(updatedWorkingOrder);
           })
           .catch(err => res.status(400).json(err));
       })
@@ -202,7 +203,10 @@ router.post(
             }
             workingOrder
               .save()
-              .then(newWorkingOrder => res.status(200).json(newWorkingOrder))
+              .then(newWorkingOrder => {
+                pusher.trigger('ophar-app', 'approve-wo', newWorkingOrder);
+                return res.status(200).json(newWorkingOrder);
+              })
               .catch(err => res.status(400).json(err));
           })
           .catch(err => res.status(404).json(err));
@@ -235,7 +239,10 @@ router.post(
             }
             workingOrder
               .save()
-              .then(newWorkingOrder => res.status(200).json(newWorkingOrder))
+              .then(newWorkingOrder => {
+                pusher.trigger('ophar-app', 'reject-wo', newWorkingOrder);
+                return res.status(200).json(newWorkingOrder);
+              })
               .catch(err => res.status(400).json(err));
           })
           .catch(err => res.status(404).json(err));
@@ -251,7 +258,9 @@ router.post(
   }),
   (req, res) => {
     WorkingOrder.findById(req.params.id)
-      .populate('pic', 'division-_id')
+      .populate('pic')
+      .populate('type', 'name-_id')
+      .populate('priority', 'name-_id')
       .then(workingOrder => {
         User.findById(req.user.id)
           .then(pic => {
@@ -279,7 +288,10 @@ router.post(
             workingOrder.end = new Date();
             workingOrder
               .save()
-              .then(newWorkingOrder => res.status(200).json(newWorkingOrder))
+              .then(newWorkingOrder => {
+                pusher.trigger('ophar-app', 'done-wo', newWorkingOrder);
+                return res.status(200).json(newWorkingOrder);
+              })
               .catch(err => res.status(400).json(err));
           })
           .catch(err => res.status(404).json(err));
@@ -305,6 +317,7 @@ router.delete(
 
             workingOrder.delete();
             workingOrder.save();
+            pusher.trigger('ophar-app', 'delete-wo', workingOrder);
             return res.json(workingOrder);
           })
           .catch(err => res.status(404).json(err));

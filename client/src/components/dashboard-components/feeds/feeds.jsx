@@ -37,6 +37,12 @@ class Feeds extends React.Component {
         all: [...this.state.all, data]
       });
     });
+
+    await channel.bind('done-wo', data => {
+      this.setState({
+        done: [...this.state.done, data]
+      });
+    });
   }
 
   async getRequests() {

@@ -290,10 +290,10 @@ class Projects extends React.Component {
                       <td>
                         <Badge
                           color={classnames({
-                            primary: roleName == 'manager',
-                            success: roleName == 'supervisor',
-                            danger: roleName == 'admin',
-                            warning: roleName == 'engineer'
+                            primary: roleName === 'manager',
+                            success: roleName === 'supervisor',
+                            danger: roleName === 'admin',
+                            warning: roleName === 'engineer'
                           })}
                           className='ml-0'
                           pill>

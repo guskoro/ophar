@@ -35,7 +35,6 @@ export default class Example extends Component {
       type: '',
       priority: '',
       title: '',
-      plans: '',
       description: '',
       program: '',
       deadline: '',
@@ -135,7 +134,6 @@ export default class Example extends Component {
           type: '',
           priority: '',
           title: '',
-          plans: '',
           description: '',
           program: '',
           deadline: ''
