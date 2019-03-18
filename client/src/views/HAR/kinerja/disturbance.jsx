@@ -20,7 +20,7 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import axios from 'axios';
 
-class Duration extends React.Component {
+class Disturbance extends React.Component {
   constructor(props) {
     super(props);
 
@@ -120,7 +120,7 @@ class Duration extends React.Component {
       .catch(err => console.log(err.response.data));
   }
 
-  async onChange(e) {
+  onChange(e) {
     this.setState({
       [e.target.name]: e.target.value
     });
@@ -155,10 +155,22 @@ class Duration extends React.Component {
         <Col sm='12'>
           <div className='d-flex align-items-center batas-atas'>
             <div>
-              <CardTitle>Serpo Duration</CardTitle>
+              <CardTitle>Disturbance Data</CardTitle>
               <CardSubtitle>HAR | Performance</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
+              <div className='dl batas-kanan'>
+                <Input
+                  type='select'
+                  name='filter'
+                  className='custom-select'
+                  onChange={this.handleChangeFilter}>
+                  <option value=''>All</option>
+                  <option value='FOT'>FOT</option>
+                  <option value='FOC'>FOC</option>
+                  <option value='PS'>PS</option>
+                </Input>
+              </div>
               <div className='dl'>
                 <InputGroup>
                   <Input
@@ -179,11 +191,13 @@ class Duration extends React.Component {
           <Table className='no-wrap v-middle' responsive>
             <thead>
               <tr className='border-0'>
-                <th className='border-0'>Code</th>
-                <th className='border-0'>Region</th>
-                <th className='border-0'>Serpo</th>
-                <th className='border-0'>Total Duration</th>
-                <th className='border-0'>Complete Date</th>
+                <th className='border-0'>AR ID</th>
+                <th className='border-0'>Incident ID</th>
+                <th className='border-0'>Incident Region</th>
+                <th className='border-0'>Incident Description</th>
+                <th className='border-0'>Service Impact</th>
+                <th className='border-0'>Source Category</th>
+                <th className='border-0'>Total Ticket</th>
               </tr>
             </thead>
             <tbody>
@@ -196,9 +210,11 @@ class Duration extends React.Component {
                   return (
                     <tr key={id}>
                       <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
                       <td>{data.type.name}</td>
                       <td>{data.title}</td>
                       <td>{data.priority.name}</td>
+                      <td>{data.program}</td>
                       <td className='blue-grey-text  text-darken-4 font-medium'>
                         {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
                       </td>
@@ -245,4 +261,4 @@ class Duration extends React.Component {
   }
 }
 
-export default Duration;
+export default Disturbance;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, Fragment } from 'react';
 import {
   Button,
   Card,
@@ -17,6 +17,7 @@ import {
   Tooltip
 } from 'reactstrap';
 
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import Pusher from 'pusher-js';
 import moment from 'moment';
@@ -33,10 +34,16 @@ const channel = pusher.subscribe('ophar-app');
 class Projects extends React.Component {
   constructor(props) {
     super(props);
+    const { pageNeighbours = 1 } = props;
 
+    this.pageNeighbours =
+      typeof pageNeighbours === 'number'
+        ? Math.max(0, Math.min(pageNeighbours, 2))
+        : 0;
     this.handleChangeSearch = this.handleChangeSearch.bind(this);
     this.handleChangeFilter = this.handleChangeFilter.bind(this);
     this.pageSize = 5;
+    this.pageVisible = 5;
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
 
@@ -347,7 +354,11 @@ class Projects extends React.Component {
                     />
                   </PaginationItem>
                   {[...Array(this.state.pagesCount)].map((page, i) => (
-                    <PaginationItem active={i === currentPage} key={i}>
+                    <PaginationItem
+                      active={i === currentPage}
+                      key={i}
+                      pageSize='5'
+                      visiblePages={this.state.pageVisible}>
                       <PaginationLink
                         onClick={e => this.handleClick(e, i)}
                         href='#'>
@@ -372,5 +383,9 @@ class Projects extends React.Component {
     );
   }
 }
+
+Pagination.PropTypes = {
+  pageNeighbours: PropTypes.number
+};
 
 export default Projects;

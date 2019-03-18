@@ -171,13 +171,6 @@ class Ticket extends React.Component {
                   <option value='PS'>PS</option>
                 </Input>
               </div>
-              <div className='dl batas-kanan'>
-                <Link to='/uploadWO'>
-                  <Button className='btn' color='success'>
-                    <i className='mdi mdi-upload' />
-                  </Button>{' '}
-                </Link>
-              </div>
               <div className='dl'>
                 <InputGroup>
                   <Input

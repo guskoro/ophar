@@ -1,7 +1,7 @@
 import React from 'react';
+
 import {
   Button,
-  Card,
   CardBody,
   CardTitle,
   CardSubtitle,
@@ -9,51 +9,36 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
+  Row,
   Pagination,
   PaginationItem,
   PaginationLink,
-  Row,
   Table,
   Tooltip
 } from 'reactstrap';
 
-import axios from 'axios';
-import swal from 'sweetalert';
-import Pusher from 'pusher-js';
-import classnames from 'classnames';
-import moment from 'moment';
-import Pager from 'react-pager';
-import { render } from 'react-dom';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
+import axios from 'axios';
+import classnames from 'classnames';
 
-const pusher = new Pusher('12f41be129ba1c0d7a3c', {
-  cluster: 'ap1',
-  forceTLS: true
-});
-
-const channel = pusher.subscribe('ophar-app');
-
-class Projects extends React.Component {
+class Amartaasset extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handlePageChanged = this.handlePageChanged.bind(this);
+    this.pageSize = 5;
     this.handleChangeSearch = this.handleChangeSearch.bind(this);
     this.handleChangeFilter = this.handleChangeFilter.bind(this);
-    this.pageSize = 5;
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
 
     this.state = {
-      division: '',
       WOs: [],
       filtered: [],
       query: 0,
       currentPage: 0,
       pagesCount: 0,
-      total: 11,
-      current: 7,
-      visiblePage: 3
+      activeTab: '1'
     };
   }
 
@@ -120,64 +105,13 @@ class Projects extends React.Component {
     });
   }
 
-  // Pager
-  handlePageChanged(newPage) {
-    this.setState({ current: newPage });
-  }
-
   async componentDidMount() {
     await this.getWO();
-    await this.getCurrentUser();
-    await this.getPusher();
-  }
-
-  async getPusher() {
-    await channel.bind('add-wo', data => {
-      if (data.division === 'Corrective Maintenance') {
-        let WOs = this.state.WOs;
-        let newWOs = [data].concat(WOs);
-        this.setState({
-          WOs: newWOs,
-          filtered: newWOs,
-          pagesCount: Math.ceil(this.state.WOs.length / this.pageSize)
-        });
-      }
-    });
-
-    await channel.bind('done-wo', data => {
-      if (data.division === 'Corrective Maintenance') {
-        this.setState(state => {
-          const WOs = state.WOs.map(wo => {
-            if (wo._id === data._id) {
-              return data;
-            } else {
-              return wo;
-            }
-          });
-          return {
-            WOs,
-            filtered: WOs,
-            pagesCount: Math.ceil(WOs.length / this.pageSize)
-          };
-        });
-      }
-    });
-  }
-
-  getCurrentUser() {
-    axios
-      .get('/api/user/current')
-      .then(res => {
-        this.setState({
-          division: res.data.division
-        });
-      })
-      .catch(err => console.log(err.response.data));
   }
 
   async getWO() {
     await axios
-      .get(`/api/working-order?division=corrective+maintenance`)
+      .get(`/api/working-order`)
       .then(res => {
         this.setState({
           WOs: res.data,
@@ -186,30 +120,6 @@ class Projects extends React.Component {
         });
       })
       .catch(err => console.log(err.response.data));
-  }
-
-  async onDelete(data) {
-    await swal({
-      title: 'Delete work order',
-      text: 'Are you sure to delete this work order?',
-      icon: 'warning',
-      buttons: true,
-      dangerMode: true
-    }).then(result => {
-      if (result) {
-        return axios
-          .delete(`/api/working-order/${data._id}`)
-          .then(res => {
-            if (res.status === 200) {
-              swal('Poof! Your work order has been deleted!', {
-                icon: 'success'
-              });
-              this.getWO();
-            }
-          })
-          .catch(err => err.response.data);
-      }
-    });
   }
 
   onChange(e) {
@@ -242,19 +152,13 @@ class Projects extends React.Component {
 
   render() {
     const { currentPage } = this.state;
-
-    console.log(this.state.WOs, this.state.filtered);
-
     return (
-      /*--------------------------------------------------------------------------------*/
-      /* Used In Dashboard-4 [General]                                                  */
-      /*--------------------------------------------------------------------------------*/
-      <Card>
-        <CardBody>
-          <div className='d-flex align-items-center'>
+      <Row>
+        <Col sm='12'>
+          <div className='d-flex align-items-center batas-atas'>
             <div>
-              <CardTitle>Workorders</CardTitle>
-              <CardSubtitle>HAR | Corrective Maintenance</CardSubtitle>
+              <CardTitle>POP Data</CardTitle>
+              <CardSubtitle>HAR | Performance</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
               <div className='dl batas-kanan'>
@@ -264,21 +168,10 @@ class Projects extends React.Component {
                   className='custom-select'
                   onChange={this.handleChangeFilter}>
                   <option value=''>All</option>
-                  <option value='pending-approval'>Pending Approval</option>
-                  <option value='on-progress'>On Progress</option>
-                  <option value='rejected'>Rejected</option>
-                  <option value='done'>Done</option>
+                  <option value='FOT'>Online</option>
+                  <option value='FOC'>Offline</option>
                 </Input>
               </div>
-              {this.state.division === 'Corrective Maintenance' && (
-                <div className='dl batas-kanan'>
-                  <Link to='/uploadWO'>
-                    <Button className='btn' color='success'>
-                      <i className='mdi mdi-plus' />
-                    </Button>{' '}
-                  </Link>
-                </div>
-              )}
               <div className='dl'>
                 <InputGroup>
                   <Input
@@ -299,18 +192,14 @@ class Projects extends React.Component {
           <Table className='no-wrap v-middle' responsive>
             <thead>
               <tr className='border-0'>
-                <th className='border-0'>Code</th>
-                <th className='border-0'>PIC</th>
-                <th className='border-0'>Type</th>
-                <th className='border-0'>Description</th>
-                <th className='border-0'>Priority</th>
-                <th className='border-0'>Program</th>
-                <th className='border-0'>Deadline</th>
+                <th className='border-0'>No</th>
+                <th className='border-0'>QR Code</th>
+                <th className='border-0'>Brand</th>
+                <th className='border-0'>Model</th>
+                <th className='border-0'>Category</th>
+                <th className='border-0'>Site</th>
                 <th className='border-0'>Status</th>
-                <th className='border-0'>Details</th>
-                {this.state.division === 'Corrective Maintenance' && (
-                  <th className='border-0'>Action</th>
-                )}
+                <th className='border-0'>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -323,30 +212,9 @@ class Projects extends React.Component {
                   return (
                     <tr key={id}>
                       <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
-                      <td>
-                        <div className='d-flex no-block align-items-center'>
-                          <div className='mr-2'>
-                            <img
-                              src={`https:${data.pic.avatar}`}
-                              alt='user'
-                              className='rounded-circle'
-                              width='45'
-                            />
-                          </div>
-                          <div className=''>
-                            <h5 className='mb-0 font-16 font-medium'>
-                              {data.pic.name}
-                            </h5>
-                            <span>{data.pic.division.name}</span>
-                          </div>
-                        </div>
-                      </td>
+                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
                       <td>{data.type.name}</td>
-                      <td>
-                        {data.title.length < 36
-                          ? data.title
-                          : data.title.slice(0, 36) + '...'}
-                      </td>
+                      <td>{data.title}</td>
                       <td>{data.priority.name}</td>
                       <td>{data.program}</td>
                       <td className='blue-grey-text  text-darken-4 font-medium'>
@@ -387,25 +255,6 @@ class Projects extends React.Component {
                           {data.done && 'Done'}
                         </Tooltip>
                       </td>
-                      <td>
-                        <Link to={{ pathname: `/detailWO/${data._id}` }}>
-                          <Button className='btn' outline color='success'>
-                            Show
-                          </Button>
-                        </Link>
-                      </td>
-                      {this.state.division === data.division && (
-                        <td>
-                          <Button
-                            disabled={data.approved_by_spv && !data.done}
-                            onClick={this.onDelete.bind(this, data)}
-                            className='profile-time-approved'
-                            outline
-                            color='danger'>
-                            <i className='mdi mdi-delete' />
-                          </Button>
-                        </td>
-                      )}
                     </tr>
                   );
                 })}
@@ -443,22 +292,10 @@ class Projects extends React.Component {
               </CardBody>
             </Col>
           </Row>
-          <Row>
-            <Col xs='12' md='12'>
-              <Pager
-                total={this.state.total}
-                current={this.state.current}
-                visiblePages={this.state.visiblePage}
-                titles={{ first: '<|', last: '>|' }}
-                className='pagination-sm pull-right'
-                onPageChanged={this.handlePageChanged}
-              />
-            </Col>
-          </Row>
-        </CardBody>
-      </Card>
+        </Col>
+      </Row>
     );
   }
 }
 
-export default Projects;
+export default Amartaasset;
