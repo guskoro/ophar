@@ -30,12 +30,12 @@ ul.pagination {
     border-color: #ced4da !important; }
   ul.pagination a.page-link {
     padding: 0.75rem 1rem;
-    min-width: 3.5rem;
+    min-width: 2.7rem;
     text-align: center;
     box-shadow: none !important;
     border-color: #ced4da !important;
     color: #6b88a4;
     font-weight: 900;
-    font-size: 1rem; }
+    font-size: .7rem; }
     ul.pagination a.page-link:hover {
       background-color: #f4f4f4; }

@@ -23,7 +23,6 @@ import moment from 'moment';
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
 import Pagination from '../../components/Pagination';
-import '../../assets/scss/all/Pagination.css';
 
 const pusher = new Pusher('12f41be129ba1c0d7a3c', {
   cluster: 'ap1',
@@ -44,9 +43,11 @@ class Projects extends React.Component {
     this.state = {
       division: '',
       WOs: [],
+      currentWOs: [],
       filtered: [],
       query: 0,
-      currentPage: 0,
+      currentPage: null,
+      totalPages: null,
       pagesCount: 0
     };
   }
@@ -213,7 +214,10 @@ class Projects extends React.Component {
   };
 
   render() {
-    const { currentPage } = this.state;
+    const { WOs, currentWOs, currentPage, totalPages } = this.state;
+    const totalWOs = WOs.length;
+
+    if (totalWOs === 0) return null;
 
     return (
       /*--------------------------------------------------------------------------------*/
@@ -273,89 +277,83 @@ class Projects extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {this.state.filtered
-                .slice(
-                  currentPage * this.pageSize,
-                  (currentPage + 1) * this.pageSize
-                )
-                .map((data, id) => {
-                  return (
-                    <tr key={id}>
-                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
-                      <td>
-                        <div className='d-flex no-block align-items-center'>
-                          <div className='mr-2'>
-                            <img
-                              src={`https:${data.pic.avatar}`}
-                              alt='user'
-                              className='rounded-circle'
-                              width='45'
-                            />
-                          </div>
-                          <div className=''>
-                            <h5 className='mb-0 font-16 font-medium'>
-                              {data.pic.name}
-                            </h5>
-                            <span>{data.pic.division.name}</span>
-                          </div>
+              {currentWOs.map((data, id) => {
+                return (
+                  <tr key={id}>
+                    <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                    <td>
+                      <div className='d-flex no-block align-items-center'>
+                        <div className='mr-2'>
+                          <img
+                            src={`https:${data.pic.avatar}`}
+                            alt='user'
+                            className='rounded-circle'
+                            width='45'
+                          />
                         </div>
-                      </td>
-                      <td>{data.type.name}</td>
-                      <td>
-                        {data.title.length < 36
-                          ? data.title
-                          : data.title.slice(0, 36) + '...'}
-                      </td>
-                      <td>{data.priority.name}</td>
-                      <td>{data.program}</td>
-                      <td className='blue-grey-text  text-darken-4 font-medium'>
-                        {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
-                      </td>
-                      <td>
-                        <i
-                          className={classnames('fa fa-circle', {
-                            'text-danger': data.rejected,
-                            'text-warning': !(
-                              (data.approved_by_spv &&
-                                data.approved_by_manager) ||
-                              data.rejected
-                            ),
-                            'text-success':
-                              data.approved_by_spv &&
-                              data.approved_by_manager &&
-                              !data.done,
-                            'text-biruicon': data.done
-                          })}
-                          id={`indicator-${id}`}
-                        />
-                        <Tooltip
-                          placement='top'
-                          isOpen={this.isToolTipOpen(`indicator-${id}`)}
-                          target={`indicator-${id}`}
-                          toggle={() => this.toggle(`indicator-${id}`)}>
-                          {data.rejected && 'Rejected'}
-                          {!(
+                        <div className=''>
+                          <h5 className='mb-0 font-16 font-medium'>
+                            {data.pic.name}
+                          </h5>
+                          <span>{data.pic.division.name}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{data.type.name}</td>
+                    <td>
+                      {data.title.length < 36
+                        ? data.title
+                        : data.title.slice(0, 36) + '...'}
+                    </td>
+                    <td>{data.priority.name}</td>
+                    <td>{data.program}</td>
+                    <td className='blue-grey-text  text-darken-4 font-medium'>
+                      {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
+                    </td>
+                    <td>
+                      <i
+                        className={classnames('fa fa-circle', {
+                          'text-danger': data.rejected,
+                          'text-warning': !(
                             (data.approved_by_spv &&
                               data.approved_by_manager) ||
                             data.rejected
-                          ) && 'Pending Approval'}
-                          {data.approved_by_spv &&
+                          ),
+                          'text-success':
+                            data.approved_by_spv &&
                             data.approved_by_manager &&
-                            !data.done &&
-                            'On Progress'}
-                          {data.done && 'Done'}
-                        </Tooltip>
-                      </td>
-                      <td>
-                        <Link to={{ pathname: `/detailWO/${data._id}` }}>
-                          <Button className='btn' outline color='success'>
-                            Show
-                          </Button>
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
+                            !data.done,
+                          'text-biruicon': data.done
+                        })}
+                        id={`indicator-${id}`}
+                      />
+                      <Tooltip
+                        placement='top'
+                        isOpen={this.isToolTipOpen(`indicator-${id}`)}
+                        target={`indicator-${id}`}
+                        toggle={() => this.toggle(`indicator-${id}`)}>
+                        {data.rejected && 'Rejected'}
+                        {!(
+                          (data.approved_by_spv && data.approved_by_manager) ||
+                          data.rejected
+                        ) && 'Pending Approval'}
+                        {data.approved_by_spv &&
+                          data.approved_by_manager &&
+                          !data.done &&
+                          'On Progress'}
+                        {data.done && 'Done'}
+                      </Tooltip>
+                    </td>
+                    <td>
+                      <Link to={{ pathname: `/detailWO/${data._id}` }}>
+                        <Button className='btn' outline color='success'>
+                          Show
+                        </Button>
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
           <Row>
@@ -364,40 +362,11 @@ class Projects extends React.Component {
                 <div className='d-flex flex-row py-4 align-items-center'>
                   <Pagination
                     totalRecords={this.state.WOs.length}
-                    pageLimit={18}
+                    pageLimit={this.pageSize}
                     pageNeighbours={1}
                     onPageChanged={this.onPageChanged}
                   />
                 </div>
-                {/* <Pagination aria-label='Page navigation example'>
-                  <PaginationItem disabled={currentPage <= 0}>
-                    <PaginationLink
-                      onClick={e => this.handleClick(e, currentPage - 1)}
-                      previous
-                      href='#'
-                    />
-                  </PaginationItem>
-                  {[...Array(this.state.pagesCount)].map((page, i) => (
-                    <PaginationItem
-                      active={i === currentPage}
-                      key={i}
-                      pageSize='5'>
-                      <PaginationLink
-                        onClick={e => this.handleClick(e, i)}
-                        href='#'>
-                        {i + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                  <PaginationItem
-                    disabled={currentPage >= this.state.pagesCount - 1}>
-                    <PaginationLink
-                      onClick={e => this.handleClick(e, currentPage + 1)}
-                      next
-                      href='#'
-                    />
-                  </PaginationItem>
-                </Pagination> */}
               </CardBody>
             </Col>
           </Row>
