@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React from 'react';
 import {
   Button,
   Card,
@@ -9,20 +9,21 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
+  // Pagination,
+  // PaginationItem,
+  // PaginationLink,
   Row,
   Table,
   Tooltip
 } from 'reactstrap';
 
-import PropTypes from 'prop-types';
 import axios from 'axios';
 import Pusher from 'pusher-js';
 import moment from 'moment';
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
+import Pagination from '../../components/Pagination';
+import '../../assets/scss/all/Pagination.css';
 
 const pusher = new Pusher('12f41be129ba1c0d7a3c', {
   cluster: 'ap1',
@@ -34,12 +35,6 @@ const channel = pusher.subscribe('ophar-app');
 class Projects extends React.Component {
   constructor(props) {
     super(props);
-    const { pageNeighbours = 1 } = props;
-
-    this.pageNeighbours =
-      typeof pageNeighbours === 'number'
-        ? Math.max(0, Math.min(pageNeighbours, 2))
-        : 0;
     this.handleChangeSearch = this.handleChangeSearch.bind(this);
     this.handleChangeFilter = this.handleChangeFilter.bind(this);
     this.pageSize = 5;
@@ -123,6 +118,16 @@ class Projects extends React.Component {
     await this.getWO();
     await this.getPusher();
   }
+
+  onPageChanged = data => {
+    const { WOs } = this.state;
+    const { currentPage, totalPages, pageLimit } = data;
+
+    const offset = (currentPage - 1) * pageLimit;
+    const currentWOs = WOs.slice(offset, offset + pageLimit);
+
+    this.setState({ currentPage, currentWOs, totalPages });
+  };
 
   async getPusher() {
     await channel.bind('add-wo', data => {
@@ -344,7 +349,15 @@ class Projects extends React.Component {
           <Row>
             <Col xs='12' md='12'>
               <CardBody className='border-top'>
-                <Pagination aria-label='Page navigation example'>
+                <div className='d-flex flex-row py-4 align-items-center'>
+                  <Pagination
+                    totalRecords={this.state.WOs.length}
+                    pageLimit={18}
+                    pageNeighbours={1}
+                    onPageChanged={this.onPageChanged}
+                  />
+                </div>
+                {/* <Pagination aria-label='Page navigation example'>
                   <PaginationItem disabled={currentPage <= 0}>
                     <PaginationLink
                       onClick={e => this.handleClick(e, currentPage - 1)}
@@ -372,7 +385,7 @@ class Projects extends React.Component {
                       href='#'
                     />
                   </PaginationItem>
-                </Pagination>
+                </Pagination> */}
               </CardBody>
             </Col>
           </Row>
@@ -381,9 +394,5 @@ class Projects extends React.Component {
     );
   }
 }
-
-Pagination.PropTypes = {
-  pageNeighbours: PropTypes.number
-};
 
 export default Projects;
