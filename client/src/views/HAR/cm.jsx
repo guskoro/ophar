@@ -22,6 +22,8 @@ import swal from 'sweetalert';
 import Pusher from 'pusher-js';
 import classnames from 'classnames';
 import moment from 'moment';
+import Pager from 'react-pager';
+import { render } from 'react-dom';
 import { Link } from 'react-router-dom';
 
 const pusher = new Pusher('12f41be129ba1c0d7a3c', {
@@ -35,6 +37,7 @@ class Projects extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handlePageChanged = this.handlePageChanged.bind(this);
     this.handleChangeSearch = this.handleChangeSearch.bind(this);
     this.handleChangeFilter = this.handleChangeFilter.bind(this);
     this.pageSize = 5;
@@ -47,7 +50,10 @@ class Projects extends React.Component {
       filtered: [],
       query: 0,
       currentPage: 0,
-      pagesCount: 0
+      pagesCount: 0,
+      total: 11,
+      current: 7,
+      visiblePage: 3
     };
   }
 
@@ -112,6 +118,11 @@ class Projects extends React.Component {
     this.setState({
       currentPage: index
     });
+  }
+
+  // Pager
+  handlePageChanged(newPage) {
+    this.setState({ current: newPage });
   }
 
   async componentDidMount() {
@@ -409,6 +420,18 @@ class Projects extends React.Component {
                   </PaginationItem>
                 </Pagination>
               </CardBody>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs='12' md='12'>
+              <Pager
+                total={this.state.total}
+                current={this.state.current}
+                visiblePages={this.state.visiblePage}
+                titles={{ first: '<|', last: '>|' }}
+                className='pagination-sm pull-right'
+                onPageChanged={this.handlePageChanged}
+              />
             </Col>
           </Row>
         </CardBody>

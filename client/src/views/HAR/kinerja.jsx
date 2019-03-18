@@ -11,6 +11,9 @@ import {
 import classnames from 'classnames';
 import Duration from './kinerja/duration.jsx';
 import Ticket from './kinerja/ticket.jsx';
+import Upload from './kinerja/uploadpage.jsx';
+import Disturbance from './kinerja/disturbance.jsx';
+import Amartaasset from './kinerja/amartaasset.jsx';
 
 class Projects extends React.Component {
   constructor(props) {
@@ -51,7 +54,7 @@ class Projects extends React.Component {
                   onClick={() => {
                     this.toggleTab('1');
                   }}>
-                  Total Duration
+                  Upload
                 </NavLink>
               </NavItem>
               <NavItem>
@@ -62,7 +65,7 @@ class Projects extends React.Component {
                   onClick={() => {
                     this.toggleTab('2');
                   }}>
-                  Total Ticket
+                  Total Duration
                 </NavLink>
               </NavItem>
               <NavItem>
@@ -73,7 +76,29 @@ class Projects extends React.Component {
                   onClick={() => {
                     this.toggleTab('3');
                   }}>
+                  Total Ticket
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames('pointer-hover', {
+                    active: this.state.activeTab === '4'
+                  })}
+                  onClick={() => {
+                    this.toggleTab('4');
+                  }}>
                   Total Disturbance
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames('pointer-hover', {
+                    active: this.state.activeTab === '5'
+                  })}
+                  onClick={() => {
+                    this.toggleTab('5');
+                  }}>
+                  Total Offline Assets
                 </NavLink>
               </NavItem>
             </Nav>
@@ -81,15 +106,23 @@ class Projects extends React.Component {
             <TabContent activeTab={this.state.activeTab}>
               {/* Tiap tap */}
               <TabPane tabId='1'>
-                <Duration />
+                <Upload />
               </TabPane>
 
               <TabPane tabId='2'>
-                <Ticket />
+                <Duration />
               </TabPane>
 
               <TabPane tabId='3'>
                 <Ticket />
+              </TabPane>
+
+              <TabPane tabId='4'>
+                <Disturbance />
+              </TabPane>
+
+              <TabPane tabId='5'>
+                <Amartaasset />
               </TabPane>
             </TabContent>
           </div>

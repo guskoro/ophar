@@ -1,7 +1,7 @@
-import React, { Component, Fragment } from 'react';
+import React from 'react';
+
 import {
   Button,
-  Card,
   CardBody,
   CardTitle,
   CardSubtitle,
@@ -9,51 +9,34 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
+  Row,
   Pagination,
   PaginationItem,
   PaginationLink,
-  Row,
-  Table,
-  Tooltip
+  Table
 } from 'reactstrap';
 
-import PropTypes from 'prop-types';
-import axios from 'axios';
-import Pusher from 'pusher-js';
-import moment from 'moment';
-import classnames from 'classnames';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
+import axios from 'axios';
 
-const pusher = new Pusher('12f41be129ba1c0d7a3c', {
-  cluster: 'ap1',
-  forceTLS: true
-});
-
-const channel = pusher.subscribe('ophar-app');
-
-class Projects extends React.Component {
+class Disturbance extends React.Component {
   constructor(props) {
     super(props);
-    const { pageNeighbours = 1 } = props;
 
-    this.pageNeighbours =
-      typeof pageNeighbours === 'number'
-        ? Math.max(0, Math.min(pageNeighbours, 2))
-        : 0;
+    this.pageSize = 5;
     this.handleChangeSearch = this.handleChangeSearch.bind(this);
     this.handleChangeFilter = this.handleChangeFilter.bind(this);
-    this.pageSize = 5;
-    this.pageVisible = 5;
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
 
     this.state = {
-      division: '',
       WOs: [],
       filtered: [],
       query: 0,
       currentPage: 0,
-      pagesCount: 0
+      pagesCount: 0,
+      activeTab: '1'
     };
   }
 
@@ -122,19 +105,6 @@ class Projects extends React.Component {
 
   async componentDidMount() {
     await this.getWO();
-    await this.getPusher();
-  }
-
-  async getPusher() {
-    await channel.bind('add-wo', data => {
-      let WOs = this.state.WOs;
-      let newWOs = [data].concat(WOs);
-      this.setState({
-        WOs: newWOs,
-        filtered: newWOs,
-        pagesCount: Math.ceil(this.state.WOs.length / this.pageSize)
-      });
-    });
   }
 
   async getWO() {
@@ -150,7 +120,7 @@ class Projects extends React.Component {
       .catch(err => console.log(err.response.data));
   }
 
-  async onChange(e) {
+  onChange(e) {
     this.setState({
       [e.target.name]: e.target.value
     });
@@ -180,18 +150,13 @@ class Projects extends React.Component {
 
   render() {
     const { currentPage } = this.state;
-
     return (
-      /*--------------------------------------------------------------------------------*/
-      /* Menampilkan semua WO untuk semua USER                                          */
-      /*--------------------------------------------------------------------------------*/
-
-      <Card>
-        <CardBody>
-          <div className='d-flex align-items-center'>
+      <Row>
+        <Col sm='12'>
+          <div className='d-flex align-items-center batas-atas'>
             <div>
-              <CardTitle>All Workorders</CardTitle>
-              <CardSubtitle>HAR</CardSubtitle>
+              <CardTitle>Disturbance Data</CardTitle>
+              <CardSubtitle>HAR | Performance</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
               <div className='dl batas-kanan'>
@@ -201,21 +166,20 @@ class Projects extends React.Component {
                   className='custom-select'
                   onChange={this.handleChangeFilter}>
                   <option value=''>All</option>
-                  <option value='pending-approval'>Pending Approval</option>
-                  <option value='on-progress'>On Progress</option>
-                  <option value='rejected'>Rejected</option>
-                  <option value='done'>Done</option>
+                  <option value='FOT'>FOT</option>
+                  <option value='FOC'>FOC</option>
+                  <option value='PS'>PS</option>
                 </Input>
               </div>
-              <div className='dlbatas-kanan'>
+              <div className='dl'>
                 <InputGroup>
+                  <Input
+                    type='text'
+                    className='input'
+                    onChange={this.handleChangeSearch}
+                    placeholder='Search..'
+                  />
                   <InputGroupAddon addonType='append'>
-                    <Input
-                      type='text'
-                      className='input'
-                      onChange={this.handleChangeSearch}
-                      placeholder='Search..'
-                    />
                     <Button color='biruicon'>
                       <i className='mdi mdi-magnify' />
                     </Button>
@@ -224,18 +188,16 @@ class Projects extends React.Component {
               </div>
             </div>
           </div>
-          <Table className='wrap v-middle' responsive>
+          <Table className='no-wrap v-middle' responsive>
             <thead>
               <tr className='border-0'>
-                <th className='border-0'>Code</th>
-                <th className='border-0'>PIC</th>
-                <th className='border-0'>Type</th>
-                <th className='border-0'>Description</th>
-                <th className='border-0'>Priority</th>
-                <th className='border-0'>Program</th>
-                <th className='border-0'>Deadline</th>
-                <th className='border-0'>Status</th>
-                <th className='border-0'>Details</th>
+                <th className='border-0'>AR ID</th>
+                <th className='border-0'>Incident ID</th>
+                <th className='border-0'>Incident Region</th>
+                <th className='border-0'>Incident Description</th>
+                <th className='border-0'>Service Impact</th>
+                <th className='border-0'>Source Category</th>
+                <th className='border-0'>Total Ticket</th>
               </tr>
             </thead>
             <tbody>
@@ -248,76 +210,13 @@ class Projects extends React.Component {
                   return (
                     <tr key={id}>
                       <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
-                      <td>
-                        <div className='d-flex no-block align-items-center'>
-                          <div className='mr-2'>
-                            <img
-                              src={`https:${data.pic.avatar}`}
-                              alt='user'
-                              className='rounded-circle'
-                              width='45'
-                            />
-                          </div>
-                          <div className=''>
-                            <h5 className='mb-0 font-16 font-medium'>
-                              {data.pic.name}
-                            </h5>
-                            <span>{data.pic.division.name}</span>
-                          </div>
-                        </div>
-                      </td>
+                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
                       <td>{data.type.name}</td>
-                      <td>
-                        {data.title.length < 36
-                          ? data.title
-                          : data.title.slice(0, 36) + '...'}
-                      </td>
+                      <td>{data.title}</td>
                       <td>{data.priority.name}</td>
                       <td>{data.program}</td>
                       <td className='blue-grey-text  text-darken-4 font-medium'>
                         {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
-                      </td>
-                      <td>
-                        <i
-                          className={classnames('fa fa-circle', {
-                            'text-danger': data.rejected,
-                            'text-warning': !(
-                              (data.approved_by_spv &&
-                                data.approved_by_manager) ||
-                              data.rejected
-                            ),
-                            'text-success':
-                              data.approved_by_spv &&
-                              data.approved_by_manager &&
-                              !data.done,
-                            'text-biruicon': data.done
-                          })}
-                          id={`indicator-${id}`}
-                        />
-                        <Tooltip
-                          placement='top'
-                          isOpen={this.isToolTipOpen(`indicator-${id}`)}
-                          target={`indicator-${id}`}
-                          toggle={() => this.toggle(`indicator-${id}`)}>
-                          {data.rejected && 'Rejected'}
-                          {!(
-                            (data.approved_by_spv &&
-                              data.approved_by_manager) ||
-                            data.rejected
-                          ) && 'Pending Approval'}
-                          {data.approved_by_spv &&
-                            data.approved_by_manager &&
-                            !data.done &&
-                            'On Progress'}
-                          {data.done && 'Done'}
-                        </Tooltip>
-                      </td>
-                      <td>
-                        <Link to={{ pathname: `/detailWO/${data._id}` }}>
-                          <Button className='btn' outline color='success'>
-                            Show
-                          </Button>
-                        </Link>
                       </td>
                     </tr>
                   );
@@ -336,11 +235,7 @@ class Projects extends React.Component {
                     />
                   </PaginationItem>
                   {[...Array(this.state.pagesCount)].map((page, i) => (
-                    <PaginationItem
-                      active={i === currentPage}
-                      key={i}
-                      pageSize='5'
-                      visiblePages={this.state.pageVisible}>
+                    <PaginationItem active={i === currentPage} key={i}>
                       <PaginationLink
                         onClick={e => this.handleClick(e, i)}
                         href='#'>
@@ -360,14 +255,10 @@ class Projects extends React.Component {
               </CardBody>
             </Col>
           </Row>
-        </CardBody>
-      </Card>
+        </Col>
+      </Row>
     );
   }
 }
 
-Pagination.PropTypes = {
-  pageNeighbours: PropTypes.number
-};
-
-export default Projects;
+export default Disturbance;

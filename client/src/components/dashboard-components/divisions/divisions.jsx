@@ -214,6 +214,68 @@ class Divisions extends Component {
           </Col>
         </Row>
         <Row>
+          <Col xs='12' md='3'>
+            <Card>
+              {/* <CardImg top width="100%" src={img1} /> */}
+              <CardBody>
+                <CardTitle>Current Offline Assets</CardTitle>
+                <h1 className='display-3'>
+                  <Countup end={this.state.cmWOs.length} duration={1} />
+                </h1>
+                <CardText>Total Current Offline Assets</CardText>
+                <NavLink to='/cm'>
+                  <Button color='danger'>Let me in</Button>
+                </NavLink>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col xs='12' md='3'>
+            <Card>
+              {/* <CardImg top width="100%" src={img2} /> */}
+              <CardBody>
+                <CardTitle>High Priority Work Orders</CardTitle>
+                <h1 className='display-3'>
+                  <Countup end={this.state.pmWOs.length} duration={1} />
+                </h1>
+                <CardText>Total High Priority Workorders</CardText>
+                <NavLink to='/pm'>
+                  <Button color='danger'>Let me in</Button>
+                </NavLink>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col xs='12' md='3'>
+            <Card>
+              {/* <CardImg top width="100%" src={img3} /> */}
+              <CardBody>
+                <CardTitle>Workorders Backlog</CardTitle>
+                <h1 className='display-3'>
+                  <Countup end={this.state.assetsWOs.length} duration={1} />
+                </h1>
+                <CardText>Total Workorders Backlog</CardText>
+                <NavLink to='/asset'>
+                  <Button color='danger'>Let me in</Button>
+                </NavLink>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col xs='12' md='3'>
+            <Card>
+              {/* <CardImg top width="100%" src={img4} /> */}
+              <CardBody>
+                <CardTitle>MTTR (FROM AVAILABILITY TRACKER)</CardTitle>
+                <h1 className='display-3'>
+                  <Countup end={this.state.controlsWOs.length} duration={1} />
+                </h1>
+                <CardText>Total MTTR</CardText>
+                <NavLink to='/p3ak'>
+                  <Button color='danger'>Let me in</Button>
+                </NavLink>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
           <Col xs='12' md='6'>
             <Card>
               <CardBody>

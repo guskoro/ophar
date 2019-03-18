@@ -159,13 +159,6 @@ class Duration extends React.Component {
               <CardSubtitle>HAR | Performance</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
-              <div className='dl batas-kanan'>
-                <Link to='/uploadWO'>
-                  <Button className='btn' color='success'>
-                    <i className='mdi mdi-upload' />
-                  </Button>{' '}
-                </Link>
-              </div>
               <div className='dl'>
                 <InputGroup>
                   <Input
