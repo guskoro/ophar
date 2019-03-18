@@ -20,8 +20,7 @@ import {
   PaginationItem,
   PaginationLink,
   Row,
-  Table,
-  Tooltip
+  Table
 } from 'reactstrap';
 import swal from 'sweetalert';
 import axios from 'axios';
@@ -218,7 +217,7 @@ class Projects extends React.Component {
   }
 
   render() {
-    const { currentPage, WOs } = this.state;
+    const { currentPage } = this.state;
 
     return (
       /*--------------------------------------------------------------------------------*/

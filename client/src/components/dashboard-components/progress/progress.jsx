@@ -14,6 +14,8 @@ import { Line } from 'react-chartjs-2';
 import axios from 'axios';
 import Pusher from 'pusher-js';
 
+Pusher.logToConsole = true;
+
 const pusher = new Pusher('12f41be129ba1c0d7a3c', {
   cluster: 'ap1',
   forceTLS: true
@@ -140,6 +142,75 @@ class DivisionProgress extends Component {
           });
         }
       }
+      this.cmProgressUp();
+    });
+
+    await channel.bind('done-wo', data => {
+      if (data.division === 'Corrective Maintenance') {
+        let newData = JSON.parse(JSON.stringify(this.state.cmData));
+        newData.done = this.state.cmData.done + 1;
+        this.setState({
+          cmData: newData
+        });
+        let done = this.state.cmData.done;
+        let all = this.state.cmData.all;
+
+        if (done !== 0) {
+          newData.max = (done / all) * 100;
+          this.setState({
+            cmData: newData
+          });
+        }
+      }
+      if (data.division === 'Preventive Maintenance') {
+        let newData = JSON.parse(JSON.stringify(this.state.pmData));
+        newData.done = this.state.pmData.done + 1;
+        this.setState({
+          pmData: newData
+        });
+        let done = this.state.pmData.done;
+        let all = this.state.pmData.all;
+
+        if (done !== 0) {
+          newData.max = (done / all) * 100;
+          this.setState({
+            pmData: newData
+          });
+        }
+      }
+      if (data.division === 'Assets') {
+        let newData = JSON.parse(JSON.stringify(this.state.assetsData));
+        newData.done = this.state.assetsData.done + 1;
+        this.setState({
+          assetsData: newData
+        });
+        let done = this.state.assetsData.done;
+        let all = this.state.assetsData.all;
+
+        if (done !== 0) {
+          newData.max = (done / all) * 100;
+          this.setState({
+            assetsData: newData
+          });
+        }
+      }
+      if (data.division === 'Patrols and Controls') {
+        let newData = JSON.parse(JSON.stringify(this.state.controlsData));
+        newData.done = this.state.controlsData.done + 1;
+        this.setState({
+          controlsData: newData
+        });
+        let done = this.state.controlsData.done;
+        let all = this.state.controlsData.all;
+
+        if (done !== 0) {
+          newData.max = (done / all) * 100;
+          this.setState({
+            controlsData: newData
+          });
+        }
+      }
+      this.cmProgressUp();
     });
   }
 
@@ -225,7 +296,7 @@ class DivisionProgress extends Component {
       .catch(err => console.log(err));
 
     await axios
-      .get('/api/working-order?division=patrols+and+controls&done=true')
+      .get('/api/working-order?division=assets&done=true')
       .then(assetsWOs => {
         newData.done = assetsWOs.data.length;
         this.setState({

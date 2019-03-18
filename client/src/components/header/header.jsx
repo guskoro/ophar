@@ -17,7 +17,6 @@ import {
   Nav,
   Navbar,
   NavbarBrand,
-  NavItem,
   UncontrolledDropdown
 } from 'reactstrap';
 
@@ -188,6 +187,7 @@ class Header extends React.Component {
             {/* Mobile View Toggler  [visible only after 768px screen]                         */}
             {/*--------------------------------------------------------------------------------*/}
             <a
+              href=''
               className='nav-toggler d-block d-md-none'
               onClick={this.showMobilemenu}>
               <i className='ti-menu ti-close' />
@@ -200,7 +200,7 @@ class Header extends React.Component {
             data-navbarbg='skin1'>
             <Nav className='ml-auto float-right' navbar>
               {/* Tombol gawe lek gak login */}
-              {isAuthenticated == false && (
+              {!isAuthenticated && (
                 <NavLink
                   className='nav-item-custom mr-3'
                   to=''
