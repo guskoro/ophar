@@ -43,7 +43,6 @@ class Projects extends React.Component {
     this.handleChangeSearch = this.handleChangeSearch.bind(this);
     this.handleChangeFilter = this.handleChangeFilter.bind(this);
     this.pageSize = 5;
-    this.pageVisible = 5;
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
 
@@ -339,8 +338,7 @@ class Projects extends React.Component {
                     <PaginationItem
                       active={i === currentPage}
                       key={i}
-                      pageSize='5'
-                      visiblePages={this.state.pageVisible}>
+                      pageSize='5'>
                       <PaginationLink
                         onClick={e => this.handleClick(e, i)}
                         href='#'>
