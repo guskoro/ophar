@@ -153,6 +153,18 @@ class Projects extends React.Component {
         };
       });
     });
+
+    await channel.bind('delete-wo', data => {
+      this.setState(state => {
+        const WOs = state.WOs.filter(item => item._id !== data._id);
+
+        return {
+          WOs,
+          filtered: WOs,
+          pagesCount: Math.ceil(WOs.length / this.pageSize)
+        };
+      });
+    });
   }
 
   async getWO() {

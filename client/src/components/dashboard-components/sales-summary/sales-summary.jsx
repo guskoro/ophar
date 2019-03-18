@@ -101,6 +101,56 @@ class SalesSummary extends React.Component {
         });
       }
     });
+
+    await channel.bind('delete-wo', data => {
+      if (data.done) {
+        this.setState(state => {
+          const complete = state.complete.filter(item => item._id !== data._id);
+
+          newComplete[0] = complete.length;
+          completeDatasets[0].data = newComplete;
+          return {
+            completeWO: Object.assign({}, this.state.completeWO, {
+              datasets: completeDatasets
+            })
+          };
+        });
+      }
+      if (data.approved_by_manager && data.approved_by_spv) {
+        this.setState(state => {
+          const approved = state.approved.filter(item => item._id !== data._id);
+
+          newApproved[0] = approved.length;
+          approvedDatasets[0].data = newApproved;
+          return {
+            approvedWO: Object.assign({}, this.state.approvedWO, {
+              datasets: approvedDatasets
+            })
+          };
+        });
+      }
+      if (!(data.approved_by_manager && data.approved_by_spv) || !data.done) {
+        this.setState(state => {
+          const incomplete = state.incomplete.filter(
+            item => item._id !== data._id
+          );
+          const pending = state.pending.filter(item => item._id !== data._id);
+
+          newComplete[1] = incomplete.length;
+          newApproved[1] = pending.length;
+          completeDatasets[0].data = newComplete;
+          approvedDatasets[0].data = newApproved;
+          return {
+            completeWO: Object.assign({}, this.state.completeWO, {
+              datasets: completeDatasets
+            }),
+            approvedWO: Object.assign({}, this.state.approvedWO, {
+              datasets: approvedDatasets
+            })
+          };
+        });
+      }
+    });
   }
 
   async getCompleteWO() {

@@ -43,6 +43,43 @@ class Feeds extends React.Component {
         done: [...this.state.done, data]
       });
     });
+
+    await channel.bind('delete-wo', data => {
+      if (!data.approved_by_manager && !data.approved_by_spv) {
+        this.setState(state => {
+          const requests = state.requests.filter(item => item._id !== data._id);
+
+          return {
+            requests
+          };
+        });
+      }
+      if (data.overdue) {
+        this.setState(state => {
+          const overdue = state.overdue.filter(item => item._id !== data._id);
+
+          return {
+            overdue
+          };
+        });
+      }
+      if (data.done) {
+        this.setState(state => {
+          const done = state.done.filter(item => item._id !== data._id);
+
+          return {
+            done
+          };
+        });
+      }
+      this.setState(state => {
+        const all = state.all.filter(item => item._id !== data._id);
+
+        return {
+          all
+        };
+      });
+    });
   }
 
   async getRequests() {

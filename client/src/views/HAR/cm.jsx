@@ -162,6 +162,20 @@ class Projects extends React.Component {
         });
       }
     });
+
+    await channel.bind('delete-wo', data => {
+      if (data.division === 'Corrective Maintenance') {
+        this.setState(state => {
+          const WOs = state.WOs.filter(item => item._id !== data._id);
+
+          return {
+            WOs,
+            filtered: WOs,
+            pagesCount: Math.ceil(WOs.length / this.pageSize)
+          };
+        });
+      }
+    });
   }
 
   getCurrentUser() {
@@ -397,7 +411,11 @@ class Projects extends React.Component {
                       {this.state.division === data.division && (
                         <td>
                           <Button
-                            disabled={data.approved_by_spv && !data.done}
+                            disabled={
+                              data.approved_by_spv &&
+                              data.approved_by_manager &&
+                              !data.done
+                            }
                             onClick={this.onDelete.bind(this, data)}
                             className='profile-time-approved'
                             outline

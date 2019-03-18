@@ -93,6 +93,7 @@ class DivisionProgress extends Component {
             cmData: newData
           });
         }
+        this.cmProgressUp();
       }
       if (data.division === 'Preventive Maintenance') {
         let newData = JSON.parse(JSON.stringify(this.state.pmData));
@@ -109,6 +110,7 @@ class DivisionProgress extends Component {
             pmData: newData
           });
         }
+        this.pmProgressUp();
       }
       if (data.division === 'Assets') {
         let newData = JSON.parse(JSON.stringify(this.state.assetsData));
@@ -125,6 +127,7 @@ class DivisionProgress extends Component {
             assetsData: newData
           });
         }
+        this.assetsProgressUp();
       }
       if (data.division === 'Patrols and Controls') {
         let newData = JSON.parse(JSON.stringify(this.state.controlsData));
@@ -141,8 +144,8 @@ class DivisionProgress extends Component {
             controlsData: newData
           });
         }
+        this.controlsProgressUp();
       }
-      this.cmProgressUp();
     });
 
     await channel.bind('done-wo', data => {
@@ -161,6 +164,7 @@ class DivisionProgress extends Component {
             cmData: newData
           });
         }
+        this.cmProgressUp();
       }
       if (data.division === 'Preventive Maintenance') {
         let newData = JSON.parse(JSON.stringify(this.state.pmData));
@@ -177,6 +181,7 @@ class DivisionProgress extends Component {
             pmData: newData
           });
         }
+        this.pmProgressUp();
       }
       if (data.division === 'Assets') {
         let newData = JSON.parse(JSON.stringify(this.state.assetsData));
@@ -193,6 +198,7 @@ class DivisionProgress extends Component {
             assetsData: newData
           });
         }
+        this.assetsProgressUp();
       }
       if (data.division === 'Patrols and Controls') {
         let newData = JSON.parse(JSON.stringify(this.state.controlsData));
@@ -209,8 +215,91 @@ class DivisionProgress extends Component {
             controlsData: newData
           });
         }
+        this.controlsProgressUp();
       }
-      this.cmProgressUp();
+    });
+
+    await channel.bind('delete-wo', data => {
+      if (data.division === 'Corrective Maintenance') {
+        let newData = JSON.parse(JSON.stringify(this.state.cmData));
+        if (data.done) {
+          newData.done = this.state.cmData.done - 1;
+        }
+        newData.all = this.state.cmData.all - 1;
+        this.setState({
+          cmData: newData
+        });
+        let done = this.state.cmData.done;
+        let all = this.state.cmData.all;
+
+        if (done !== 0) {
+          newData.max = (done / all) * 100;
+          this.setState({
+            cmData: newData
+          });
+        }
+        this.cmProgressUp();
+      }
+      if (data.division === 'Preventive Maintenance') {
+        let newData = JSON.parse(JSON.stringify(this.state.pmData));
+        if (data.done) {
+          newData.done = this.state.pmData.done - 1;
+        }
+        newData.all = this.state.pmData.all - 1;
+        this.setState({
+          pmData: newData
+        });
+        let done = this.state.pmData.done;
+        let all = this.state.pmData.all;
+
+        if (done !== 0) {
+          newData.max = (done / all) * 100;
+          this.setState({
+            pmData: newData
+          });
+        }
+        this.pmProgressUp();
+      }
+      if (data.division === 'Assets') {
+        let newData = JSON.parse(JSON.stringify(this.state.assetsData));
+        if (data.done) {
+          newData.done = this.state.assetsData.done - 1;
+        }
+        newData.all = this.state.assetsData.all - 1;
+        this.setState({
+          assetsData: newData
+        });
+        let done = this.state.assetsData.done;
+        let all = this.state.assetsData.all;
+
+        if (done !== 0) {
+          newData.max = (done / all) * 100;
+          this.setState({
+            assetsData: newData
+          });
+        }
+        this.assetsProgressUp();
+      }
+      if (data.division === 'Patrols and Controls') {
+        let newData = JSON.parse(JSON.stringify(this.state.controlsData));
+        if (data.done) {
+          newData.done = this.state.controlsData.done - 1;
+        }
+        newData.all = this.state.controlsData.all - 1;
+        this.setState({
+          controlsData: newData
+        });
+        let done = this.state.controlsData.done;
+        let all = this.state.controlsData.all;
+
+        if (done !== 0) {
+          newData.max = (done / all) * 100;
+          this.setState({
+            controlsData: newData
+          });
+        }
+        this.controlsProgressUp();
+      }
     });
   }
 
@@ -351,7 +440,7 @@ class DivisionProgress extends Component {
   }
 
   cmProgressUp() {
-    let percent = this.state.cmData.value;
+    let percent = 0;
     let max = this.state.cmData.max;
     for (; percent < max; percent++) {
       let newData = JSON.parse(JSON.stringify(this.state.cmData));
@@ -363,7 +452,7 @@ class DivisionProgress extends Component {
   }
 
   pmProgressUp() {
-    let percent = this.state.pmData.value;
+    let percent = 0;
     let max = this.state.pmData.max;
     for (; percent < max; percent++) {
       let newData = JSON.parse(JSON.stringify(this.state.pmData));
@@ -375,7 +464,7 @@ class DivisionProgress extends Component {
   }
 
   assetsProgressUp() {
-    let percent = this.state.assetsData.value;
+    let percent = 0;
     let max = this.state.assetsData.max;
     for (; percent < max; percent++) {
       let newData = JSON.parse(JSON.stringify(this.state.assetsData));
@@ -387,7 +476,7 @@ class DivisionProgress extends Component {
   }
 
   controlsProgressUp() {
-    let percent = this.state.controlsData.value;
+    let percent = 0;
     let max = this.state.controlsData.max;
     for (; percent < max; percent++) {
       let newData = JSON.parse(JSON.stringify(this.state.controlsData));

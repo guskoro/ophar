@@ -72,6 +72,49 @@ class Divisions extends Component {
         });
       }
     });
+
+    await channel.bind('delete-wo', data => {
+      if (data.division === 'Corrective Maintenance') {
+        this.setState(state => {
+          const cmWOs = state.cmWOs.filter(item => item._id !== data._id);
+
+          return {
+            cmWOs
+          };
+        });
+      }
+      if (data.division === 'Preventive Maintenance') {
+        this.setState(state => {
+          const pmWOs = state.pmWOs.filter(item => item._id !== data._id);
+
+          return {
+            pmWOs
+          };
+        });
+      }
+      if (data.division === 'Assets') {
+        this.setState(state => {
+          const assetsWOs = state.assetsWOs.filter(
+            item => item._id !== data._id
+          );
+
+          return {
+            assetsWOs
+          };
+        });
+      }
+      if (data.division === 'Patrols and Controls') {
+        this.setState(state => {
+          const controlsWOs = state.controlsWOs.filter(
+            item => item._id !== data._id
+          );
+
+          return {
+            controlsWOs
+          };
+        });
+      }
+    });
   }
 
   getCMTotalWO() {
