@@ -36,7 +36,6 @@ class Projects extends React.Component {
     super(props);
     this.handleChangeSearch = this.handleChangeSearch.bind(this);
     this.handleChangeFilter = this.handleChangeFilter.bind(this);
-    this.pageSize = 5;
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
 
@@ -44,16 +43,17 @@ class Projects extends React.Component {
       division: '',
       WOs: [],
       currentWOs: [],
-      filtered: [],
+      // currentWOs: [],
       query: 0,
       currentPage: null,
       totalPages: null,
-      pagesCount: 0
+      pageLimit: 5
+      // totalPages: 0
     };
   }
 
   // Search
-  handleChangeSearch(e) {
+  handleChangeSearch = e => {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
@@ -67,13 +67,13 @@ class Projects extends React.Component {
       newList = this.state.WOs;
     }
     this.setState({
-      filtered: newList,
-      pagesCount: Math.ceil(newList.length / this.pageSize)
+      currentWOs: newList,
+      totalPages: Math.ceil(newList.length / this.state.pageLimit)
     });
-  }
+  };
 
   // Filter
-  handleChangeFilter(e) {
+  handleChangeFilter = e => {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
@@ -101,24 +101,24 @@ class Projects extends React.Component {
       newList = this.state.WOs;
     }
     this.setState({
-      filtered: newList,
-      pagesCount: Math.ceil(newList.length / this.pageSize)
+      currentWOs: newList,
+      totalPages: Math.ceil(newList.length / this.state.pageLimit)
     });
-  }
+  };
 
   // Pagination
-  handleClick(e, index) {
+  handleClick = (e, index) => {
     e.preventDefault();
 
     this.setState({
       currentPage: index
     });
-  }
+  };
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     await this.getWO();
     await this.getPusher();
-  }
+  };
 
   onPageChanged = data => {
     const { WOs } = this.state;
@@ -130,14 +130,14 @@ class Projects extends React.Component {
     this.setState({ currentPage, currentWOs, totalPages });
   };
 
-  async getPusher() {
+  getPusher = async () => {
     await channel.bind('add-wo', data => {
       let WOs = this.state.WOs;
       let newWOs = [data].concat(WOs);
       this.setState({
         WOs: newWOs,
-        filtered: newWOs,
-        pagesCount: Math.ceil(this.state.WOs.length / this.pageSize)
+        currentWOs: newWOs,
+        totalPages: Math.ceil(this.state.WOs.length / this.state.pageLimit)
       });
     });
 
@@ -153,8 +153,8 @@ class Projects extends React.Component {
 
         return {
           WOs,
-          filtered: WOs,
-          pagesCount: Math.ceil(WOs.length / this.pageSize)
+          currentWOs: WOs,
+          totalPages: Math.ceil(WOs.length / this.state.pageLimit)
         };
       });
     });
@@ -165,31 +165,51 @@ class Projects extends React.Component {
 
         return {
           WOs,
-          filtered: WOs,
-          pagesCount: Math.ceil(WOs.length / this.pageSize)
+          currentWOs: WOs,
+          totalPages: Math.ceil(WOs.length / this.state.pageLimit)
         };
       });
     });
-  }
 
-  async getWO() {
+    await channel.bind('approve-wo', data => {
+      if (data.approved_by_manager) {
+        this.setState(state => {
+          const WOs = state.WOs.map(wo => {
+            if (wo._id === data._id) {
+              return data;
+            } else {
+              return wo;
+            }
+          });
+
+          return {
+            WOs,
+            currentWOs: WOs,
+            totalPages: Math.ceil(WOs.length / this.state.pageLimit)
+          };
+        });
+      }
+    });
+  };
+
+  getWO = async () => {
     await axios
       .get(`/api/working-order`)
       .then(res => {
         this.setState({
           WOs: res.data,
-          filtered: res.data,
-          pagesCount: Math.ceil(res.data.length / this.pageSize)
+          currentWOs: res.data,
+          totalPages: Math.ceil(res.data.length / this.state.pageLimit)
         });
       })
       .catch(err => console.log(err.response.data));
-  }
+  };
 
-  async onChange(e) {
+  onChange = async e => {
     this.setState({
       [e.target.name]: e.target.value
     });
-  }
+  };
 
   toggle = targetName => {
     if (!this.state[targetName]) {
@@ -214,8 +234,10 @@ class Projects extends React.Component {
   };
 
   render() {
-    const { WOs, currentWOs, currentPage, totalPages } = this.state;
+    const { WOs, currentWOs } = this.state;
     const totalWOs = WOs.length;
+
+    console.log(this.state);
 
     if (totalWOs === 0) return null;
 
@@ -361,8 +383,8 @@ class Projects extends React.Component {
               <CardBody className='border-top'>
                 <div className='d-flex flex-row py-4 align-items-center'>
                   <Pagination
-                    totalRecords={this.state.WOs.length}
-                    pageLimit={this.pageSize}
+                    totalRecords={currentWOs.length}
+                    pageLimit={this.state.pageLimit}
                     pageNeighbours={1}
                     onPageChanged={this.onPageChanged}
                   />

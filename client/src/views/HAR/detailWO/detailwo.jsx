@@ -94,6 +94,38 @@ export default class Example extends React.Component {
         });
       }
     });
+
+    await channel.bind('approve-wo', data => {
+      if (data._id === this.state.detailWO._id) {
+        const woCustom = {
+          _id: data._id,
+          title: data.title,
+          description: data.description,
+          division: data.division,
+          type: data.type.name,
+          priority: data.priority.name,
+          plans: data.plans,
+          program: data.program,
+          note: data.note,
+          approved_by_spv: data.approved_by_spv,
+          approved_by_manager: data.approved_by_manager,
+          rejected: data.rejected,
+          done: data.done,
+          start: data.start,
+          deadline: data.deadline,
+          end: data.end,
+          created_at: data.created_at,
+          pic_name: data.pic.name,
+          pic_email: data.pic.email,
+          pic_avatar: data.pic.avatar
+        };
+
+        this.setState({
+          detailWO: woCustom,
+          plans: woCustom.plans
+        });
+      }
+    });
   }
 
   getCurrentUser() {

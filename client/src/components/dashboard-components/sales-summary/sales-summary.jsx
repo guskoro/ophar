@@ -32,7 +32,7 @@ class SalesSummary extends React.Component {
       incomplete: [],
       approved: [],
       pending: [],
-      completeWO: {
+      completedWO: {
         datasets: [
           {
             backgroundColor: ['#5e72e4', '#001e6f'],
@@ -55,13 +55,13 @@ class SalesSummary extends React.Component {
   }
 
   async componentDidMount() {
-    await this.getCompleteWO();
+    await this.getCompletedWO();
     await this.getApprovedWO();
     await this.getPusher();
   }
 
   async getPusher() {
-    const completeDatasets = this.state.completeWO.datasets.slice(0);
+    const completeDatasets = this.state.completedWO.datasets.slice(0);
     const approvedDatasets = this.state.approvedWO.datasets.slice(0);
     const newComplete = completeDatasets[0].data.slice(0);
     const newApproved = approvedDatasets[0].data.slice(0);
@@ -77,7 +77,7 @@ class SalesSummary extends React.Component {
         completeDatasets[0].data = newComplete;
         approvedDatasets[0].data = newApproved;
         this.setState({
-          completeWO: Object.assign({}, this.state.completeWO, {
+          completedWO: Object.assign({}, this.state.completedWO, {
             datasets: completeDatasets
           }),
           approvedWO: Object.assign({}, this.state.approvedWO, {
@@ -89,15 +89,42 @@ class SalesSummary extends React.Component {
 
     await channel.bind('done-wo', data => {
       if (data) {
-        this.setState({
-          complete: [...this.state.complete, data]
+        this.setState(state => {
+          const incomplete = state.incomplete.filter(
+            item => item._id !== data._id
+          );
+          const complete = [...state.complete, data];
+          newComplete[1] = incomplete.length;
+          newComplete[0] = complete.length;
+          completeDatasets[0].data = newComplete;
+
+          return {
+            complete,
+            incomplete,
+            completedWO: Object.assign({}, state.completedWO, {
+              datasets: completeDatasets
+            })
+          };
         });
-        newComplete[0] = this.state.complete.length;
-        completeDatasets[0].data = newComplete;
-        this.setState({
-          completeWO: Object.assign({}, this.state.completeWO, {
-            datasets: completeDatasets
-          })
+      }
+    });
+
+    await channel.bind('approve-wo', data => {
+      if (data.approved_by_manager) {
+        this.setState(state => {
+          const pending = state.pending.filter(item => item._id !== data._id);
+          const approved = [...state.approved, data];
+          newApproved[1] = pending.length;
+          newApproved[0] = approved.length;
+          approvedDatasets[0].data = newApproved;
+
+          return {
+            pending,
+            approved,
+            approvedWO: Object.assign({}, state.approvedWO, {
+              datasets: approvedDatasets
+            })
+          };
         });
       }
     });
@@ -110,7 +137,7 @@ class SalesSummary extends React.Component {
           newComplete[0] = complete.length;
           completeDatasets[0].data = newComplete;
           return {
-            completeWO: Object.assign({}, this.state.completeWO, {
+            completedWO: Object.assign({}, this.state.completedWO, {
               datasets: completeDatasets
             })
           };
@@ -141,7 +168,7 @@ class SalesSummary extends React.Component {
           completeDatasets[0].data = newComplete;
           approvedDatasets[0].data = newApproved;
           return {
-            completeWO: Object.assign({}, this.state.completeWO, {
+            completedWO: Object.assign({}, this.state.completedWO, {
               datasets: completeDatasets
             }),
             approvedWO: Object.assign({}, this.state.approvedWO, {
@@ -153,8 +180,8 @@ class SalesSummary extends React.Component {
     });
   }
 
-  async getCompleteWO() {
-    const completeDatasets = this.state.completeWO.datasets.slice(0);
+  async getCompletedWO() {
+    const completeDatasets = this.state.completedWO.datasets.slice(0);
     const newComplete = completeDatasets[0].data.slice(0);
 
     await axios
@@ -176,7 +203,7 @@ class SalesSummary extends React.Component {
     completeDatasets[0].data = newComplete;
 
     this.setState({
-      completeWO: Object.assign({}, this.state.completeWO, {
+      completedWO: Object.assign({}, this.state.completedWO, {
         datasets: completeDatasets
       })
     });
@@ -195,7 +222,7 @@ class SalesSummary extends React.Component {
       .catch(err => console.log(err));
 
     await axios
-      .get('/api/working-order?approved_by_manager=false&approved_by_spv=false')
+      .get('/api/working-order?approved_by_manager=false')
       .then(WOs => {
         this.state.pending = WOs.data;
         newApproved[1] = this.state.pending.length;
@@ -238,7 +265,7 @@ class SalesSummary extends React.Component {
                   className='chart-wrapper'
                   style={{ width: '100%', margin: '0 auto', height: 250 }}>
                   <Doughnut
-                    data={this.state.completeWO}
+                    data={this.state.completedWO}
                     options={{
                       maintainAspectRatio: false,
                       legend: {

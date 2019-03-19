@@ -23,7 +23,6 @@ import Pusher from 'pusher-js';
 import classnames from 'classnames';
 import moment from 'moment';
 import Pager from 'react-pager';
-import { render } from 'react-dom';
 import { Link } from 'react-router-dom';
 
 const pusher = new Pusher('12f41be129ba1c0d7a3c', {
@@ -58,7 +57,7 @@ class Projects extends React.Component {
   }
 
   // Search
-  handleChangeSearch(e) {
+  handleChangeSearch = e => {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
@@ -75,10 +74,10 @@ class Projects extends React.Component {
       filtered: newList,
       pagesCount: Math.ceil(newList.length / this.pageSize)
     });
-  }
+  };
 
   // Filter
-  handleChangeFilter(e) {
+  handleChangeFilter = e => {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
@@ -109,29 +108,29 @@ class Projects extends React.Component {
       filtered: newList,
       pagesCount: Math.ceil(newList.length / this.pageSize)
     });
-  }
+  };
 
   // Pagination
-  handleClick(e, index) {
+  handleClick = (e, index) => {
     e.preventDefault();
 
     this.setState({
       currentPage: index
     });
-  }
+  };
 
   // Pager
-  handlePageChanged(newPage) {
+  handlePageChanged = newPage => {
     this.setState({ current: newPage });
-  }
+  };
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     await this.getWO();
     await this.getCurrentUser();
     await this.getPusher();
-  }
+  };
 
-  async getPusher() {
+  getPusher = async () => {
     await channel.bind('add-wo', data => {
       if (data.division === 'Corrective Maintenance') {
         let WOs = this.state.WOs;
@@ -163,6 +162,28 @@ class Projects extends React.Component {
       }
     });
 
+    await channel.bind('approve-wo', data => {
+      if (
+        data.division === 'Corrective Maintenance' &&
+        data.approved_by_manager
+      ) {
+        this.setState(state => {
+          const WOs = state.WOs.map(wo => {
+            if (wo._id === data._id) {
+              return data;
+            } else {
+              return wo;
+            }
+          });
+          return {
+            WOs,
+            filtered: WOs,
+            pagesCount: Math.ceil(WOs.length / this.pageSize)
+          };
+        });
+      }
+    });
+
     await channel.bind('delete-wo', data => {
       if (data.division === 'Corrective Maintenance') {
         this.setState(state => {
@@ -176,9 +197,9 @@ class Projects extends React.Component {
         });
       }
     });
-  }
+  };
 
-  getCurrentUser() {
+  getCurrentUser = () => {
     axios
       .get('/api/user/current')
       .then(res => {
@@ -187,9 +208,9 @@ class Projects extends React.Component {
         });
       })
       .catch(err => console.log(err.response.data));
-  }
+  };
 
-  async getWO() {
+  getWO = async () => {
     await axios
       .get(`/api/working-order?division=corrective+maintenance`)
       .then(res => {
@@ -200,9 +221,9 @@ class Projects extends React.Component {
         });
       })
       .catch(err => console.log(err.response.data));
-  }
+  };
 
-  async onDelete(data) {
+  onDelete = async data => {
     await swal({
       title: 'Delete work order',
       text: 'Are you sure to delete this work order?',
@@ -224,13 +245,13 @@ class Projects extends React.Component {
           .catch(err => err.response.data);
       }
     });
-  }
+  };
 
-  onChange(e) {
+  onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
     });
-  }
+  };
 
   toggle = targetName => {
     if (!this.state[targetName]) {
@@ -256,8 +277,6 @@ class Projects extends React.Component {
 
   render() {
     const { currentPage } = this.state;
-
-    console.log(this.state.WOs, this.state.filtered);
 
     return (
       /*--------------------------------------------------------------------------------*/

@@ -52,7 +52,7 @@ class Projects extends React.Component {
   }
 
   // Search
-  handleChangeSearch(e) {
+  handleChangeSearch = e => {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
@@ -69,10 +69,10 @@ class Projects extends React.Component {
       filtered: newList,
       pagesCount: Math.ceil(newList.length / this.pageSize)
     });
-  }
+  };
 
   // Filter
-  handleChangeFilter(e) {
+  handleChangeFilter = e => {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
@@ -103,24 +103,24 @@ class Projects extends React.Component {
       filtered: newList,
       pagesCount: Math.ceil(newList.length / this.pageSize)
     });
-  }
+  };
 
   // Pagination
-  handleClick(e, index) {
+  handleClick = (e, index) => {
     e.preventDefault();
 
     this.setState({
       currentPage: index
     });
-  }
+  };
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     await this.getWO();
     await this.getCurrentUser();
     await this.getPusher();
-  }
+  };
 
-  async getPusher() {
+  getPusher = async () => {
     await channel.bind('add-wo', data => {
       if (data.division === 'Assets') {
         let WOs = this.state.WOs;
@@ -152,6 +152,25 @@ class Projects extends React.Component {
       }
     });
 
+    await channel.bind('approve-wo', data => {
+      if (data.division === 'Assets' && data.approved_by_manager) {
+        this.setState(state => {
+          const WOs = state.WOs.map(wo => {
+            if (wo._id === data._id) {
+              return data;
+            } else {
+              return wo;
+            }
+          });
+          return {
+            WOs,
+            filtered: WOs,
+            pagesCount: Math.ceil(WOs.length / this.pageSize)
+          };
+        });
+      }
+    });
+
     await channel.bind('delete-wo', data => {
       if (data.division === 'Assets') {
         this.setState(state => {
@@ -165,9 +184,9 @@ class Projects extends React.Component {
         });
       }
     });
-  }
+  };
 
-  getCurrentUser() {
+  getCurrentUser = () => {
     axios
       .get('/api/user/current')
       .then(res => {
@@ -176,9 +195,9 @@ class Projects extends React.Component {
         });
       })
       .catch(err => console.log(err.response.data));
-  }
+  };
 
-  async getWO() {
+  getWO = async () => {
     await axios
       .get(`/api/working-order?division=assets`)
       .then(res => {
@@ -189,9 +208,9 @@ class Projects extends React.Component {
         });
       })
       .catch(err => console.log(err.response.data));
-  }
+  };
 
-  async onDelete(data) {
+  onDelete = async data => {
     await swal({
       title: 'Delete work order',
       text: 'Are you sure to delete this work order?',
@@ -213,13 +232,13 @@ class Projects extends React.Component {
           .catch(err => err.response.data);
       }
     });
-  }
+  };
 
-  onChange(e) {
+  onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
     });
-  }
+  };
 
   toggle = targetName => {
     if (!this.state[targetName]) {

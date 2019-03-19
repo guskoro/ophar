@@ -186,6 +186,9 @@ router.post(
   }),
   (req, res) => {
     WorkingOrder.findById(req.params.id)
+      .populate('pic')
+      .populate('type', 'name-_id')
+      .populate('priority', 'name-_id')
       .then(workingOrder => {
         User.findById(req.user.id)
           .populate('role', 'name-_id')
@@ -222,6 +225,9 @@ router.post(
   }),
   (req, res) => {
     WorkingOrder.findById(req.params.id)
+      .populate('pic')
+      .populate('type', 'name-_id')
+      .populate('priority', 'name-_id')
       .then(workingOrder => {
         User.findById(req.user.id)
           .populate('role', 'name-_id')
