@@ -50,19 +50,17 @@ export default class Example extends React.Component {
       isOpen: false,
       activeTab: '1',
       id: this.props.match.params.id,
-      modalNote: false,
-      note: '',
       plans: []
     };
   }
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     await this.getDetailWO();
     await this.getCurrentUser();
     await this.getPusher();
-  }
+  };
 
-  async getPusher() {
+  getPusher = async () => {
     await channel.bind('done-wo', data => {
       if (data._id === this.state.detailWO._id) {
         const woCustom = {
@@ -126,9 +124,73 @@ export default class Example extends React.Component {
         });
       }
     });
-  }
 
-  getCurrentUser() {
+    await channel.bind('reject-wo', data => {
+      if (data._id === this.state.detailWO._id) {
+        const woCustom = {
+          _id: data._id,
+          title: data.title,
+          description: data.description,
+          division: data.division,
+          type: data.type.name,
+          priority: data.priority.name,
+          plans: data.plans,
+          program: data.program,
+          note: data.note,
+          approved_by_spv: data.approved_by_spv,
+          approved_by_manager: data.approved_by_manager,
+          rejected: data.rejected,
+          done: data.done,
+          start: data.start,
+          deadline: data.deadline,
+          end: data.end,
+          created_at: data.created_at,
+          pic_name: data.pic.name,
+          pic_email: data.pic.email,
+          pic_avatar: data.pic.avatar
+        };
+
+        this.setState({
+          detailWO: woCustom,
+          plans: woCustom.plans
+        });
+      }
+    });
+
+    await channel.bind('update-wo', data => {
+      if (data._id === this.state.detailWO._id) {
+        const woCustom = {
+          _id: data._id,
+          title: data.title,
+          description: data.description,
+          division: data.division,
+          type: data.type.name,
+          priority: data.priority.name,
+          plans: data.plans,
+          program: data.program,
+          note: data.note,
+          approved_by_spv: data.approved_by_spv,
+          approved_by_manager: data.approved_by_manager,
+          rejected: data.rejected,
+          done: data.done,
+          start: data.start,
+          deadline: data.deadline,
+          end: data.end,
+          created_at: data.created_at,
+          pic_name: data.pic.name,
+          pic_email: data.pic.email,
+          pic_avatar: data.pic.avatar
+        };
+
+        this.setState({
+          detailWO: woCustom,
+          plans: woCustom.plans
+        });
+      }
+    });
+  };
+
+  getCurrentUser = () => {
     axios
       .get('/api/user/current')
       .then(res => {
@@ -139,9 +201,9 @@ export default class Example extends React.Component {
       .catch(err => {
         if (err.response.status === 401) this.setState({ currentUser: {} });
       });
-  }
+  };
 
-  async getDetailWO() {
+  getDetailWO = async () => {
     await axios
       .get(`/api/working-order/${this.state.id}`)
       .then(res => {
@@ -151,9 +213,9 @@ export default class Example extends React.Component {
         });
       })
       .catch(err => console.log(err.response.data));
-  }
+  };
 
-  async onDone(data) {
+  onDone = async data => {
     await swal({
       title: 'Done work order',
       text: 'Are you sure to done this work order?',
@@ -174,9 +236,9 @@ export default class Example extends React.Component {
           .catch(err => err.response.data);
       }
     });
-  }
+  };
 
-  async onReject(data) {
+  onReject = async data => {
     await swal({
       title: 'Reject work order',
       text: 'Are you sure to reject this work order?',
@@ -198,9 +260,9 @@ export default class Example extends React.Component {
           .catch(err => err.response.data);
       }
     });
-  }
+  };
 
-  async onApprove(data) {
+  onApprove = async data => {
     await swal({
       title: 'Approve work order',
       text: 'Are you sure to approve this work order?',
@@ -221,48 +283,55 @@ export default class Example extends React.Component {
           .catch(err => err.response.data);
       }
     });
-  }
+  };
 
-  async onAddNote(e, data) {
-    e.preventDefault();
-
-    const newWorkingOrder = {
-      note: this.state.note
-    };
-
-    await axios
-      .patch(`/api/working-order/${data._id}`, newWorkingOrder)
-      .then(res => {
-        if (res.status === 200) {
-          this.getDetailWO();
-          this.toggleNote(data);
+  onAddNote = data => {
+    swal({
+      text: 'Add note for this work order',
+      content: {
+        element: 'input',
+        attributes: {
+          value: data.note
         }
-      })
-      .catch(err => console.log(err.response.data));
-  }
+      },
+      button: 'Add Note'
+    }).then(note => {
+      const newWorkingOrder = {
+        note: note
+      };
+      return axios
+        .patch(`/api/working-order/${data._id}`, newWorkingOrder)
+        .then(res => {
+          if (res.status === 200) {
+            this.getWO();
+          }
+        })
+        .catch(err => console.log(err));
+    });
+  };
 
-  toggleTab(tab) {
+  toggleTab = tab => {
     if (this.state.activeTab !== tab) {
       this.setState({
         activeTab: tab
       });
     }
-  }
+  };
 
-  toggleNote(data) {
+  toggleNote = data => {
     this.setState(prevState => ({
       modalNote: !prevState.modalNote,
       note: data.note
     }));
-  }
+  };
 
-  onChange(e) {
+  onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
     });
-  }
+  };
 
-  onChangeCheckbox(e) {
+  onChangeCheckbox = e => {
     const plans = this.state.plans;
 
     plans[e.target.id].done = e.target.checked;
@@ -283,7 +352,7 @@ export default class Example extends React.Component {
       .catch(err => console.log(err.response.data));
 
     // console.log(plans, e.target.id, e.target.checked, plans[0]);
-  }
+  };
 
   render() {
     const { detailWO, currentUser } = this.state;
@@ -419,48 +488,12 @@ export default class Example extends React.Component {
                         Approve
                       </Button>
                       <Button
-                        onClick={this.toggleNote.bind(this, detailWO)}
+                        onClick={this.onAddNote.bind(this, detailWO)}
                         outline
                         color='secondary'
                         className='profile batas-kanan'>
                         Add Note
                       </Button>
-                      <Modal
-                        isOpen={this.state.modalNote}
-                        toggle={this.toggleNote.bind(this, detailWO)}
-                        className={this.props.className}>
-                        <ModalHeader
-                          toggle={this.toggleNote.bind(this, detailWO)}>
-                          Add a note
-                        </ModalHeader>
-                        <Form
-                          onSubmit={e => {
-                            this.onAddNote(e, detailWO);
-                          }}>
-                          <ModalBody>
-                            <FormGroup>
-                              <Label for='note'>Work Note</Label>
-                              <Input
-                                type='textarea'
-                                name='note'
-                                id='note'
-                                value={this.state.note}
-                                onChange={this.onChange}
-                              />
-                            </FormGroup>
-                          </ModalBody>
-                          <ModalFooter>
-                            <Button color='biruicon' type='submit'>
-                              Submit
-                            </Button>
-                            <Button
-                              color='secondary'
-                              onClick={this.toggleNote.bind(this, detailWO)}>
-                              Cancel
-                            </Button>
-                          </ModalFooter>
-                        </Form>
-                      </Modal>
                     </React.Fragment>
                   ) : (
                     ''

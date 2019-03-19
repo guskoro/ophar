@@ -54,13 +54,13 @@ class SalesSummary extends React.Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     await this.getCompletedWO();
     await this.getApprovedWO();
     await this.getPusher();
-  }
+  };
 
-  async getPusher() {
+  getPusher = async () => {
     const completeDatasets = this.state.completedWO.datasets.slice(0);
     const approvedDatasets = this.state.approvedWO.datasets.slice(0);
     const newComplete = completeDatasets[0].data.slice(0);
@@ -178,9 +178,9 @@ class SalesSummary extends React.Component {
         });
       }
     });
-  }
+  };
 
-  async getCompletedWO() {
+  getCompletedWO = async () => {
     const completeDatasets = this.state.completedWO.datasets.slice(0);
     const newComplete = completeDatasets[0].data.slice(0);
 
@@ -207,9 +207,9 @@ class SalesSummary extends React.Component {
         datasets: completeDatasets
       })
     });
-  }
+  };
 
-  async getApprovedWO() {
+  getApprovedWO = async () => {
     const approvedDatasets = this.state.approvedWO.datasets.slice(0);
     const newApproved = approvedDatasets[0].data.slice(0);
 
@@ -236,7 +236,7 @@ class SalesSummary extends React.Component {
         datasets: approvedDatasets
       })
     });
-  }
+  };
 
   render() {
     return (

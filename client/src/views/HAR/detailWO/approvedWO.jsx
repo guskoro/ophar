@@ -6,16 +6,9 @@ import {
   CardTitle,
   CardSubtitle,
   Col,
-  Form,
-  FormGroup,
   Input,
   InputGroup,
   InputGroupAddon,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Pagination,
   PaginationItem,
   PaginationLink,
@@ -50,14 +43,12 @@ class Projects extends React.Component {
       currentPage: 0,
       pagesCount: 0,
       modal: false,
-      role: '',
-      modalNote: false,
-      note: ''
+      role: ''
     };
   }
 
   // Search
-  handleChange(e) {
+  handleChange = e => {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
@@ -73,23 +64,23 @@ class Projects extends React.Component {
     this.setState({
       filtered: newList
     });
-  }
+  };
 
-  handleClick(e, index) {
+  handleClick = (e, index) => {
     e.preventDefault();
 
     this.setState({
       currentPage: index
     });
-  }
+  };
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     await this.getCurrentUser();
     await this.getWO();
     await this.getPusher();
-  }
+  };
 
-  async getPusher() {
+  getPusher = async () => {
     await channel.bind('add-wo', data => {
       let WOs = this.state.WOs;
       let newWOs = [data].concat(WOs);
@@ -111,9 +102,9 @@ class Projects extends React.Component {
         };
       });
     });
-  }
+  };
 
-  async getCurrentUser() {
+  getCurrentUser = async () => {
     await axios
       .get('/api/user/current')
       .then(res => {
@@ -122,9 +113,9 @@ class Projects extends React.Component {
         });
       })
       .catch(err => console.log(err.response.data));
-  }
+  };
 
-  async getWO() {
+  getWO = async () => {
     let query = 'approved_by_spv=false&rejected=false';
     if (this.state.role === 'manager') {
       query = 'approved_by_spv=true&approved_by_manager=false&rejected=false';
@@ -140,9 +131,9 @@ class Projects extends React.Component {
         });
       })
       .catch(err => console.log(err.response.data));
-  }
+  };
 
-  async onApprove(data) {
+  onApprove = async data => {
     await swal({
       title: 'Approve work order',
       text: 'Are you sure to approve this work order?',
@@ -163,9 +154,9 @@ class Projects extends React.Component {
           .catch(err => err.response.data);
       }
     });
-  }
+  };
 
-  async onReject(data) {
+  onReject = async data => {
     await swal({
       title: 'Reject work order',
       text: 'Are you sure to reject this work order?',
@@ -187,49 +178,49 @@ class Projects extends React.Component {
           .catch(err => err.response.data);
       }
     });
-  }
+  };
 
-  async onAddNote(e, data) {
-    e.preventDefault();
-
-    console.log(this.state.note);
-
-    const newWorkingOrder = {
-      note: this.state.note
-    };
-
-    await axios
-      .patch(`/api/working-order/${data._id}`, newWorkingOrder)
-      .then(res => {
-        if (res.status === 200) {
-          this.getWO();
-          this.toggleNote(data);
+  onAddNote = data => {
+    swal({
+      text: 'Add note for this work order',
+      content: {
+        element: 'input',
+        attributes: {
+          value: data.note
         }
-      })
-      .catch(err => console.log(err));
-  }
+      },
+      button: 'Add Note'
+    }).then(note => {
+      const newWorkingOrder = {
+        note: note
+      };
+      return axios
+        .patch(`/api/working-order/${data._id}`, newWorkingOrder)
+        .then(res => {
+          if (res.status === 200) {
+            this.getWO();
+          }
+        })
+        .catch(err => console.log(err));
+    });
+  };
 
-  toggle() {
+  toggle = () => {
     this.setState(prevState => ({
       modal: !prevState.modal
     }));
-  }
+  };
 
-  toggleNote(data) {
-    this.setState(prevState => ({
-      modalNote: !prevState.modalNote,
-      note: data.note
-    }));
-  }
-
-  onChange(e) {
+  onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
     });
-  }
+  };
 
   render() {
     const { currentPage } = this.state;
+
+    console.log(this.state.note);
 
     return (
       /*--------------------------------------------------------------------------------*/
@@ -344,48 +335,12 @@ class Projects extends React.Component {
                       </td>
                       <td>
                         <Button
-                          onClick={this.toggleNote.bind(this, data)}
+                          onClick={this.onAddNote.bind(this, data)}
                           outline
                           color='secondary'
                           className='btn'>
                           Add Note
                         </Button>
-                        <Modal
-                          isOpen={this.state.modalNote}
-                          toggle={this.toggleNote.bind(this, data)}
-                          className={this.props.className}>
-                          <ModalHeader
-                            toggle={this.toggleNote.bind(this, data)}>
-                            Add a note
-                          </ModalHeader>
-                          <Form
-                            onSubmit={e => {
-                              this.onAddNote(e, data);
-                            }}>
-                            <ModalBody>
-                              <FormGroup>
-                                <Label for='note'>Work Note</Label>
-                                <Input
-                                  type='textarea'
-                                  name='note'
-                                  id='note'
-                                  value={this.state.note}
-                                  onChange={this.onChange}
-                                />
-                              </FormGroup>
-                            </ModalBody>
-                            <ModalFooter>
-                              <Button color='biruicon' type='submit'>
-                                Submit
-                              </Button>
-                              <Button
-                                color='secondary'
-                                onClick={this.toggleNote.bind(this, data)}>
-                                Cancel
-                              </Button>
-                            </ModalFooter>
-                          </Form>
-                        </Modal>
                       </td>
                     </tr>
                   );

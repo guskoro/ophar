@@ -154,6 +154,9 @@ router.patch(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     WorkingOrder.findById(req.params.id)
+      .populate('pic')
+      .populate('type', 'name-_id')
+      .populate('priority', 'name-_id')
       .then(workingOrder => {
         if (req.body._id) {
           delete req.body._id;
@@ -170,7 +173,7 @@ router.patch(
         workingOrder
           .save()
           .then(updatedWorkingOrder => {
-            pusher.trigger('ophar-app', 'update-wo', newWorkingOrder);
+            pusher.trigger('ophar-app', 'update-wo', updatedWorkingOrder);
             return res.json(updatedWorkingOrder);
           })
           .catch(err => res.status(400).json(err));

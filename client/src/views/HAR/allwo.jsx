@@ -190,6 +190,24 @@ class Projects extends React.Component {
         });
       }
     });
+
+    await channel.bind('reject-wo', data => {
+      this.setState(state => {
+        const WOs = state.WOs.map(wo => {
+          if (wo._id === data._id) {
+            return data;
+          } else {
+            return wo;
+          }
+        });
+
+        return {
+          WOs,
+          currentWOs: WOs,
+          totalPages: Math.ceil(WOs.length / this.state.pageLimit)
+        };
+      });
+    });
   };
 
   getWO = async () => {

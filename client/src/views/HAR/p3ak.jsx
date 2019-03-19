@@ -152,6 +152,47 @@ class Projects extends React.Component {
       }
     });
 
+    await channel.bind('approve-wo', data => {
+      if (
+        data.division === 'Patrols and Controls' &&
+        data.approved_by_manager
+      ) {
+        this.setState(state => {
+          const WOs = state.WOs.map(wo => {
+            if (wo._id === data._id) {
+              return data;
+            } else {
+              return wo;
+            }
+          });
+          return {
+            WOs,
+            filtered: WOs,
+            pagesCount: Math.ceil(WOs.length / this.pageSize)
+          };
+        });
+      }
+    });
+
+    await channel.bind('reject-wo', data => {
+      if (data.division === 'Patrols and Controls') {
+        this.setState(state => {
+          const WOs = state.WOs.map(wo => {
+            if (wo._id === data._id) {
+              return data;
+            } else {
+              return wo;
+            }
+          });
+          return {
+            WOs,
+            filtered: WOs,
+            pagesCount: Math.ceil(WOs.length / this.pageSize)
+          };
+        });
+      }
+    });
+
     await channel.bind('delete-wo', data => {
       if (data.division === 'Patrols and Controls') {
         this.setState(state => {
