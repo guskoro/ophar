@@ -14,6 +14,7 @@ import Ticket from './kinerja/ticket.jsx';
 import Upload from './kinerja/uploadpage.jsx';
 import Disturbance from './kinerja/disturbance.jsx';
 import Amartaasset from './kinerja/amartaasset.jsx';
+import Scada20kv from './kinerja/scada20kv.jsx';
 
 class Projects extends React.Component {
   constructor(props) {
@@ -137,7 +138,7 @@ class Projects extends React.Component {
               </TabPane>
 
               <TabPane tabId='6'>
-                <Amartaasset />
+                <Scada20kv />
               </TabPane>
             </TabContent>
           </div>
