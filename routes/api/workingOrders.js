@@ -73,39 +73,74 @@ router.post(
           .then(priority => {
             Type.findById(req.body.type)
               .then(type => {
-                const newWorkingOrder = new WorkingOrder({
-                  pic,
-                  type,
-                  priority,
-                  division: pic.division.name,
-                  title: req.body.title,
-                  description: req.body.description,
-                  program: req.body.program,
-                  deadline: req.body.deadline
-                });
+                WorkingOrder.find({
+                  created_at: new Date(),
+                  division: pic.division.name
+                })
+                  .then(wo => {
+                    let division_initial = '';
 
-                if (req.body.plans) {
-                  // const plans = req.body.plans.split(',');
-
-                  req.body.plans.map(plan => {
-                    newWorkingOrder.plans.push({
-                      name: plan.value,
-                      done: false
+                    const newWorkingOrder = new WorkingOrder({
+                      pic,
+                      type,
+                      priority,
+                      division: pic.division.name,
+                      title: req.body.title,
+                      description: req.body.description,
+                      program: req.body.program,
+                      deadline: req.body.deadline
                     });
-                  });
-                }
 
-                // users.map(user => {
-                //   newWorkingOrder.users.push(user);
-                // });
+                    switch (pic.division.name) {
+                      case 'Corrective Maintenance':
+                        division_initial = 'CM';
+                        break;
+                      case 'Preventive Maintenance':
+                        division_initial = 'PM';
+                        break;
+                      case 'Assets':
+                        division_initial = 'AS';
+                        break;
+                      case 'Patrols and Controls':
+                        division_initial = 'PC';
+                        break;
+                      default:
+                        division_initial = '';
+                        break;
+                    }
 
-                newWorkingOrder
-                  .save()
-                  .then(newWorkingOrder => {
-                    pusher.trigger('ophar-app', 'add-wo', newWorkingOrder);
-                    return res.status(201).json(newWorkingOrder);
+                    const now = new Date();
+                    const id = wo.length + 1;
+
+                    newWorkingOrder.wo_id = `${division_initial}${now.getFullYear()}${now.getMonth() +
+                      1}${now.getDate()}${id}`;
+
+                    if (req.body.plans) {
+                      // const plans = req.body.plans.split(',');
+
+                      req.body.plans.map(plan => {
+                        newWorkingOrder.plans.push({
+                          name: plan.value,
+                          done: false
+                        });
+                      });
+                    }
+
+                    if (req.body.users) {
+                      req.body.users.map(user => {
+                        newWorkingOrder.users.push(user.value);
+                      });
+                    }
+
+                    newWorkingOrder
+                      .save()
+                      .then(newWorkingOrder => {
+                        pusher.trigger('ophar-app', 'add-wo', newWorkingOrder);
+                        return res.status(201).json(newWorkingOrder);
+                      })
+                      .catch(err => res.status(400).json(err));
                   })
-                  .catch(err => res.status(400).json(err));
+                  .catch(err => res.status(404).json(err));
               })
               .catch(err => res.status(404).json(err));
           })
@@ -120,6 +155,7 @@ router.get('/:id', (req, res) => {
     .populate('pic')
     .populate('type', 'name-_id')
     .populate('priority', 'name-_id')
+    .populate('users', 'name-_id')
     .then(workingOrder => {
       const woCustom = {
         _id: workingOrder._id,
@@ -129,6 +165,7 @@ router.get('/:id', (req, res) => {
         type: workingOrder.type.name,
         priority: workingOrder.priority.name,
         plans: workingOrder.plans,
+        users: workingOrder.users,
         program: workingOrder.program,
         note: workingOrder.note,
         approved_by_spv: workingOrder.approved_by_spv,

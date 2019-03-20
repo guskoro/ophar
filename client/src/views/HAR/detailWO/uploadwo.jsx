@@ -11,6 +11,7 @@ import {
   FormFeedback
 } from 'reactstrap';
 import CreatableSelect from 'react-select/lib/Creatable';
+import Select from 'react-select';
 import swal from 'sweetalert';
 import axios from 'axios';
 
@@ -32,6 +33,8 @@ export default class Example extends Component {
       inputValue: '',
       plans: [],
       types: [],
+      list_users: [],
+      users: [],
       type: '',
       priority: '',
       title: '',
@@ -49,6 +52,7 @@ export default class Example extends Component {
   componentDidMount = async () => {
     await this.getPriorities();
     await this.getTypes();
+    await this.getUsers();
   };
 
   getPriorities = async () => {
@@ -73,8 +77,31 @@ export default class Example extends Component {
       .catch(err => console.log(err.response.data));
   };
 
+  getUsers = async () => {
+    await axios
+      .get('/api/user')
+      .then(res => {
+        let users = [];
+        res.data.map(user => {
+          users.push({
+            value: user._id,
+            label: user.name
+          });
+        });
+
+        this.setState({
+          list_users: users
+        });
+      })
+      .catch(err => console.log(err.response.data));
+  };
+
   handleChange = plans => {
     this.setState({ plans });
+  };
+
+  handleChangeSelect = users => {
+    this.setState({ users });
   };
 
   handleInputChange = inputValue => {
@@ -103,6 +130,7 @@ export default class Example extends Component {
       priority,
       title,
       plans,
+      users,
       description,
       program,
       deadline
@@ -113,6 +141,7 @@ export default class Example extends Component {
       priority: priority,
       title: title,
       plans: plans,
+      users: users,
       description: description,
       program: program,
       deadline: deadline
@@ -131,6 +160,7 @@ export default class Example extends Component {
           errors: [],
           inputValue: '',
           plans: [],
+          users: [],
           type: '',
           priority: '',
           title: '',
@@ -170,6 +200,8 @@ export default class Example extends Component {
       priority,
       title,
       plans,
+      users,
+      list_users,
       description,
       program,
       deadline
@@ -296,6 +328,18 @@ export default class Example extends Component {
                 onChange={this.onChange}
               />
               <FormFeedback>{errors.deadline}</FormFeedback>
+            </FormGroup>
+            <FormGroup>
+              <Label for='users'>Work Order users</Label>
+              <Select
+                isMulti
+                name='colors'
+                options={list_users}
+                onChange={this.handleChangeSelect}
+                className='basic-multi-select'
+                classNamePrefix='select'
+                value={users}
+              />
             </FormGroup>
             <FormGroup>
               <Alert

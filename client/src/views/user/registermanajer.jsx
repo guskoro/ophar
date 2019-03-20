@@ -293,7 +293,8 @@ class Projects extends React.Component {
                             primary: roleName === 'manager',
                             success: roleName === 'supervisor',
                             danger: roleName === 'admin',
-                            warning: roleName === 'engineer'
+                            warning: roleName === 'engineer',
+                            secondary: roleName === 'field support'
                           })}
                           className='ml-0'
                           pill>

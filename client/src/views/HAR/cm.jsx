@@ -351,7 +351,7 @@ class Projects extends React.Component {
           <Table className='no-wrap v-middle' responsive>
             <thead>
               <tr className='border-0'>
-                <th className='border-0'>Code</th>
+                <th className='border-0'>ID</th>
                 <th className='border-0'>PIC</th>
                 <th className='border-0'>Type</th>
                 <th className='border-0'>Description</th>
@@ -374,7 +374,7 @@ class Projects extends React.Component {
                 .map((data, id) => {
                   return (
                     <tr key={id}>
-                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                      <td>{data.wo_id}</td>
                       <td>
                         <div className='d-flex no-block align-items-center'>
                           <div className='mr-2'>

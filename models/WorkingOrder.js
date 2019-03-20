@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const workingOrderSchema = new Schema({
+  wo_id: {
+    type: String,
+    required: true
+  },
   pic: {
     type: Schema.Types.ObjectId,
     ref: 'users'
@@ -23,6 +27,12 @@ const workingOrderSchema = new Schema({
     {
       name: String,
       done: Boolean
+    }
+  ],
+  users: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'users'
     }
   ],
   title: {

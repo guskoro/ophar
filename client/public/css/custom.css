@@ -28,6 +28,11 @@
     margin-bottom: 0;
 }
 
+.ml-0 {
+    margin-left: 0;
+    padding-inline-start: 10px;
+}
+
 .nav-item-custom {
     color: #fff;
     font-size: 15px;

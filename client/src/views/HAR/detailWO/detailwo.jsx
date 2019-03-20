@@ -6,14 +6,6 @@ import {
   CardBody,
   Col,
   CustomInput,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Nav,
   NavItem,
   NavLink,
@@ -50,7 +42,8 @@ export default class Example extends React.Component {
       isOpen: false,
       activeTab: '1',
       id: this.props.match.params.id,
-      plans: []
+      plans: [],
+      users: []
     };
   }
 
@@ -209,7 +202,8 @@ export default class Example extends React.Component {
       .then(res => {
         this.setState({
           detailWO: res.data,
-          plans: res.data.plans
+          plans: res.data.plans,
+          users: res.data.users
         });
       })
       .catch(err => console.log(err.response.data));
@@ -350,8 +344,6 @@ export default class Example extends React.Component {
         this.getDetailWO();
       })
       .catch(err => console.log(err.response.data));
-
-    // console.log(plans, e.target.id, e.target.checked, plans[0]);
   };
 
   render() {
@@ -580,6 +572,20 @@ export default class Example extends React.Component {
                       <Col sm='12'>
                         <Table borderless className='wrap v-middle' responsive>
                           <tbody>
+                            <tr>
+                              <td>Assigned Users</td>
+                              <td>
+                                <ul className='ml-0'>
+                                  {this.state.users.map((user, id) => {
+                                    return (
+                                      <li key={id} className='ml-0'>
+                                        {user.name}
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              </td>
+                            </tr>
                             <tr>
                               <td>Work Type</td>
                               <td>{detailWO.type}</td>
