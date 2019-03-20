@@ -1,6 +1,10 @@
 {
+<<<<<<< HEAD
   "editor.fontSize": 16,
+=======
+  "editor.fontLigatures": true,
+>>>>>>> 2305e7a0d330fdcb676bef1faf1ed7c88b9c1fad
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.drawBoldTextInBrightColors": false,
-  "terminal.integrated.fontFamily": "Menlo for Powerline"
+  "terminal.integrated.fontFamily": "monospace"
 }

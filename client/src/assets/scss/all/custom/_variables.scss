@@ -15,6 +15,9 @@ $skin3: #00b0ff;
 $skin4: #6659f7;
 $skin5: #414755;
 $skin6: #ffffff;
+$skinicon: #6f0000;
+$skiniconabang: #ca0000;
+$skinpeteng: #f81a1a;
 
 /*Topbar Colors*/
 
@@ -113,6 +116,7 @@ $theme-colors: map-merge(('primary': #5e72e4,
 'biruicon':#001e6f,
 'ndewo':#f3f5fa,
 'nyoba':#ccd1cc,
+'konengpeteng': #e6de05,
 ),
 $theme-colors);
 
