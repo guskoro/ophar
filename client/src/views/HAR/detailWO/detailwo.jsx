@@ -525,6 +525,13 @@ export default class Example extends React.Component {
                         className='profile batas-kanan'>
                         Add Note
                       </Button>
+                      <Button
+                        onClick={this.onAddReport.bind(this, detailWO)}
+                        outline
+                        color='biruicon'
+                        className='profile batas-kanan'>
+                        Add Report
+                      </Button>
                     </React.Fragment>
                   ) : (
                     ''
@@ -664,26 +671,6 @@ export default class Example extends React.Component {
                   </TabPane>
                 </TabContent>
               </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col md='4'>
-              <FormGroup>
-                <Label for='report'>Work Order Report</Label>
-                <Input
-                  invalid={errors.report ? true : false}
-                  type='textarea'
-                  name='report'
-                  id='report'
-                  placeholder='Input Report'
-                  value={report}
-                  onChange={this.onChange}
-                />
-                <FormFeedback>{errors.report}</FormFeedback>
-              </FormGroup>
-              <Button type='submit' color='biruicon'>
-                Submit
-              </Button>
             </Col>
           </Row>
         </CardBody>

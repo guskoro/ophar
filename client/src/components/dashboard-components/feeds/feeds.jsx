@@ -134,7 +134,7 @@ class Feeds extends React.Component {
           <div className='feed-widget'>
             <ul className='list-style-none feed-body m-0 pb-3'>
               <li className='feed-item'>
-                <div className='feed-icon bg-info'>
+                <div className='feed-icon bg-warning'>
                   <i className='far fa-envelope' />
                 </div>{' '}
                 Hi, you have {this.state.requests.length} Work Order requests.
@@ -146,7 +146,7 @@ class Feeds extends React.Component {
                 Wow, there are {this.state.all.length} Work Orders.
               </li>
               <li className='feed-item'>
-                <div className='feed-icon bg-info'>
+                <div className='feed-icon bg-warning'>
                   <i className='far fa-thumbs-down' />
                 </div>{' '}
                 Ohh, {this.state.overdue.length} Work Orders overdue.
