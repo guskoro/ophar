@@ -637,7 +637,7 @@ class DivisionProgress extends Component {
           pointHoverBorderWidth: 2,
           pointRadius: 1,
           pointHitRadius: 10,
-          data: [250, 300, 400, 500, 570, 300, 350, 450, 240, 550, 700, 200]
+          data: [250, 200, 300, 300, 270, 200, 250, 330, 240, 250, 300, 200]
         }
       ]
     };
