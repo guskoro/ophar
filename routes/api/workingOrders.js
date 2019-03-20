@@ -204,6 +204,13 @@ router.patch(
           });
           delete req.body.plans;
         }
+        if (req.body.plan) {
+          workingOrder.plans.push({
+            name: req.body.plan,
+            done: false
+          });
+          delete req.body.plan;
+        }
         for (let i in req.body) {
           workingOrder[i] = req.body[i];
         }

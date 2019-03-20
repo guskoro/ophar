@@ -6,15 +6,10 @@ import {
   CardBody,
   Col,
   CustomInput,
-  Form,
   FormFeedback,
   FormGroup,
   Input,
   Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Nav,
   NavItem,
   NavLink,
@@ -54,7 +49,8 @@ export default class Example extends React.Component {
       activeTab: '1',
       id: this.props.match.params.id,
       plans: [],
-      users: []
+      users: [],
+      plan: ''
     };
   }
 
@@ -315,22 +311,29 @@ export default class Example extends React.Component {
     });
   };
 
-  onAddPlan = async (e, data) => {
-    e.preventDefault();
-
-    const newWorkingOrder = {
-      plan: this.state.plan
-    };
-
-    await axios
-      .patch(`/api/working-order/${data._id}`, newWorkingOrder)
-      .then(res => {
-        if (res.status === 200) {
-          this.getDetailWO();
-          this.togglePlan(data);
+  onAddPlan = data => {
+    swal({
+      text: 'Add plan for this work order',
+      content: {
+        element: 'input',
+        attributes: {
+          value: this.state.plan
         }
-      })
-      .catch(err => console.log(err.response.data));
+      },
+      button: 'Add Plan'
+    }).then(plan => {
+      const newWorkingOrder = {
+        plan: plan
+      };
+      return axios
+        .patch(`/api/working-order/${data._id}`, newWorkingOrder)
+        .then(res => {
+          if (res.status === 200) {
+            this.getWO();
+          }
+        })
+        .catch(err => console.log(err));
+    });
   };
 
   toggleTab = tab => {
@@ -566,54 +569,12 @@ export default class Example extends React.Component {
                             <tr className='border-0'>
                               <th className='border-0'>
                                 <Button
-                                  onClick={this.togglePlan.bind(this, detailWO)}
+                                  onClick={this.onAddPlan.bind(this, detailWO)}
                                   outline
                                   color='secondary'
                                   className='profile batas-kanan'>
                                   Add Work Plan
                                 </Button>
-                                <Modal
-                                  isOpen={this.state.modalPlan}
-                                  toggle={this.togglePlan.bind(this, detailWO)}
-                                  className={this.props.className}>
-                                  <ModalHeader
-                                    toggle={this.togglePlan.bind(
-                                      this,
-                                      detailWO
-                                    )}>
-                                    Add a new plan
-                                  </ModalHeader>
-                                  <Form
-                                    onSubmit={e => {
-                                      this.onAddPlan(e, detailWO);
-                                    }}>
-                                    <ModalBody>
-                                      <FormGroup>
-                                        <Label for='plan'>Work Plan</Label>
-                                        <Input
-                                          type='textarea'
-                                          name='plan'
-                                          id='plan'
-                                          value={this.state.plan}
-                                          onChange={this.onChange}
-                                        />
-                                      </FormGroup>
-                                    </ModalBody>
-                                    <ModalFooter>
-                                      <Button color='biruicon' type='submit'>
-                                        Submit
-                                      </Button>
-                                      <Button
-                                        color='secondary'
-                                        onClick={this.togglePlan.bind(
-                                          this,
-                                          detailWO
-                                        )}>
-                                        Cancel
-                                      </Button>
-                                    </ModalFooter>
-                                  </Form>
-                                </Modal>
                               </th>
                             </tr>
                           </thead>
