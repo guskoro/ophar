@@ -14,6 +14,15 @@
     margin-top: 1rem;
 }
 
+.batas-bawah {
+    margin-bottom: 1rem;
+}
+
+.ke-kanan {
+    position: absolute;
+    right: 0;
+}
+
 .dropdown-item-custom:hover,
 .pointer-hover {
     cursor: pointer;

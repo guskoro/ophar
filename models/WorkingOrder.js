@@ -47,9 +47,19 @@ const workingOrderSchema = new Schema({
     type: String,
     required: true
   },
-  note: {
-    type: String
-  },
+  notes: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: 'users'
+      },
+      message: String,
+      created_at: {
+        type: Date,
+        default: Date.now
+      }
+    }
+  ],
   approved_by_spv: {
     type: Boolean,
     default: false

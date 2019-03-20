@@ -42,6 +42,7 @@ router.get('/', (req, res) => {
       }
     })
     .sort('-created_at')
+    .populate('users', 'name-_id')
     .populate('type', 'name-_id')
     .populate('priority', 'name-_id')
     .then(workingOrders => res.json(workingOrders))
@@ -155,7 +156,8 @@ router.get('/:id', (req, res) => {
     .populate('pic')
     .populate('type', 'name-_id')
     .populate('priority', 'name-_id')
-    .populate('users', 'name-_id')
+    .populate('users', 'name')
+    .populate('notes.user')
     .then(workingOrder => {
       const woCustom = {
         _id: workingOrder._id,
@@ -167,7 +169,7 @@ router.get('/:id', (req, res) => {
         plans: workingOrder.plans,
         users: workingOrder.users,
         program: workingOrder.program,
-        note: workingOrder.note,
+        notes: workingOrder.notes,
         approved_by_spv: workingOrder.approved_by_spv,
         approved_by_manager: workingOrder.approved_by_manager,
         rejected: workingOrder.rejected,
@@ -176,6 +178,7 @@ router.get('/:id', (req, res) => {
         deadline: workingOrder.deadline,
         end: workingOrder.end,
         created_at: workingOrder.created_at,
+        pic_id: workingOrder.pic._id,
         pic_name: workingOrder.pic.name,
         pic_email: workingOrder.pic.email,
         pic_avatar: workingOrder.pic.avatar
@@ -194,11 +197,20 @@ router.patch(
       .populate('pic')
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
+      .populate('users')
       .then(workingOrder => {
         if (req.body._id) {
           delete req.body._id;
         }
         if (req.body.plans) {
+          const fs = workingOrder.users.filter(
+            user => user._id === req.user_id
+          );
+          if (!fs) {
+            return res.status(403).json({
+              message: "Sorry, you don't have permission in this work order."
+            });
+          }
           req.body.plans.map((plan, id) => {
             workingOrder.plans[id].done = plan.done;
           });
@@ -227,6 +239,31 @@ router.patch(
 );
 
 router.post(
+  '/add-note/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    WorkingOrder.findById(req.params.id)
+      .then(workingOrder => {
+        User.findById(req.user._id)
+          .then(user => {
+            workingOrder.notes.push({
+              user: user,
+              message: req.body.note
+            });
+            workingOrder
+              .save()
+              .then(updatedWorkingOrder => {
+                return res.json(updatedWorkingOrder);
+              })
+              .catch(err => res.status(400).json(err));
+          })
+          .catch(err => res.status(404).json(err));
+      })
+      .catch(err => res.status(404).json(err));
+  }
+);
+
+router.post(
   '/approve/:id',
   passport.authenticate('jwt', {
     session: false
@@ -236,6 +273,7 @@ router.post(
       .populate('pic')
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
+      .populate('users', 'name-_id')
       .then(workingOrder => {
         User.findById(req.user.id)
           .populate('role', 'name-_id')
@@ -275,6 +313,7 @@ router.post(
       .populate('pic')
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
+      .populate('users', 'name-_id')
       .then(workingOrder => {
         User.findById(req.user.id)
           .populate('role', 'name-_id')
@@ -314,6 +353,7 @@ router.post(
       .populate('pic')
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
+      .populate('users', 'name-_id')
       .then(workingOrder => {
         User.findById(req.user.id)
           .then(pic => {
@@ -359,6 +399,7 @@ router.delete(
   (req, res) => {
     User.findById(req.user.id)
       .populate('division', 'name-_id')
+      .populate('users', 'name-_id')
       .then(user => {
         WorkingOrder.findById(req.params.id)
           .then(workingOrder => {

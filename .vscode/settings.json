@@ -1,7 +1,5 @@
 {
-  "editor.fontFamily": "'Fira Code'",
   "editor.fontSize": 16,
-  "editor.fontLigatures": true,
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.drawBoldTextInBrightColors": false,
   "terminal.integrated.fontFamily": "Menlo for Powerline"

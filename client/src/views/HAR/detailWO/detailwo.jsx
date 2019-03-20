@@ -4,12 +4,17 @@ import {
   Button,
   Card,
   CardBody,
+  Form,
   Col,
   CustomInput,
   FormFeedback,
   FormGroup,
   Input,
   Label,
+  ListGroup,
+  ListGroupItem,
+  ListGroupItemHeading,
+  ListGroupItemText,
   Nav,
   NavItem,
   NavLink,
@@ -50,7 +55,9 @@ export default class Example extends React.Component {
       id: this.props.match.params.id,
       plans: [],
       users: [],
-      plan: ''
+      notes: [],
+      plan: '',
+      note: ''
     };
   }
 
@@ -71,8 +78,9 @@ export default class Example extends React.Component {
           type: data.type.name,
           priority: data.priority.name,
           plans: data.plans,
+          users: data.users,
           program: data.program,
-          note: data.note,
+          notes: data.notes,
           approved_by_spv: data.approved_by_spv,
           approved_by_manager: data.approved_by_manager,
           rejected: data.rejected,
@@ -81,6 +89,7 @@ export default class Example extends React.Component {
           deadline: data.deadline,
           end: data.end,
           created_at: data.created_at,
+          pic_id: data.pic._id,
           pic_name: data.pic.name,
           pic_email: data.pic.email,
           pic_avatar: data.pic.avatar
@@ -103,8 +112,9 @@ export default class Example extends React.Component {
           type: data.type.name,
           priority: data.priority.name,
           plans: data.plans,
+          users: data.users,
           program: data.program,
-          note: data.note,
+          notes: data.notes,
           approved_by_spv: data.approved_by_spv,
           approved_by_manager: data.approved_by_manager,
           rejected: data.rejected,
@@ -113,6 +123,7 @@ export default class Example extends React.Component {
           deadline: data.deadline,
           end: data.end,
           created_at: data.created_at,
+          pic_id: data.pic._id,
           pic_name: data.pic.name,
           pic_email: data.pic.email,
           pic_avatar: data.pic.avatar
@@ -135,8 +146,9 @@ export default class Example extends React.Component {
           type: data.type.name,
           priority: data.priority.name,
           plans: data.plans,
+          users: data.users,
           program: data.program,
-          note: data.note,
+          notes: data.notes,
           approved_by_spv: data.approved_by_spv,
           approved_by_manager: data.approved_by_manager,
           rejected: data.rejected,
@@ -145,6 +157,7 @@ export default class Example extends React.Component {
           deadline: data.deadline,
           end: data.end,
           created_at: data.created_at,
+          pic_id: data.pic._id,
           pic_name: data.pic.name,
           pic_email: data.pic.email,
           pic_avatar: data.pic.avatar
@@ -167,8 +180,9 @@ export default class Example extends React.Component {
           type: data.type.name,
           priority: data.priority.name,
           plans: data.plans,
+          users: data.users,
           program: data.program,
-          note: data.note,
+          notes: data.notes,
           approved_by_spv: data.approved_by_spv,
           approved_by_manager: data.approved_by_manager,
           rejected: data.rejected,
@@ -177,6 +191,7 @@ export default class Example extends React.Component {
           deadline: data.deadline,
           end: data.end,
           created_at: data.created_at,
+          pic_id: data.pic._id,
           pic_name: data.pic.name,
           pic_email: data.pic.email,
           pic_avatar: data.pic.avatar
@@ -210,7 +225,8 @@ export default class Example extends React.Component {
         this.setState({
           detailWO: res.data,
           plans: res.data.plans,
-          users: res.data.users
+          users: res.data.users,
+          notes: res.data.notes
         });
       })
       .catch(err => console.log(err.response.data));
@@ -286,29 +302,22 @@ export default class Example extends React.Component {
     });
   };
 
-  onAddNote = data => {
-    swal({
-      text: 'Add note for this work order',
-      content: {
-        element: 'input',
-        attributes: {
-          value: data.note
+  onAddNote = async e => {
+    e.preventDefault();
+    console.log(this.state.note);
+    const noteRequest = {
+      note: this.state.note
+    };
+
+    await axios
+      .post(`/api/working-order/add-note/${this.state.id}`, noteRequest)
+      .then(res => {
+        if (res.status === 200) {
+          this.setState({ note: '' });
+          this.getDetailWO();
         }
-      },
-      button: 'Add Note'
-    }).then(note => {
-      const newWorkingOrder = {
-        note: note
-      };
-      return axios
-        .patch(`/api/working-order/${data._id}`, newWorkingOrder)
-        .then(res => {
-          if (res.status === 200) {
-            this.getWO();
-          }
-        })
-        .catch(err => console.log(err));
-    });
+      })
+      .catch(err => console.log(err));
   };
 
   onAddPlan = data => {
@@ -329,7 +338,7 @@ export default class Example extends React.Component {
         .patch(`/api/working-order/${data._id}`, newWorkingOrder)
         .then(res => {
           if (res.status === 200) {
-            this.getWO();
+            this.getDetailWO();
           }
         })
         .catch(err => console.log(err));
@@ -342,20 +351,6 @@ export default class Example extends React.Component {
         activeTab: tab
       });
     }
-  };
-
-  toggleNote = data => {
-    this.setState(prevState => ({
-      modalNote: !prevState.modalNote,
-      note: data.note
-    }));
-  };
-
-  togglePlan = data => {
-    this.setState(prevState => ({
-      modalPlan: !prevState.modalPlan,
-      plan: data.plan
-    }));
   };
 
   onChange = e => {
@@ -386,7 +381,15 @@ export default class Example extends React.Component {
   };
 
   render() {
-    const { detailWO, currentUser, errors, report } = this.state;
+    const {
+      detailWO,
+      users,
+      currentUser,
+      errors,
+      note,
+      report,
+      notes
+    } = this.state;
 
     return (
       <Card>
@@ -518,13 +521,13 @@ export default class Example extends React.Component {
                         className='profile batas-kanan'>
                         Approve
                       </Button>
-                      <Button
+                      {/* <Button
                         onClick={this.onAddNote.bind(this, detailWO)}
                         outline
                         color='secondary'
                         className='profile batas-kanan'>
                         Add Note
-                      </Button>
+                      </Button> */}
                     </React.Fragment>
                   ) : (
                     ''
@@ -568,13 +571,28 @@ export default class Example extends React.Component {
                           <thead>
                             <tr className='border-0'>
                               <th className='border-0'>
-                                <Button
-                                  onClick={this.onAddPlan.bind(this, detailWO)}
-                                  outline
-                                  color='secondary'
-                                  className='profile batas-kanan'>
-                                  Add Work Plan
-                                </Button>
+                                {(currentUser._id === detailWO.pic_id ||
+                                  users.filter(user => {
+                                    return user._id === currentUser._id;
+                                  }).length > 0) &&
+                                  !detailWO.rejected &&
+                                  !detailWO.done &&
+                                  (detailWO.approved_by_manager &&
+                                    detailWO.approved_by_spv && (
+                                      <Button
+                                        onClick={this.onAddPlan.bind(
+                                          this,
+                                          detailWO
+                                        )}
+                                        outline
+                                        color='success'
+                                        className='profile batas-kanan'>
+                                        Add Work Plan{' '}
+                                        <span>
+                                          <i className='mdi mdi-plus' />
+                                        </span>
+                                      </Button>
+                                    ))}
                               </th>
                             </tr>
                           </thead>
@@ -591,8 +609,13 @@ export default class Example extends React.Component {
                                           currentUser.role === 'manager' ||
                                           currentUser.role === 'supervisor' ||
                                           isEmpty(currentUser) ||
-                                          currentUser.division !==
-                                            detailWO.division ||
+                                          !(
+                                            users.filter(user => {
+                                              return (
+                                                user._id === currentUser._id
+                                              );
+                                            }).length > 0
+                                          ) ||
                                           detailWO.rejected ||
                                           detailWO.done ||
                                           !(
@@ -649,10 +672,10 @@ export default class Example extends React.Component {
                               <td>Work Description</td>
                               <td>{detailWO.description}</td>
                             </tr>
-                            <tr>
+                            {/* <tr>
                               <td>Work Note</td>
                               <td>{detailWO.note}</td>
-                            </tr>
+                            </tr> */}
                             <tr>
                               <td>Work Report</td>
                               <td>Report e Field Support Lur</td>
@@ -666,24 +689,68 @@ export default class Example extends React.Component {
               </div>
             </Col>
           </Row>
-          <Row>
-            <Col md='4'>
-              <FormGroup>
-                <Label for='report'>Work Order Report</Label>
-                <Input
-                  invalid={errors.report ? true : false}
-                  type='textarea'
-                  name='report'
-                  id='report'
-                  placeholder='Input Report'
-                  value={report}
-                  onChange={this.onChange}
-                />
-                <FormFeedback>{errors.report}</FormFeedback>
-              </FormGroup>
-              <Button type='submit' color='biruicon'>
-                Submit
-              </Button>
+          <Row className='batas-atas'>
+            <Col sm='12' md='12' lg='12'>
+              {(currentUser._id === detailWO.pic_id ||
+                users.filter(user => {
+                  return user._id === currentUser._id;
+                }).length > 0 ||
+                currentUser.role === 'manager' ||
+                currentUser.role === 'supervisor') &&
+                !detailWO.rejected &&
+                !detailWO.done &&
+                (detailWO.approved_by_manager && detailWO.approved_by_spv) && (
+                  <FormGroup className='batas-atas'>
+                    <Form onSubmit={this.onAddNote}>
+                      <Label for='note'>Add Note</Label>
+                      <Input
+                        invalid={errors.note ? true : false}
+                        type='textarea'
+                        name='note'
+                        id='note'
+                        placeholder='Input note'
+                        value={note}
+                        onChange={this.onChange}
+                      />
+                      <FormFeedback>{errors.note}</FormFeedback>
+                      <Button
+                        type='submit'
+                        color='biruicon'
+                        className='batas-atas'>
+                        Submit
+                      </Button>
+                    </Form>
+                  </FormGroup>
+                )}
+              <div className='batas-atas'>
+                <ListGroup>
+                  {notes.reverse().map((note, id) => {
+                    return (
+                      <ListGroupItem key={id}>
+                        <ListGroupItemHeading>
+                          <div className='pro-pic'>
+                            <img
+                              src={`https:${note.user.avatar}`}
+                              alt='user'
+                              className='rounded-circle batas-kanan'
+                              width='31'
+                            />
+                            <span>{note.user.name}</span>
+                          </div>
+                        </ListGroupItemHeading>
+                        <ListGroupItemText>{note.message}</ListGroupItemText>
+                        <ListGroupItemText>
+                          <small>
+                            {moment(note.created_at).format(
+                              'dddd, DD-MM-YYYY HH:mm'
+                            )}
+                          </small>
+                        </ListGroupItemText>
+                      </ListGroupItem>
+                    );
+                  })}
+                </ListGroup>
+              </div>
             </Col>
           </Row>
         </CardBody>
