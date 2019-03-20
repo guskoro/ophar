@@ -202,7 +202,7 @@ class Divisions extends Component {
                 </h1>
                 <CardText>Total Work Orders</CardText>
                 <NavLink to='/cm'>
-                  <Button color='danger'>Let me in</Button>
+                  <Button color='biruicon'>Let me in</Button>
                 </NavLink>
               </CardBody>
             </Card>
@@ -218,7 +218,7 @@ class Divisions extends Component {
                 </h1>
                 <CardText>Total Work Orders</CardText>
                 <NavLink to='/pm'>
-                  <Button color='danger'>Let me in</Button>
+                  <Button color='biruicon'>Let me in</Button>
                 </NavLink>
               </CardBody>
             </Card>
@@ -234,7 +234,7 @@ class Divisions extends Component {
                 </h1>
                 <CardText>Total Work Orders</CardText>
                 <NavLink to='/asset'>
-                  <Button color='danger'>Let me in</Button>
+                  <Button color='biruicon'>Let me in</Button>
                 </NavLink>
               </CardBody>
             </Card>
@@ -250,7 +250,7 @@ class Divisions extends Component {
                 </h1>
                 <CardText>Total Work Orders</CardText>
                 <NavLink to='/p3ak'>
-                  <Button color='danger'>Let me in</Button>
+                  <Button color='biruicon'>Let me in</Button>
                 </NavLink>
               </CardBody>
             </Card>
@@ -267,7 +267,7 @@ class Divisions extends Component {
                 </h1>
                 <CardText>Total Current Offline Assets</CardText>
                 <NavLink to='/cm'>
-                  <Button color='danger'>Let me in</Button>
+                  <Button color='warning'>Let me in</Button>
                 </NavLink>
               </CardBody>
             </Card>
@@ -282,7 +282,7 @@ class Divisions extends Component {
                 </h1>
                 <CardText>Total High Priority Work Orders</CardText>
                 <NavLink to='/pm'>
-                  <Button color='danger'>Let me in</Button>
+                  <Button color='warning'>Let me in</Button>
                 </NavLink>
               </CardBody>
             </Card>
@@ -297,7 +297,7 @@ class Divisions extends Component {
                 </h1>
                 <CardText>Total Work Orders Backlog</CardText>
                 <NavLink to='/asset'>
-                  <Button color='danger'>Let me in</Button>
+                  <Button color='warning'>Let me in</Button>
                 </NavLink>
               </CardBody>
             </Card>
@@ -312,7 +312,7 @@ class Divisions extends Component {
                 </h1>
                 <CardText>Total MTTR</CardText>
                 <NavLink to='/p3ak'>
-                  <Button color='danger'>Let me in</Button>
+                  <Button color='warning'>Let me in</Button>
                 </NavLink>
               </CardBody>
             </Card>

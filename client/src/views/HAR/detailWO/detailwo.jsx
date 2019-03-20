@@ -526,7 +526,7 @@ export default class Example extends React.Component {
                         Add Note
                       </Button>
                       <Button
-                        onClick={this.onAddReport.bind(this, detailWO)}
+                        onClick={this.onAddNote.bind(this, detailWO)}
                         outline
                         color='biruicon'
                         className='profile batas-kanan'>
