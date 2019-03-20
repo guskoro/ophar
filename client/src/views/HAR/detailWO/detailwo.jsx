@@ -30,6 +30,8 @@ import swal from 'sweetalert';
 import moment from 'moment';
 import classnames from 'classnames';
 
+Pusher.logToConsole = true;
+
 const pusher = new Pusher('12f41be129ba1c0d7a3c', {
   cluster: 'ap1',
   forceTLS: true
@@ -83,7 +85,9 @@ export default class Example extends React.Component {
           notes: data.notes,
           approved_by_spv: data.approved_by_spv,
           approved_by_manager: data.approved_by_manager,
+          approved_by_engineer: data.approved_by_engineer,
           rejected: data.rejected,
+          rejected_by_engineer: data.rejected_by_engineer,
           done: data.done,
           start: data.start,
           deadline: data.deadline,
@@ -97,7 +101,9 @@ export default class Example extends React.Component {
 
         this.setState({
           detailWO: woCustom,
-          plans: woCustom.plans
+          plans: woCustom.plans,
+          users: woCustom.users,
+          notes: woCustom.notes
         });
       }
     });
@@ -117,7 +123,9 @@ export default class Example extends React.Component {
           notes: data.notes,
           approved_by_spv: data.approved_by_spv,
           approved_by_manager: data.approved_by_manager,
+          approved_by_engineer: data.approved_by_engineer,
           rejected: data.rejected,
+          rejected_by_engineer: data.rejected_by_engineer,
           done: data.done,
           start: data.start,
           deadline: data.deadline,
@@ -131,7 +139,9 @@ export default class Example extends React.Component {
 
         this.setState({
           detailWO: woCustom,
-          plans: woCustom.plans
+          plans: woCustom.plans,
+          users: woCustom.users,
+          notes: woCustom.notes
         });
       }
     });
@@ -151,7 +161,9 @@ export default class Example extends React.Component {
           notes: data.notes,
           approved_by_spv: data.approved_by_spv,
           approved_by_manager: data.approved_by_manager,
+          approved_by_engineer: data.approved_by_engineer,
           rejected: data.rejected,
+          rejected_by_engineer: data.rejected_by_engineer,
           done: data.done,
           start: data.start,
           deadline: data.deadline,
@@ -165,7 +177,9 @@ export default class Example extends React.Component {
 
         this.setState({
           detailWO: woCustom,
-          plans: woCustom.plans
+          plans: woCustom.plans,
+          users: woCustom.users,
+          notes: woCustom.notes
         });
       }
     });
@@ -185,7 +199,46 @@ export default class Example extends React.Component {
           notes: data.notes,
           approved_by_spv: data.approved_by_spv,
           approved_by_manager: data.approved_by_manager,
+          approved_by_engineer: data.approved_by_engineer,
           rejected: data.rejected,
+          rejected_by_engineer: data.rejected_by_engineer,
+          done: data.done,
+          start: data.start,
+          deadline: data.deadline,
+          end: data.end,
+          created_at: data.created_at,
+          pic_id: data.pic._id,
+          pic_name: data.pic.name,
+          pic_email: data.pic.email,
+          pic_avatar: data.pic.avatar
+        };
+        this.setState({
+          detailWO: woCustom,
+          plans: woCustom.plans,
+          users: woCustom.users,
+          notes: woCustom.notes
+        });
+      }
+    });
+
+    await channel.bind('add-note-wo', data => {
+      if (data._id === this.state.detailWO._id) {
+        const woCustom = {
+          _id: data._id,
+          title: data.title,
+          description: data.description,
+          division: data.division,
+          type: data.type.name,
+          priority: data.priority.name,
+          plans: data.plans,
+          users: data.users,
+          program: data.program,
+          notes: data.notes,
+          approved_by_spv: data.approved_by_spv,
+          approved_by_manager: data.approved_by_manager,
+          approved_by_engineer: data.approved_by_engineer,
+          rejected: data.rejected,
+          rejected_by_engineer: data.rejected_by_engineer,
           done: data.done,
           start: data.start,
           deadline: data.deadline,
@@ -199,7 +252,9 @@ export default class Example extends React.Component {
 
         this.setState({
           detailWO: woCustom,
-          plans: woCustom.plans
+          plans: woCustom.plans,
+          users: woCustom.users,
+          notes: woCustom.notes
         });
       }
     });
@@ -463,7 +518,27 @@ export default class Example extends React.Component {
                     </h5>
                   </div>
                 )}
-              {detailWO.done && (
+              {detailWO.approved_by_spv &&
+                detailWO.approved_by_manager &&
+                detailWO.rejected_by_engineer && (
+                  <div className='profile'>
+                    <h5>
+                      <Badge color='danger' className='ml-0' pill>
+                        Rejected by manager
+                      </Badge>
+                    </h5>
+                  </div>
+                )}
+              {detailWO.done && !detailWO.approved_by_engineer && (
+                <div className='profile'>
+                  <h5>
+                    <Badge color='warning' className='ml-0' pill>
+                      Pending approval engineer
+                    </Badge>
+                  </h5>
+                </div>
+              )}
+              {detailWO.done && detailWO.approved_by_engineer && (
                 <div className='profile'>
                   <h5>
                     <Badge color='info' className='ml-0' pill>
@@ -487,10 +562,13 @@ export default class Example extends React.Component {
                 </div>
               )}
               {/* Iki lek login berdasar divisine dewe2, lek gak, gak metu tombol e */}
-              {!detailWO.done && !detailWO.rejected && (
+              {!detailWO.approved_by_engineer && !detailWO.rejected && (
                 <div className='profile batas-kanan'>
-                  {currentUser.division === detailWO.division &&
-                    detailWO.approved_by_manager && (
+                  {users.filter(user => {
+                    return user._id === currentUser._id;
+                  }).length > 0 &&
+                    detailWO.approved_by_manager &&
+                    !detailWO.done && (
                       <React.Fragment>
                         <Button
                           onClick={this.onDone.bind(this, detailWO)}
@@ -503,9 +581,15 @@ export default class Example extends React.Component {
                     )}
                   {(currentUser.role === 'manager' &&
                     !detailWO.approved_by_manager &&
-                    detailWO.approved_by_spv) ||
+                    detailWO.approved_by_spv &&
+                    !detailWO.done) ||
                   (currentUser.role === 'supervisor' &&
-                    !detailWO.approved_by_spv) ? (
+                    !detailWO.approved_by_spv &&
+                    !detailWO.done) ||
+                  (currentUser._id === detailWO.pic_id &&
+                    detailWO.approved_by_manager &&
+                    detailWO.approved_by_spv &&
+                    detailWO.done) ? (
                     <React.Fragment>
                       <Button
                         onClick={this.onReject.bind(this, detailWO)}
@@ -576,23 +660,21 @@ export default class Example extends React.Component {
                                     return user._id === currentUser._id;
                                   }).length > 0) &&
                                   !detailWO.rejected &&
-                                  !detailWO.done &&
-                                  (detailWO.approved_by_manager &&
-                                    detailWO.approved_by_spv && (
-                                      <Button
-                                        onClick={this.onAddPlan.bind(
-                                          this,
-                                          detailWO
-                                        )}
-                                        outline
-                                        color='success'
-                                        className='profile batas-kanan'>
-                                        Add Work Plan{' '}
-                                        <span>
-                                          <i className='mdi mdi-plus' />
-                                        </span>
-                                      </Button>
-                                    ))}
+                                  !detailWO.done && (
+                                    <Button
+                                      onClick={this.onAddPlan.bind(
+                                        this,
+                                        detailWO
+                                      )}
+                                      outline
+                                      color='success'
+                                      className='profile batas-kanan'>
+                                      Add Work Plan{' '}
+                                      <span>
+                                        <i className='mdi mdi-plus' />
+                                      </span>
+                                    </Button>
+                                  )}
                               </th>
                             </tr>
                           </thead>
@@ -691,37 +773,47 @@ export default class Example extends React.Component {
           </Row>
           <Row className='batas-atas'>
             <Col sm='12' md='12' lg='12'>
-              {(currentUser._id === detailWO.pic_id ||
-                users.filter(user => {
-                  return user._id === currentUser._id;
-                }).length > 0 ||
-                currentUser.role === 'manager' ||
-                currentUser.role === 'supervisor') &&
-                !detailWO.rejected &&
-                !detailWO.done &&
-                (detailWO.approved_by_manager && detailWO.approved_by_spv) && (
-                  <FormGroup className='batas-atas'>
-                    <Form onSubmit={this.onAddNote}>
-                      <Label for='note'>Add Note</Label>
-                      <Input
-                        invalid={errors.note ? true : false}
-                        type='textarea'
-                        name='note'
-                        id='note'
-                        placeholder='Input note'
-                        value={note}
-                        onChange={this.onChange}
-                      />
-                      <FormFeedback>{errors.note}</FormFeedback>
-                      <Button
-                        type='submit'
-                        color='biruicon'
-                        className='batas-atas'>
-                        Submit
-                      </Button>
-                    </Form>
-                  </FormGroup>
-                )}
+              {(currentUser.role === 'manager' &&
+                !detailWO.approved_by_manager &&
+                detailWO.approved_by_spv &&
+                !detailWO.done) ||
+              (currentUser.role === 'supervisor' &&
+                !detailWO.approved_by_spv &&
+                !detailWO.done) ||
+              (currentUser._id === detailWO.pic_id &&
+                detailWO.approved_by_manager &&
+                detailWO.approved_by_spv &&
+                !detailWO.approved_by_engineer) ||
+              (users.filter(user => {
+                return user._id === currentUser._id;
+              }).length > 0 &&
+                detailWO.approved_by_manager &&
+                detailWO.approved_by_spv &&
+                !detailWO.done) ? (
+                <FormGroup className='batas-atas'>
+                  <Form onSubmit={this.onAddNote}>
+                    <Label for='note'>Add Note</Label>
+                    <Input
+                      invalid={errors.note ? true : false}
+                      type='textarea'
+                      name='note'
+                      id='note'
+                      placeholder='Input note'
+                      value={note}
+                      onChange={this.onChange}
+                    />
+                    <FormFeedback>{errors.note}</FormFeedback>
+                    <Button
+                      type='submit'
+                      color='biruicon'
+                      className='batas-atas'>
+                      Submit
+                    </Button>
+                  </Form>
+                </FormGroup>
+              ) : (
+                ''
+              )}
               <div className='batas-atas'>
                 <ListGroup>
                   {notes.reverse().map((note, id) => {

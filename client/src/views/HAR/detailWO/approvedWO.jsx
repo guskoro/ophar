@@ -272,7 +272,7 @@ class Projects extends React.Component {
                 <th className='border-0'>Deadline</th>
                 <th className='border-0'>Details</th>
                 <th className='border-0'>Action</th>
-                <th className='border-0'>Note</th>
+                {/* <th className='border-0'>Note</th> */}
               </tr>
             </thead>
             <tbody>
@@ -333,7 +333,7 @@ class Projects extends React.Component {
                           <i className='mdi mdi-close' />
                         </Button>
                       </td>
-                      <td>
+                      {/* <td>
                         <Button
                           onClick={this.onAddNote.bind(this, data)}
                           outline
@@ -341,7 +341,7 @@ class Projects extends React.Component {
                           className='btn'>
                           Add Note
                         </Button>
-                      </td>
+                      </td> */}
                     </tr>
                   );
                 })}

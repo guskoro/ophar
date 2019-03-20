@@ -68,6 +68,14 @@ const workingOrderSchema = new Schema({
     type: Boolean,
     default: false
   },
+  approved_by_engineer: {
+    type: Boolean,
+    default: false
+  },
+  rejected_by_engineer: {
+    type: Boolean,
+    default: false
+  },
   rejected: {
     type: Boolean,
     default: false

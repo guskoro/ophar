@@ -172,7 +172,9 @@ router.get('/:id', (req, res) => {
         notes: workingOrder.notes,
         approved_by_spv: workingOrder.approved_by_spv,
         approved_by_manager: workingOrder.approved_by_manager,
+        approved_by_engineer: workingOrder.approved_by_engineer,
         rejected: workingOrder.rejected,
+        rejected_by_engineer: workingOrder.rejected_by_engineer,
         done: workingOrder.done,
         start: workingOrder.start,
         deadline: workingOrder.deadline,
@@ -198,6 +200,7 @@ router.patch(
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
       .populate('users')
+      .populate('notes.user')
       .then(workingOrder => {
         if (req.body._id) {
           delete req.body._id;
@@ -243,6 +246,11 @@ router.post(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     WorkingOrder.findById(req.params.id)
+      .populate('pic')
+      .populate('type', 'name-_id')
+      .populate('priority', 'name-_id')
+      .populate('users')
+      .populate('notes.user')
       .then(workingOrder => {
         User.findById(req.user._id)
           .then(user => {
@@ -253,6 +261,7 @@ router.post(
             workingOrder
               .save()
               .then(updatedWorkingOrder => {
+                pusher.trigger('ophar-app', 'add-note-wo', updatedWorkingOrder);
                 return res.json(updatedWorkingOrder);
               })
               .catch(err => res.status(400).json(err));
@@ -273,7 +282,8 @@ router.post(
       .populate('pic')
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
-      .populate('users', 'name-_id')
+      .populate('users')
+      .populate('notes.user')
       .then(workingOrder => {
         User.findById(req.user.id)
           .populate('role', 'name-_id')
@@ -283,10 +293,14 @@ router.post(
               workingOrder.start = new Date();
             } else if (user.role.name === 'supervisor') {
               workingOrder.approved_by_spv = !workingOrder.approved_by_spv;
+            } else if (
+              workingOrder.pic._id.toString() === user._id.toString()
+            ) {
+              workingOrder.approved_by_engineer = !workingOrder.approved_by_engineer;
+              console.log(workingOrder.approved_by_engineer);
             } else {
               return res.status(403).json({
-                message:
-                  'Maaf, anda tidak mempunyai otoritas untuk approve working order'
+                message: "Sorry, you don't have permission in this work order"
               });
             }
             workingOrder
@@ -313,7 +327,8 @@ router.post(
       .populate('pic')
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
-      .populate('users', 'name-_id')
+      .populate('users')
+      .populate('notes.user')
       .then(workingOrder => {
         User.findById(req.user.id)
           .populate('role', 'name-_id')
@@ -323,10 +338,16 @@ router.post(
               user.role.name === 'supervisor'
             ) {
               workingOrder.rejected = !workingOrder.rejected;
+            } else if (
+              user._id.toString() === workingOrder.pic._id.toString()
+            ) {
+              workingOrder.rejected_by_engineer = !workingOrder.rejected_by_engineer;
+              if (workingOrder.done) {
+                workingOrder.done = !workingOrder.done;
+              }
             } else {
               return res.status(403).json({
-                message:
-                  'Maaf, anda tidak mempunyai otoritas untuk reject working order'
+                message: "Sorry, you don't have permission in this work order"
               });
             }
             workingOrder
@@ -353,13 +374,18 @@ router.post(
       .populate('pic')
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
-      .populate('users', 'name-_id')
+      .populate('users')
+      .populate('notes.user')
       .then(workingOrder => {
         User.findById(req.user.id)
-          .then(pic => {
-            if (pic.division.email !== workingOrder.pic.division.email) {
+          .then(user => {
+            if (
+              workingOrder.users.filter(user => {
+                return user._id === user._id;
+              }).length <= 0
+            ) {
               return res.status(403).json({
-                message: 'Maaf, anda bukan PIC untuk working order ini'
+                message: "Sorry, you don't have permission in this work order"
               });
             }
 
@@ -370,8 +396,7 @@ router.post(
               workingOrder.rejected
             ) {
               return res.status(400).json({
-                message:
-                  'Maaf, working order anda belum di-approve atau telah di-reject'
+                message: 'Sorry, your work order is pending or already rejected'
               });
             }
             workingOrder.plans.map(plan => {
@@ -398,8 +423,11 @@ router.delete(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     User.findById(req.user.id)
-      .populate('division', 'name-_id')
-      .populate('users', 'name-_id')
+      .populate('pic')
+      .populate('type', 'name-_id')
+      .populate('priority', 'name-_id')
+      .populate('users')
+      .populate('notes.user')
       .then(user => {
         WorkingOrder.findById(req.params.id)
           .then(workingOrder => {
