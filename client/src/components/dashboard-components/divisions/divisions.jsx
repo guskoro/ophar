@@ -280,7 +280,7 @@ class Divisions extends Component {
                 <h1 className='display-3'>
                   <Countup end={this.state.pmWOs.length} duration={1} />
                 </h1>
-                <CardText>Total High Priority Workorders</CardText>
+                <CardText>Total High Priority Work Orders</CardText>
                 <NavLink to='/pm'>
                   <Button color='danger'>Let me in</Button>
                 </NavLink>
@@ -295,7 +295,7 @@ class Divisions extends Component {
                 <h1 className='display-3'>
                   <Countup end={this.state.assetsWOs.length} duration={1} />
                 </h1>
-                <CardText>Total Workorders Backlog</CardText>
+                <CardText>Total Work Orders Backlog</CardText>
                 <NavLink to='/asset'>
                   <Button color='danger'>Let me in</Button>
                 </NavLink>

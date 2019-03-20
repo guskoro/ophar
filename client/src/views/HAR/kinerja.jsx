@@ -14,6 +14,7 @@ import Ticket from './kinerja/ticket.jsx';
 import Upload from './kinerja/uploadpage.jsx';
 import Disturbance from './kinerja/disturbance.jsx';
 import Amartaasset from './kinerja/amartaasset.jsx';
+import Scada20kv from './kinerja/scada20kv.jsx';
 
 class Projects extends React.Component {
   constructor(props) {
@@ -101,6 +102,17 @@ class Projects extends React.Component {
                   Total Offline Assets
                 </NavLink>
               </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames('pointer-hover', {
+                    active: this.state.activeTab === '6'
+                  })}
+                  onClick={() => {
+                    this.toggleTab('6');
+                  }}>
+                  Scada 20kv
+                </NavLink>
+              </NavItem>
             </Nav>
             {/* ISI Tab Lur */}
             <TabContent activeTab={this.state.activeTab}>
@@ -123,6 +135,10 @@ class Projects extends React.Component {
 
               <TabPane tabId='5'>
                 <Amartaasset />
+              </TabPane>
+
+              <TabPane tabId='6'>
+                <Scada20kv />
               </TabPane>
             </TabContent>
           </div>

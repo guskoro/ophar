@@ -31,8 +31,8 @@ class Upload extends React.Component {
         </Col>
         <Col xs='12' md='3'>
           <div>
-            <FilePond allowMultiple={true} />
-            <p className='App-intro'>AR RAW DATA</p>
+            <FilePond />
+            <p className='App-intro'>AR DATA</p>
           </div>
         </Col>
         <Col xs='12' md='3'>
@@ -44,13 +44,13 @@ class Upload extends React.Component {
         <Col xs='12' md='3'>
           <div>
             <FilePond />
-            <p className='App-intro'>FMS</p>
+            <p className='App-intro'>FSM DATA</p>
           </div>
         </Col>
         <Col xs='12' md='3'>
           <div>
             <FilePond />
-            <p className='App-intro'>HALO</p>
+            <p className='App-intro'>PIKET DATA</p>
           </div>
         </Col>
         <Col xs='12' md='3'>

@@ -86,3 +86,8 @@
   background-color: transparent;
   border: 2px solid #2c3340;
 }
+
+/*  Limiting the height of FilePond */
+.filepond--root {
+  max-height: 10em;
+}

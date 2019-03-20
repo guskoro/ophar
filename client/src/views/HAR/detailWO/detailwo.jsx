@@ -6,6 +6,15 @@ import {
   CardBody,
   Col,
   CustomInput,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Nav,
   NavItem,
   NavLink,
@@ -38,7 +47,9 @@ export default class Example extends React.Component {
 
     this.state = {
       currentUser: {},
+      errors: [],
       detailWO: {},
+      report: '',
       isOpen: false,
       activeTab: '1',
       id: this.props.match.params.id,
@@ -304,6 +315,24 @@ export default class Example extends React.Component {
     });
   };
 
+  onAddPlan = async (e, data) => {
+    e.preventDefault();
+
+    const newWorkingOrder = {
+      plan: this.state.plan
+    };
+
+    await axios
+      .patch(`/api/working-order/${data._id}`, newWorkingOrder)
+      .then(res => {
+        if (res.status === 200) {
+          this.getDetailWO();
+          this.togglePlan(data);
+        }
+      })
+      .catch(err => console.log(err.response.data));
+  };
+
   toggleTab = tab => {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -316,6 +345,13 @@ export default class Example extends React.Component {
     this.setState(prevState => ({
       modalNote: !prevState.modalNote,
       note: data.note
+    }));
+  };
+
+  togglePlan = data => {
+    this.setState(prevState => ({
+      modalPlan: !prevState.modalPlan,
+      plan: data.plan
     }));
   };
 
@@ -347,7 +383,7 @@ export default class Example extends React.Component {
   };
 
   render() {
-    const { detailWO, currentUser } = this.state;
+    const { detailWO, currentUser, errors, report } = this.state;
 
     return (
       <Card>
@@ -528,7 +564,57 @@ export default class Example extends React.Component {
                         <Table className='no-wrap v-middle' responsive>
                           <thead>
                             <tr className='border-0'>
-                              <th className='border-0'>Work Plan</th>
+                              <th className='border-0'>
+                                <Button
+                                  onClick={this.togglePlan.bind(this, detailWO)}
+                                  outline
+                                  color='secondary'
+                                  className='profile batas-kanan'>
+                                  Add Work Plan
+                                </Button>
+                                <Modal
+                                  isOpen={this.state.modalPlan}
+                                  toggle={this.togglePlan.bind(this, detailWO)}
+                                  className={this.props.className}>
+                                  <ModalHeader
+                                    toggle={this.togglePlan.bind(
+                                      this,
+                                      detailWO
+                                    )}>
+                                    Add a new plan
+                                  </ModalHeader>
+                                  <Form
+                                    onSubmit={e => {
+                                      this.onAddPlan(e, detailWO);
+                                    }}>
+                                    <ModalBody>
+                                      <FormGroup>
+                                        <Label for='plan'>Work Plan</Label>
+                                        <Input
+                                          type='textarea'
+                                          name='plan'
+                                          id='plan'
+                                          value={this.state.plan}
+                                          onChange={this.onChange}
+                                        />
+                                      </FormGroup>
+                                    </ModalBody>
+                                    <ModalFooter>
+                                      <Button color='biruicon' type='submit'>
+                                        Submit
+                                      </Button>
+                                      <Button
+                                        color='secondary'
+                                        onClick={this.togglePlan.bind(
+                                          this,
+                                          detailWO
+                                        )}>
+                                        Cancel
+                                      </Button>
+                                    </ModalFooter>
+                                  </Form>
+                                </Modal>
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
@@ -606,6 +692,10 @@ export default class Example extends React.Component {
                               <td>Work Note</td>
                               <td>{detailWO.note}</td>
                             </tr>
+                            <tr>
+                              <td>Work Report</td>
+                              <td>Report e Field Support Lur</td>
+                            </tr>
                           </tbody>
                         </Table>
                       </Col>
@@ -613,6 +703,26 @@ export default class Example extends React.Component {
                   </TabPane>
                 </TabContent>
               </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col md='4'>
+              <FormGroup>
+                <Label for='report'>Work Order Report</Label>
+                <Input
+                  invalid={errors.report ? true : false}
+                  type='textarea'
+                  name='report'
+                  id='report'
+                  placeholder='Input Report'
+                  value={report}
+                  onChange={this.onChange}
+                />
+                <FormFeedback>{errors.report}</FormFeedback>
+              </FormGroup>
+              <Button type='submit' color='biruicon'>
+                Submit
+              </Button>
             </Col>
           </Row>
         </CardBody>

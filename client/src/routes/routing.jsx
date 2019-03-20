@@ -20,6 +20,7 @@ import DetailWo from '../views/HAR/detailWO/detailwo.jsx';
 import NewWo from '../views/HAR/detailWO/approvedWO.jsx';
 import UploadWO from '../views/HAR/detailWO/uploadwo.jsx';
 import Kinerja from '../views/HAR/kinerja.jsx';
+import UploadScada20kv from '../views/HAR/kinerja/uploadscada20kv.jsx';
 
 var ThemeRoutes = [
   {
@@ -69,6 +70,12 @@ var ThemeRoutes = [
     name: 'Upload WO',
     icon: 'mdi mdi-database',
     component: UploadWO
+  },
+  {
+    path: '/uploadScada',
+    name: 'Upload Scada',
+    icon: 'mdi mdi-database',
+    component: UploadScada20kv
   },
   {
     path: '/detailWO/:id',
