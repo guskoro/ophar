@@ -13,8 +13,11 @@ import {
   PaginationItem,
   PaginationLink,
   Row,
-  Table
+  Table,
+  Tooltip
 } from 'reactstrap';
+
+import classnames from 'classnames';
 import swal from 'sweetalert';
 import axios from 'axios';
 import Pusher from 'pusher-js';
@@ -40,10 +43,15 @@ class Projects extends React.Component {
     this.state = {
       WOs: [],
       filtered: [],
+      currentUser: {},
       currentPage: 0,
       pagesCount: 0,
       modal: false,
-      role: ''
+      role: '',
+      NewWorkOrders: this.props.match.params.NewWorkOrders,
+      OnProgressOrders: this.props.match.params.OnProgressWorkOrders,
+      RejectedWorkOrders: this.props.match.params.RejectedWorkOrders,
+      CompleteWorkOrders: this.props.match.params.CompleteWorkOrders
     };
   }
 
@@ -104,28 +112,32 @@ class Projects extends React.Component {
     });
   };
 
-  getCurrentUser = async () => {
-    await axios
+  getCurrentUser = () => {
+    axios
       .get('/api/user/current')
       .then(res => {
         this.setState({
-          role: res.data.role
+          role: res.data.role,
+          currentUser: res.data
         });
       })
-      .catch(err => console.log(err.response.data));
+      .catch(err => {
+        if (err.response.status === 401) this.setState({ currentUser: {} });
+      });
   };
 
   getWO = async () => {
-    let query = 'approved_by_spv=false&rejected=false';
-    if (this.state.role === 'manager') {
-      query = 'approved_by_spv=true&approved_by_manager=false&rejected=false';
-    }
+    // let query = 'approved_by_spv=false&rejected=false';
+    // if (this.state.role === 'manager') {
+    //   query = 'approved_by_spv=true&approved_by_manager=false&rejected=false';
+    // } ?${query}
 
     await axios
-      .get(`/api/working-order?${query}`)
+      .get(`/api/working-order`)
       .then(res => {
         this.setState({
           WOs: res.data,
+          currentWOs: res.data,
           filtered: res.data,
           pagesCount: Math.ceil(res.data.length / this.pageSize)
         });
@@ -180,6 +192,29 @@ class Projects extends React.Component {
     });
   };
 
+  onDone = async data => {
+    await swal({
+      title: 'Done work order',
+      text: 'Are you sure want to finish this work order?',
+      icon: 'info',
+      buttons: true
+    }).then(result => {
+      if (result) {
+        return axios
+          .post(`/api/working-order/approve/${data._id}`)
+          .then(res => {
+            if (res.status === 200) {
+              swal('Yey! This work order is complete!', {
+                icon: 'success'
+              });
+              this.getWO();
+            }
+          })
+          .catch(err => err.response.data);
+      }
+    });
+  };
+
   onAddNote = data => {
     swal({
       text: 'Add note for this work order',
@@ -217,8 +252,19 @@ class Projects extends React.Component {
     });
   };
 
+  isToolTipOpen = targetName => {
+    return this.state[targetName] ? this.state[targetName].tooltipOpen : false;
+  };
+
   render() {
-    const { currentPage } = this.state;
+    const {
+      currentPage,
+      currentUser,
+      NewWorkOrders,
+      RejectedWorkOrders,
+      CompleteWorkOrders,
+      OnProgressOrders
+    } = this.state;
 
     console.log(this.state.note);
 
@@ -234,15 +280,18 @@ class Projects extends React.Component {
               <CardSubtitle>HAR</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
-              <div className='dl batas-kanan'>
-                <Input type='select' className='custom-select'>
-                  <option value='0'>All</option>
-                  <option value='1'>Corrective Maintenance</option>
-                  <option value='2'>Preventive Maintenance</option>
-                  <option value='3'>Assets</option>
-                  <option value='4'>Patrols and Controls</option>
-                </Input>
-              </div>
+              {(currentUser.role === 'manager' ||
+                currentUser.role === 'supervisor') && (
+                <div className='dl batas-kanan'>
+                  <Input type='select' className='custom-select'>
+                    <option value='0'>All</option>
+                    <option value='1'>Corrective Maintenance</option>
+                    <option value='2'>Preventive Maintenance</option>
+                    <option value='3'>Assets</option>
+                    <option value='4'>Patrols and Controls</option>
+                  </Input>
+                </div>
+              )}
               <div className='dl'>
                 <InputGroup>
                   <InputGroupAddon addonType='append'>
@@ -263,15 +312,16 @@ class Projects extends React.Component {
           <Table className='no-wrap v-middle' responsive>
             <thead>
               <tr className='border-0'>
-                <th className='border-0'>Code</th>
+                <th className='border-0'>Status</th>
+                <th className='border-0'>Deadline</th>
+                <th className='border-0'>Details</th>
+                <th className='border-0'>Action</th>
                 <th className='border-0'>PIC</th>
                 <th className='border-0'>Type</th>
                 <th className='border-0'>Description</th>
                 <th className='border-0'>Priority</th>
                 <th className='border-0'>Program</th>
-                <th className='border-0'>Deadline</th>
-                <th className='border-0'>Details</th>
-                <th className='border-0'>Action</th>
+                <th className='border-0'>Code</th>
                 {/* <th className='border-0'>Note</th> */}
               </tr>
             </thead>
@@ -284,7 +334,94 @@ class Projects extends React.Component {
                 .map((data, id) => {
                   return (
                     <tr key={id}>
-                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                      <td>
+                        <i
+                          className={classnames('fa fa-circle', {
+                            'text-danger': data.rejected,
+                            'text-warning': !(
+                              (data.approved_by_spv &&
+                                data.approved_by_manager) ||
+                              data.rejected
+                            ),
+                            'text-success':
+                              data.approved_by_spv &&
+                              data.approved_by_manager &&
+                              !data.done,
+                            'text-biruicon': data.done
+                          })}
+                          id={`indicator-${id}`}
+                        />
+                        <Tooltip
+                          placement='top'
+                          isOpen={this.isToolTipOpen(`indicator-${id}`)}
+                          target={`indicator-${id}`}
+                          toggle={() => this.toggle(`indicator-${id}`)}>
+                          {data.rejected && 'Rejected'}
+                          {!(
+                            (data.approved_by_spv &&
+                              data.approved_by_manager) ||
+                            data.rejected
+                          ) && 'Pending Approval'}
+                          {data.approved_by_spv &&
+                            data.approved_by_manager &&
+                            !data.done &&
+                            'On Progress'}
+                          {data.done && 'Done'}
+                        </Tooltip>
+                      </td>
+                      <td className='blue-grey-text  text-darken-4 font-medium'>
+                        {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
+                      </td>
+                      <td>
+                        <Link to={{ pathname: `/detailWO/${data._id}` }}>
+                          <Button className='btn' outline color='success'>
+                            Show
+                          </Button>
+                        </Link>
+                      </td>
+                      {(currentUser.role === 'manager' ||
+                        currentUser.role === 'supervisor') && (
+                        <td>
+                          <React.Fragment>
+                            <Button
+                              className='btn'
+                              outline
+                              color='biruicon'
+                              onClick={this.onApprove.bind(this, data)}>
+                              <i className='mdi mdi-check' />
+                            </Button>
+                            <Button
+                              className='profile-time-approved'
+                              outline
+                              color='danger'
+                              onClick={this.onReject.bind(this, data)}>
+                              <i className='mdi mdi-close' />
+                            </Button>
+                          </React.Fragment>
+                        </td>
+                      )}
+                      {currentUser.role === 'engineer' && (
+                        <td>
+                          <Button
+                            className='btn'
+                            outline
+                            color='biruicon'
+                            onClick={this.onDone.bind(this, data)}>
+                            <i className='mdi mdi-check' />
+                          </Button>
+                        </td>
+                      )}
+                      {currentUser.role === 'field support' && (
+                        <td>
+                          <Button
+                            className='btn'
+                            outline
+                            color='biruicon'
+                            onClick={this.onDone.bind(this, data)}>
+                            <i className='mdi mdi-check' />
+                          </Button>
+                        </td>
+                      )}
                       <td>
                         <div className='d-flex no-block align-items-center'>
                           <div className='mr-2'>
@@ -307,32 +444,7 @@ class Projects extends React.Component {
                       <td>{data.title}</td>
                       <td>{data.priority.name}</td>
                       <td>{data.program}</td>
-                      <td className='blue-grey-text  text-darken-4 font-medium'>
-                        {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
-                      </td>
-                      <td>
-                        <Link to={{ pathname: `/detailWO/${data._id}` }}>
-                          <Button className='btn' outline color='success'>
-                            Show
-                          </Button>
-                        </Link>
-                      </td>
-                      <td>
-                        <Button
-                          className='btn'
-                          outline
-                          color='biruicon'
-                          onClick={this.onApprove.bind(this, data)}>
-                          <i className='mdi mdi-check' />
-                        </Button>
-                        <Button
-                          className='profile-time-approved'
-                          outline
-                          color='danger'
-                          onClick={this.onReject.bind(this, data)}>
-                          <i className='mdi mdi-close' />
-                        </Button>
-                      </td>
+                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
                       {/* <td>
                         <Button
                           onClick={this.onAddNote.bind(this, data)}

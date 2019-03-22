@@ -23,12 +23,14 @@ import {
   TabPane,
   Table
 } from 'reactstrap';
+
 import isEmpty from '../../../validations/is-empty';
 import axios from 'axios';
 import Pusher from 'pusher-js';
 import swal from 'sweetalert';
 import moment from 'moment';
 import classnames from 'classnames';
+// import DownloadButton from 'downloadbutton';
 
 Pusher.logToConsole = true;
 
@@ -466,6 +468,12 @@ export default class Example extends React.Component {
                       {detailWO.pic_name}
                     </h1>
                     <span>{detailWO.division}</span>
+                    <h4>
+                      <Badge color='success' className='ml-0'>
+                        WO Created at{' '}
+                        {moment(detailWO.created_at).format('DD/MM/YYYY')}
+                      </Badge>
+                    </h4>
                   </div>
                 </div>
               </div>

@@ -17,7 +17,7 @@ import AllWO from '../views/HAR/allwo.jsx';
 import Register from '../views/user/registermanajer.jsx';
 import RegisterForm from '../views/user/register.jsx';
 import DetailWo from '../views/HAR/detailWO/detailwo.jsx';
-import NewWo from '../views/HAR/detailWO/approvedWO.jsx';
+import NewWo from '../views/HAR/detailWO/comingWO.jsx';
 import UploadWO from '../views/HAR/detailWO/uploadwo.jsx';
 import Kinerja from '../views/HAR/kinerja.jsx';
 import UploadScada20kv from '../views/HAR/kinerja/uploadscada20kv.jsx';
