@@ -524,7 +524,7 @@ export default class Example extends React.Component {
                   <div className='profile'>
                     <h5>
                       <Badge color='danger' className='ml-0' pill>
-                        Rejected by manager
+                        Rejected by Engineer
                       </Badge>
                     </h5>
                   </div>

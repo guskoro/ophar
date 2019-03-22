@@ -83,10 +83,12 @@ export default class Example extends Component {
       .then(res => {
         let users = [];
         res.data.map(user => {
-          users.push({
-            value: user._id,
-            label: user.name
-          });
+          if (user.role.name === 'field support') {
+            users.push({
+              value: user._id,
+              label: user.name
+            });
+          }
         });
 
         this.setState({
@@ -147,6 +149,7 @@ export default class Example extends Component {
       deadline: deadline
     };
 
+    console.log(newWO);
     axios
       .post('/api/working-order', newWO)
       .then(() => {
