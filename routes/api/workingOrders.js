@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const Pusher = require('pusher');
+const moment = require('moment');
+const formidable = require('formidable');
+const mv = require('mv');
+const path = require('path');
+const fs = require('fs');
 
 const validateWorkingOrderInput = require('../../validations/working-order');
 
@@ -50,6 +55,61 @@ router.get('/', (req, res) => {
 });
 
 router.post(
+  '/upload-report/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    WorkingOrder.findById(req.params.id)
+      .populate('pic')
+      .populate('type', 'name-_id')
+      .populate('priority', 'name-_id')
+      .populate('users', 'name')
+      .populate({
+        path: 'notes.user',
+        populate: {
+          path: 'role'
+        }
+      })
+      .then(wo => {
+        if (wo.report) {
+          fs.unlink(path.join(__dirname, '../../reports/') + wo.report, err => {
+            if (err) return res.status(400).json(err);
+          });
+        }
+        new formidable.IncomingForm().parse(req, (err, fields, files) => {
+          const name = req.params.id + path.extname(files.filepond.name);
+          const oldpath = files.filepond.path;
+          const newpath = path.join(__dirname, '../../reports/') + name;
+
+          mv(oldpath, newpath, err => {
+            if (err) {
+              return res.status(400).json(err);
+            }
+            wo.report = name;
+            wo.save();
+
+            pusher.trigger('ophar-app', 'upload-report-wo', wo);
+            return res.end('Report uploaded successfully');
+          });
+        });
+      })
+      .catch(err => res.status(400).json(err));
+  }
+);
+
+router.get(
+  '/download-report/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    WorkingOrder.findById(req.params.id)
+      .then(wo => {
+        const file = path.join(__dirname, '../../reports/') + wo.report;
+        res.download(file);
+      })
+      .catch(err => res.status(400).json(err));
+  }
+);
+
+router.post(
   '/',
   passport.authenticate('jwt', {
     session: false
@@ -74,8 +134,14 @@ router.post(
           .then(priority => {
             Type.findById(req.body.type)
               .then(type => {
+                const today = new Date();
+                const startOfToday = new Date(
+                  today.getFullYear(),
+                  today.getMonth(),
+                  today.getDate()
+                );
                 WorkingOrder.find({
-                  created_at: new Date(),
+                  created_at: { $gte: startOfToday },
                   division: pic.division.name
                 })
                   .then(wo => {
@@ -110,18 +176,19 @@ router.post(
                         break;
                     }
 
-                    const now = new Date();
+                    const now = moment().format('YYYYMMDD');
                     const id = wo.length + 1;
 
-                    newWorkingOrder.wo_id = `${division_initial}${now.getFullYear()}${now.getMonth() +
-                      1}${now.getDate()}${id}`;
+                    newWorkingOrder.wo_id = `${division_initial}${now}${id}`;
 
                     if (req.body.plans) {
-                      // const plans = req.body.plans.split(',');
+                      newWorkingOrder.plans_string = req.body.plans;
+                      const plans = req.body.plans.split('\n');
 
-                      req.body.plans.map(plan => {
+                      plans.map(plan => {
                         newWorkingOrder.plans.push({
-                          name: plan.value,
+                          name: plan,
+                          // name: plan.value,
                           done: false
                         });
                       });
@@ -157,7 +224,12 @@ router.get('/:id', (req, res) => {
     .populate('type', 'name-_id')
     .populate('priority', 'name-_id')
     .populate('users', 'name')
-    .populate('notes.user')
+    .populate({
+      path: 'notes.user',
+      populate: {
+        path: 'role'
+      }
+    })
     .then(workingOrder => {
       const woCustom = {
         _id: workingOrder._id,
@@ -167,6 +239,7 @@ router.get('/:id', (req, res) => {
         type: workingOrder.type.name,
         priority: workingOrder.priority.name,
         plans: workingOrder.plans,
+        plans_string: workingOrder.plans_string,
         users: workingOrder.users,
         program: workingOrder.program,
         notes: workingOrder.notes,
@@ -179,12 +252,20 @@ router.get('/:id', (req, res) => {
         start: workingOrder.start,
         deadline: workingOrder.deadline,
         end: workingOrder.end,
+        report: workingOrder.report,
         created_at: workingOrder.created_at,
         pic_id: workingOrder.pic._id,
         pic_name: workingOrder.pic.name,
         pic_email: workingOrder.pic.email,
         pic_avatar: workingOrder.pic.avatar
       };
+
+      const notes = woCustom.notes;
+      notes.sort((a, b) => {
+        return b.created_at - a.created_at;
+      });
+
+      woCustom.notes = notes;
 
       return res.json(woCustom);
     })
@@ -200,7 +281,12 @@ router.patch(
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
       .populate('users')
-      .populate('notes.user')
+      .populate({
+        path: 'notes.user',
+        populate: {
+          path: 'role'
+        }
+      })
       .then(workingOrder => {
         if (req.body._id) {
           delete req.body._id;
@@ -232,6 +318,12 @@ router.patch(
         workingOrder
           .save()
           .then(updatedWorkingOrder => {
+            const notes = updatedWorkingOrder.notes;
+            notes.sort((a, b) => {
+              return b.created_at - a.created_at;
+            });
+
+            updatedWorkingOrder.notes = notes;
             pusher.trigger('ophar-app', 'update-wo', updatedWorkingOrder);
             return res.json(updatedWorkingOrder);
           })
@@ -250,9 +342,15 @@ router.post(
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
       .populate('users')
-      .populate('notes.user')
+      .populate({
+        path: 'notes.user',
+        populate: {
+          path: 'role'
+        }
+      })
       .then(workingOrder => {
         User.findById(req.user._id)
+          .populate('role')
           .then(user => {
             workingOrder.notes.push({
               user: user,
@@ -261,6 +359,12 @@ router.post(
             workingOrder
               .save()
               .then(updatedWorkingOrder => {
+                const notes = updatedWorkingOrder.notes;
+                notes.sort((a, b) => {
+                  return b.created_at - a.created_at;
+                });
+
+                updatedWorkingOrder.notes = notes;
                 pusher.trigger('ophar-app', 'add-note-wo', updatedWorkingOrder);
                 return res.json(updatedWorkingOrder);
               })
@@ -283,7 +387,12 @@ router.post(
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
       .populate('users')
-      .populate('notes.user')
+      .populate({
+        path: 'notes.user',
+        populate: {
+          path: 'role'
+        }
+      })
       .then(workingOrder => {
         User.findById(req.user.id)
           .populate('role', 'name-_id')
@@ -297,7 +406,7 @@ router.post(
               workingOrder.pic._id.toString() === user._id.toString()
             ) {
               workingOrder.approved_by_engineer = !workingOrder.approved_by_engineer;
-              console.log(workingOrder.approved_by_engineer);
+              workingOrder.end = new Date();
             } else {
               return res.status(403).json({
                 message: "Sorry, you don't have permission in this work order"
@@ -306,6 +415,12 @@ router.post(
             workingOrder
               .save()
               .then(newWorkingOrder => {
+                const notes = newWorkingOrder.notes;
+                notes.sort((a, b) => {
+                  return b.created_at - a.created_at;
+                });
+
+                newWorkingOrder.notes = notes;
                 pusher.trigger('ophar-app', 'approve-wo', newWorkingOrder);
                 return res.status(200).json(newWorkingOrder);
               })
@@ -328,7 +443,12 @@ router.post(
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
       .populate('users')
-      .populate('notes.user')
+      .populate({
+        path: 'notes.user',
+        populate: {
+          path: 'role'
+        }
+      })
       .then(workingOrder => {
         User.findById(req.user.id)
           .populate('role', 'name-_id')
@@ -353,6 +473,12 @@ router.post(
             workingOrder
               .save()
               .then(newWorkingOrder => {
+                const notes = newWorkingOrder.notes;
+                notes.sort((a, b) => {
+                  return b.created_at - a.created_at;
+                });
+
+                newWorkingOrder.notes = notes;
                 pusher.trigger('ophar-app', 'reject-wo', newWorkingOrder);
                 return res.status(200).json(newWorkingOrder);
               })
@@ -375,7 +501,12 @@ router.post(
       .populate('type', 'name-_id')
       .populate('priority', 'name-_id')
       .populate('users')
-      .populate('notes.user')
+      .populate({
+        path: 'notes.user',
+        populate: {
+          path: 'role'
+        }
+      })
       .then(workingOrder => {
         User.findById(req.user.id)
           .then(user => {
@@ -403,10 +534,15 @@ router.post(
               plan.done = true;
             });
             workingOrder.done = !workingOrder.done;
-            workingOrder.end = new Date();
             workingOrder
               .save()
               .then(newWorkingOrder => {
+                const notes = newWorkingOrder.notes;
+                notes.sort((a, b) => {
+                  return b.created_at - a.created_at;
+                });
+
+                newWorkingOrder.notes = notes;
                 pusher.trigger('ophar-app', 'done-wo', newWorkingOrder);
                 return res.status(200).json(newWorkingOrder);
               })
@@ -423,15 +559,20 @@ router.delete(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     User.findById(req.user.id)
-      .populate('pic')
-      .populate('type', 'name-_id')
-      .populate('priority', 'name-_id')
-      .populate('users')
-      .populate('notes.user')
       .then(user => {
         WorkingOrder.findById(req.params.id)
+          .populate('pic')
+          .populate('type', 'name-_id')
+          .populate('priority', 'name-_id')
+          .populate('users')
+          .populate({
+            path: 'notes.user',
+            populate: {
+              path: 'role'
+            }
+          })
           .then(workingOrder => {
-            if (user.division.name != workingOrder.division)
+            if (user._id.toString() != workingOrder.pic._id.toString())
               return res.status(403).json({
                 access:
                   'Sorry, you dont have access to delete this working order'

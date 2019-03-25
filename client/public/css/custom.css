@@ -42,6 +42,14 @@
     padding-inline-start: 10px;
 }
 
+.ml-1 {
+    margin-left: 1rem;
+}
+
+.block-display {
+    display: block;
+}
+
 .nav-item-custom {
     color: #fff;
     font-size: 15px;
@@ -49,4 +57,8 @@
 
 .nav-item-custom:hover {
     color: rgb(228, 228, 228);
+}
+
+.input-multi-biruicon {
+    background-color: 'biruicon'
 }

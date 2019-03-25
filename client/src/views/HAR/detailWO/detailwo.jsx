@@ -26,11 +26,12 @@ import {
 import isEmpty from '../../../validations/is-empty';
 import axios from 'axios';
 import Pusher from 'pusher-js';
+import FileDownload from 'js-file-download';
 import swal from 'sweetalert';
 import moment from 'moment';
 import classnames from 'classnames';
-
-Pusher.logToConsole = true;
+import { FilePond } from 'react-filepond';
+import 'filepond/dist/filepond.min.css';
 
 const pusher = new Pusher('12f41be129ba1c0d7a3c', {
   cluster: 'ap1',
@@ -46,12 +47,12 @@ export default class Example extends React.Component {
     this.toggleTab = this.toggleTab.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onChangeCheckbox = this.onChangeCheckbox.bind(this);
+    this.downloadReport = this.downloadReport.bind(this);
 
     this.state = {
       currentUser: {},
       errors: [],
       detailWO: {},
-      report: '',
       isOpen: false,
       activeTab: '1',
       id: this.props.match.params.id,
@@ -80,6 +81,7 @@ export default class Example extends React.Component {
           type: data.type.name,
           priority: data.priority.name,
           plans: data.plans,
+          plans_string: data.plans_string,
           users: data.users,
           program: data.program,
           notes: data.notes,
@@ -92,6 +94,7 @@ export default class Example extends React.Component {
           start: data.start,
           deadline: data.deadline,
           end: data.end,
+          report: data.report,
           created_at: data.created_at,
           pic_id: data.pic._id,
           pic_name: data.pic.name,
@@ -118,6 +121,7 @@ export default class Example extends React.Component {
           type: data.type.name,
           priority: data.priority.name,
           plans: data.plans,
+          plans_string: data.plans_string,
           users: data.users,
           program: data.program,
           notes: data.notes,
@@ -130,6 +134,7 @@ export default class Example extends React.Component {
           start: data.start,
           deadline: data.deadline,
           end: data.end,
+          report: data.report,
           created_at: data.created_at,
           pic_id: data.pic._id,
           pic_name: data.pic.name,
@@ -156,6 +161,7 @@ export default class Example extends React.Component {
           type: data.type.name,
           priority: data.priority.name,
           plans: data.plans,
+          plans_string: data.plans_string,
           users: data.users,
           program: data.program,
           notes: data.notes,
@@ -168,6 +174,7 @@ export default class Example extends React.Component {
           start: data.start,
           deadline: data.deadline,
           end: data.end,
+          report: data.report,
           created_at: data.created_at,
           pic_id: data.pic._id,
           pic_name: data.pic.name,
@@ -194,6 +201,7 @@ export default class Example extends React.Component {
           type: data.type.name,
           priority: data.priority.name,
           plans: data.plans,
+          plans_string: data.plans_string,
           users: data.users,
           program: data.program,
           notes: data.notes,
@@ -206,6 +214,7 @@ export default class Example extends React.Component {
           start: data.start,
           deadline: data.deadline,
           end: data.end,
+          report: data.report,
           created_at: data.created_at,
           pic_id: data.pic._id,
           pic_name: data.pic.name,
@@ -231,6 +240,7 @@ export default class Example extends React.Component {
           type: data.type.name,
           priority: data.priority.name,
           plans: data.plans,
+          plans_string: data.plans_string,
           users: data.users,
           program: data.program,
           notes: data.notes,
@@ -243,6 +253,47 @@ export default class Example extends React.Component {
           start: data.start,
           deadline: data.deadline,
           end: data.end,
+          report: data.report,
+          created_at: data.created_at,
+          pic_id: data.pic._id,
+          pic_name: data.pic.name,
+          pic_email: data.pic.email,
+          pic_avatar: data.pic.avatar
+        };
+
+        this.setState({
+          detailWO: woCustom,
+          plans: woCustom.plans,
+          users: woCustom.users,
+          notes: woCustom.notes
+        });
+      }
+    });
+
+    await channel.bind('upload-report-wo', data => {
+      if (data._id === this.state.detailWO._id) {
+        const woCustom = {
+          _id: data._id,
+          title: data.title,
+          description: data.description,
+          division: data.division,
+          type: data.type.name,
+          priority: data.priority.name,
+          plans: data.plans,
+          plans_string: data.plans_string,
+          users: data.users,
+          program: data.program,
+          notes: data.notes,
+          approved_by_spv: data.approved_by_spv,
+          approved_by_manager: data.approved_by_manager,
+          approved_by_engineer: data.approved_by_engineer,
+          rejected: data.rejected,
+          rejected_by_engineer: data.rejected_by_engineer,
+          done: data.done,
+          start: data.start,
+          deadline: data.deadline,
+          end: data.end,
+          report: data.report,
           created_at: data.created_at,
           pic_id: data.pic._id,
           pic_name: data.pic.name,
@@ -400,6 +451,18 @@ export default class Example extends React.Component {
     });
   };
 
+  downloadReport = async () => {
+    await axios
+      .get(`/api/working-order/download-report/${this.state.id}`, {
+        responseType: 'blob'
+      })
+      .then(res => {
+        console.log(res);
+        FileDownload(res.data, this.state.detailWO.report);
+      })
+      .catch(err => console.log(err.response.data));
+  };
+
   toggleTab = tab => {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -436,15 +499,7 @@ export default class Example extends React.Component {
   };
 
   render() {
-    const {
-      detailWO,
-      users,
-      currentUser,
-      errors,
-      note,
-      report,
-      notes
-    } = this.state;
+    const { detailWO, users, currentUser, errors, note, notes } = this.state;
 
     return (
       <Card>
@@ -508,7 +563,9 @@ export default class Example extends React.Component {
                 )}
               {detailWO.approved_by_spv &&
                 detailWO.approved_by_manager &&
-                !detailWO.done && (
+                !detailWO.done &&
+                !detailWO.approved_by_engineer &&
+                !detailWO.rejected_by_engineer && (
                   <div className='profile'>
                     <h5>
                       <Badge color='success' className='ml-0' pill>
@@ -520,6 +577,7 @@ export default class Example extends React.Component {
                 )}
               {detailWO.approved_by_spv &&
                 detailWO.approved_by_manager &&
+                !detailWO.approved_by_engineer &&
                 detailWO.rejected_by_engineer && (
                   <div className='profile'>
                     <h5>
@@ -529,15 +587,17 @@ export default class Example extends React.Component {
                     </h5>
                   </div>
                 )}
-              {detailWO.done && !detailWO.approved_by_engineer && (
-                <div className='profile'>
-                  <h5>
-                    <Badge color='warning' className='ml-0' pill>
-                      Pending approval engineer
-                    </Badge>
-                  </h5>
-                </div>
-              )}
+              {detailWO.done &&
+                !detailWO.approved_by_engineer &&
+                !detailWO.rejected_by_engineer && (
+                  <div className='profile'>
+                    <h5>
+                      <Badge color='warning' className='ml-0' pill>
+                        Pending approval engineer
+                      </Badge>
+                    </h5>
+                  </div>
+                )}
               {detailWO.done && detailWO.approved_by_engineer && (
                 <div className='profile'>
                   <h5>
@@ -547,20 +607,22 @@ export default class Example extends React.Component {
                   </h5>
                 </div>
               )}
-              {!detailWO.done && !detailWO.rejected && (
-                <div className='profile'>
-                  <h1 className='mb-0 font-16 font-medium' color='info'>
-                    Deadline{' '}
-                    {moment().isAfter(detailWO.deadline)
-                      ? 'is overdue'
-                      : moment().to(detailWO.deadline)}{' '}
-                    :
-                    <span className='profile-time-approved'>
-                      {moment(detailWO.deadline).format('DD-MM-YYYY HH:mm')}
-                    </span>
-                  </h1>
-                </div>
-              )}
+              {!detailWO.done &&
+                !detailWO.rejected &&
+                !detailWO.rejected_by_engineer && (
+                  <div className='profile'>
+                    <h1 className='mb-0 font-16 font-medium' color='info'>
+                      Deadline{' '}
+                      {moment().isAfter(detailWO.deadline)
+                        ? 'is overdue'
+                        : moment().to(detailWO.deadline)}{' '}
+                      :
+                      <span className='profile-time-approved'>
+                        {moment(detailWO.deadline).format('DD-MM-YYYY HH:mm')}
+                      </span>
+                    </h1>
+                  </div>
+                )}
               {/* Iki lek login berdasar divisine dewe2, lek gak, gak metu tombol e */}
               {!detailWO.approved_by_engineer && !detailWO.rejected && (
                 <div className='profile batas-kanan'>
@@ -618,6 +680,28 @@ export default class Example extends React.Component {
                   )}
                 </div>
               )}
+              <div>
+                {users.filter(user => {
+                  return user._id === currentUser._id;
+                }).length > 0 &&
+                  detailWO.approved_by_spv &&
+                  detailWO.approved_by_manager &&
+                  !detailWO.approved_by_engineer && (
+                    <FilePond
+                      className='batas-atas'
+                      server={{
+                        url: `http://10.14.36.48:5000/api/working-order/upload-report/${
+                          this.state.id
+                        }`,
+                        process: {
+                          headers: {
+                            Authorization: localStorage.getItem('jwtToken')
+                          }
+                        }
+                      }}
+                    />
+                  )}
+              </div>
             </Col>
 
             <Col sm={12} lg={8}>
@@ -758,10 +842,25 @@ export default class Example extends React.Component {
                               <td>Work Note</td>
                               <td>{detailWO.note}</td>
                             </tr> */}
-                            <tr>
-                              <td>Work Report</td>
-                              <td>Report e Field Support Lur</td>
-                            </tr>
+                            {(currentUser.role === 'manager' ||
+                              currentUser.role === 'supervisor' ||
+                              currentUser._id === detailWO.pic_id ||
+                              users.filter(user => {
+                                return user._id === currentUser._id;
+                              }).length > 0) &&
+                              detailWO.report && (
+                                <tr>
+                                  <td>Work Report</td>
+                                  <td>
+                                    <Button
+                                      outline
+                                      color='info'
+                                      onClick={this.downloadReport}>
+                                      Download{' ' + detailWO.report}
+                                    </Button>
+                                  </td>
+                                </tr>
+                              )}
                           </tbody>
                         </Table>
                       </Col>
@@ -774,12 +873,11 @@ export default class Example extends React.Component {
           <Row className='batas-atas'>
             <Col sm='12' md='12' lg='12'>
               {(currentUser.role === 'manager' &&
-                !detailWO.approved_by_manager &&
                 detailWO.approved_by_spv &&
-                !detailWO.done) ||
+                !detailWO.approved_by_engineer) ||
               (currentUser.role === 'supervisor' &&
                 !detailWO.approved_by_spv &&
-                !detailWO.done) ||
+                !detailWO.approved_by_engineer) ||
               (currentUser._id === detailWO.pic_id &&
                 detailWO.approved_by_manager &&
                 detailWO.approved_by_spv &&
@@ -789,7 +887,7 @@ export default class Example extends React.Component {
               }).length > 0 &&
                 detailWO.approved_by_manager &&
                 detailWO.approved_by_spv &&
-                !detailWO.done) ? (
+                !detailWO.approved_by_engineer) ? (
                 <FormGroup className='batas-atas'>
                   <Form onSubmit={this.onAddNote}>
                     <Label for='note'>Add Note</Label>
@@ -816,7 +914,7 @@ export default class Example extends React.Component {
               )}
               <div className='batas-atas'>
                 <ListGroup>
-                  {notes.reverse().map((note, id) => {
+                  {notes.map((note, id) => {
                     return (
                       <ListGroupItem key={id}>
                         <ListGroupItemHeading>
@@ -828,6 +926,19 @@ export default class Example extends React.Component {
                               width='31'
                             />
                             <span>{note.user.name}</span>
+                            <Badge
+                              color={classnames({
+                                primary: note.user.role.name === 'manager',
+                                success: note.user.role.name === 'supervisor',
+                                danger: note.user.role.name === 'admin',
+                                warning: note.user.role.name === 'engineer',
+                                secondary:
+                                  note.user.role.name === 'field support'
+                              })}
+                              className='ml-1'
+                              pill>
+                              {note.user.role.name}
+                            </Badge>
                           </div>
                         </ListGroupItemHeading>
                         <ListGroupItemText>{note.message}</ListGroupItemText>
