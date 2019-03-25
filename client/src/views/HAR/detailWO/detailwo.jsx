@@ -536,11 +536,11 @@ export default class Example extends React.Component {
               </div>
               {detailWO.rejected && (
                 <div className='profile'>
-                  <h5>
+                  <h4>
                     <Badge color='danger' className='ml-0' pill>
                       Rejected
                     </Badge>
-                  </h5>
+                  </h4>
                 </div>
               )}
               {!(
@@ -549,11 +549,11 @@ export default class Example extends React.Component {
                 detailWO.rejected
               ) && (
                 <div className='profile'>
-                  <h5>
+                  <h4>
                     <Badge color='warning' className='ml-0' pill>
                       Pending Approval
                     </Badge>
-                  </h5>
+                  </h4>
                 </div>
               )}
               {detailWO.approved_by_spv &&
@@ -561,11 +561,11 @@ export default class Example extends React.Component {
                 !detailWO.done &&
                 !detailWO.rejected && (
                   <div className='profile'>
-                    <h5>
+                    <h4>
                       <Badge color='warning' className='ml-0' pill>
                         Approved by Supervisor
                       </Badge>
-                    </h5>
+                    </h4>
                   </div>
                 )}
               {detailWO.approved_by_spv &&
@@ -574,12 +574,12 @@ export default class Example extends React.Component {
                 !detailWO.approved_by_engineer &&
                 !detailWO.rejected_by_engineer && (
                   <div className='profile'>
-                    <h5>
+                    <h4>
                       <Badge color='success' className='ml-0' pill>
                         Approved by Manager at{' '}
                         {moment(detailWO.start).format('DD-MM-YYYY HH:mm')}
                       </Badge>
-                    </h5>
+                    </h4>
                   </div>
                 )}
               {detailWO.approved_by_spv &&
@@ -587,31 +587,31 @@ export default class Example extends React.Component {
                 !detailWO.approved_by_engineer &&
                 detailWO.rejected_by_engineer && (
                   <div className='profile'>
-                    <h5>
+                    <h4>
                       <Badge color='danger' className='ml-0' pill>
                         Rejected by Engineer
                       </Badge>
-                    </h5>
+                    </h4>
                   </div>
                 )}
               {detailWO.done &&
                 !detailWO.approved_by_engineer &&
                 !detailWO.rejected_by_engineer && (
                   <div className='profile'>
-                    <h5>
+                    <h4>
                       <Badge color='warning' className='ml-0' pill>
                         Pending approval engineer
                       </Badge>
-                    </h5>
+                    </h4>
                   </div>
                 )}
               {detailWO.done && detailWO.approved_by_engineer && (
                 <div className='profile'>
-                  <h5>
+                  <h4>
                     <Badge color='info' className='ml-0' pill>
                       Done at {moment(detailWO.end).format('DD-MM-YYYY HH:mm')}
                     </Badge>
-                  </h5>
+                  </h4>
                 </div>
               )}
               {!detailWO.done &&
@@ -863,7 +863,7 @@ export default class Example extends React.Component {
                                       outline
                                       color='info'
                                       onClick={this.downloadReport}>
-                                      Download{' ' + detailWO.report}
+                                      Download Report
                                     </Button>
                                   </td>
                                 </tr>

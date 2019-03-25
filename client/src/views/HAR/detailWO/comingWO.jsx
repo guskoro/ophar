@@ -108,8 +108,8 @@ class Projects extends React.Component {
     });
   };
 
-  getCurrentUser = () => {
-    axios
+  getCurrentUser = async () => {
+    await axios
       .get('/api/user/current')
       .then(res => {
         this.setState({
@@ -123,13 +123,27 @@ class Projects extends React.Component {
   };
 
   getWO = async () => {
-    // let query = 'approved_by_spv=false&rejected=false';
-    // if (this.state.role === 'manager') {
-    //   query = 'approved_by_spv=true&approved_by_manager=false&rejected=false';
-    // } ?${query}
+    let query = '';
+
+    switch (this.state.currentUser.role) {
+      case 'manager':
+        query = 'approved_by_spv=true&approved_by_manager=false';
+        break;
+      case 'supervisor':
+        query = 'approved_by_spv=false&done=false';
+        break;
+      case 'field support':
+        query = `approved_by_spv=true&approved_by_manager=true&approved_by_engineer=false&user=${
+          this.state.currentUser._id
+        }`;
+        break;
+      default:
+        query = '';
+        break;
+    }
 
     await axios
-      .get(`/api/working-order`)
+      .get(`/api/working-order?${query}`)
       .then(res => {
         this.setState({
           WOs: res.data,
@@ -255,8 +269,6 @@ class Projects extends React.Component {
   render() {
     const { currentPage, currentUser, workorders } = this.state;
 
-    console.log(this.state.workorders);
-
     return (
       /*--------------------------------------------------------------------------------*/
       /* Used In Dashboard-4 [General]                                                  */
@@ -304,13 +316,16 @@ class Projects extends React.Component {
                 <th className='border-0'>Status</th>
                 <th className='border-0'>Deadline</th>
                 <th className='border-0'>Details</th>
-                <th className='border-0'>Action</th>
+                {(this.state.currentUser.role === 'manager' ||
+                  this.state.currentUser.role === 'supervisor') && (
+                  <th className='border-0'>Action</th>
+                )}
                 <th className='border-0'>PIC</th>
                 <th className='border-0'>Type</th>
                 <th className='border-0'>Description</th>
                 <th className='border-0'>Priority</th>
                 <th className='border-0'>Program</th>
-                <th className='border-0'>Code</th>
+                <th className='border-0'>ID</th>
                 {/* <th className='border-0'>Note</th> */}
               </tr>
             </thead>
@@ -389,28 +404,6 @@ class Projects extends React.Component {
                           </React.Fragment>
                         </td>
                       )}
-                      {currentUser.role === 'engineer' && (
-                        <td>
-                          <Button
-                            className='btn'
-                            outline
-                            color='biruicon'
-                            onClick={this.onDone.bind(this, data)}>
-                            <i className='mdi mdi-check' />
-                          </Button>
-                        </td>
-                      )}
-                      {currentUser.role === 'field support' && (
-                        <td>
-                          <Button
-                            className='btn'
-                            outline
-                            color='biruicon'
-                            onClick={this.onDone.bind(this, data)}>
-                            <i className='mdi mdi-check' />
-                          </Button>
-                        </td>
-                      )}
                       <td>
                         <div className='d-flex no-block align-items-center'>
                           <div className='mr-2'>
@@ -433,7 +426,7 @@ class Projects extends React.Component {
                       <td>{data.title}</td>
                       <td>{data.priority.name}</td>
                       <td>{data.program}</td>
-                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                      <td>{data.wo_id.toUpperCase()}</td>
                       {/* <td>
                         <Button
                           onClick={this.onAddNote.bind(this, data)}

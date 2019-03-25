@@ -123,13 +123,28 @@ class Projects extends React.Component {
   };
 
   getWO = async () => {
-    // let query = 'approved_by_spv=false&rejected=false';
-    // if (this.state.role === 'manager') {
-    //   query = 'approved_by_spv=true&approved_by_manager=false&rejected=false';
-    // } ?${query}
-
+    let division = '';
+    switch (this.state.currentUser.division) {
+      case 'Corrective Maintenance':
+        division = 'corrective+maintenance';
+        break;
+      case 'Preventive Maintenance':
+        division = 'preventive+maintenance';
+        break;
+      case 'Assets':
+        division = 'assets';
+        break;
+      case 'Patrols and Controls':
+        division = 'patrols+and+controls';
+        break;
+      default:
+        division = '';
+        break;
+    }
     await axios
-      .get(`/api/working-order`)
+      .get(
+        `/api/working-order?division=${division}&done=false&approved_by_engineer=false&approved_by_spv=true&approved_by_manager=true`
+      )
       .then(res => {
         this.setState({
           WOs: res.data,

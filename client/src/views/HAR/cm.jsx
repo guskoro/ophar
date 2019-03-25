@@ -113,7 +113,7 @@ class Projects extends React.Component {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
-      currentList = this.state.filtered;
+      currentList = this.state.WOs;
       newList = currentList.filter(item => {
         switch (e.target.value) {
           case 'pending-approval':
