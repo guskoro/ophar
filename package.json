@@ -8,6 +8,7 @@
     "start": "node server.js",
     "server": "nodemon server.js",
     "client": "npm start --prefix client",
+    "deploy": "aws s3 sync build/ s3://ophar",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Dino Puguh",
