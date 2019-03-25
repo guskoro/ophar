@@ -287,17 +287,17 @@ class Header extends React.Component {
                     {(currentUser.role === 'manager' ||
                       currentUser.role === 'supervisor') && (
                       <React.Fragment>
-                        <Link to={{ pathname: `/newWO/NewWorkOrders` }}>
+                        <Link to='/newWO'>
                           <DropdownItem className='dropdown-item-custom'>
                             New Work Orders
                           </DropdownItem>
                         </Link>
-                        <Link to={{ pathname: `/newWO/OnProgressWorkOrders` }}>
+                        <Link to='/onprogressWO'>
                           <DropdownItem className='dropdown-item-custom'>
                             On Progress Work Orders
                           </DropdownItem>
                         </Link>
-                        <Link to={{ pathname: `/newWO/CompleteWorkOrders` }}>
+                        <Link to='/completeWO'>
                           <DropdownItem className='dropdown-item-custom'>
                             Complete Work Orders
                           </DropdownItem>
@@ -306,17 +306,17 @@ class Header extends React.Component {
                     )}
                     {currentUser.role === 'engineer' && (
                       <React.Fragment>
-                        <Link to={{ pathname: `/newWO/OnProgressWorkOrders` }}>
+                        <Link to='/onprogressWO'>
                           <DropdownItem className='dropdown-item-custom'>
                             On Progress Work Orders
                           </DropdownItem>
                         </Link>
-                        <Link to={{ pathname: `/newWO/RejectedWorkOrders` }}>
+                        <Link to='/rejectedWO'>
                           <DropdownItem className='dropdown-item-custom'>
                             Rejected Work Orders
                           </DropdownItem>
                         </Link>
-                        <Link to={{ pathname: `/newWO/CompleteWorkOrders` }}>
+                        <Link to='/completeWO'>
                           <DropdownItem className='dropdown-item-custom'>
                             Complete Work Orders
                           </DropdownItem>
@@ -325,17 +325,17 @@ class Header extends React.Component {
                     )}
                     {currentUser.role === 'field support' && (
                       <React.Fragment>
-                        <Link to={{ pathname: `/newWO/NewWorkOrders` }}>
+                        <Link to='/newWO'>
                           <DropdownItem className='dropdown-item-custom'>
                             Your Work Orders
                           </DropdownItem>
                         </Link>
-                        <Link to={{ pathname: `/newWO/RejectedWorkOrders` }}>
+                        <Link to='/rejectedWO'>
                           <DropdownItem className='dropdown-item-custom'>
                             Rejected Work Orders
                           </DropdownItem>
                         </Link>
-                        <Link to={{ pathname: `/newWO/CompleteWorkOrders` }}>
+                        <Link to='/completeWO'>
                           <DropdownItem className='dropdown-item-custom'>
                             Complete Work Orders
                           </DropdownItem>
