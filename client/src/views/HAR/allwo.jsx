@@ -305,51 +305,21 @@ class Projects extends React.Component {
           <Table className='wrap v-middle' responsive>
             <thead>
               <tr className='border-0'>
-                <th className='border-0'>Code</th>
+                <th className='border-0'>Status</th>
+                <th className='border-0'>Details</th>
+                <th className='border-0'>Deadline</th>
                 <th className='border-0'>PIC</th>
                 <th className='border-0'>Type</th>
                 <th className='border-0'>Description</th>
                 <th className='border-0'>Priority</th>
                 <th className='border-0'>Program</th>
-                <th className='border-0'>Deadline</th>
-                <th className='border-0'>Status</th>
-                <th className='border-0'>Details</th>
+                <th className='border-0'>Code</th>
               </tr>
             </thead>
             <tbody>
               {currentWOs.map((data, id) => {
                 return (
                   <tr key={id}>
-                    <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
-                    <td>
-                      <div className='d-flex no-block align-items-center'>
-                        <div className='mr-2'>
-                          <img
-                            src={`https:${data.pic.avatar}`}
-                            alt='user'
-                            className='rounded-circle'
-                            width='45'
-                          />
-                        </div>
-                        <div className=''>
-                          <h5 className='mb-0 font-16 font-medium'>
-                            {data.pic.name}
-                          </h5>
-                          <span>{data.pic.division.name}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>{data.type.name}</td>
-                    <td>
-                      {data.title.length < 36
-                        ? data.title
-                        : data.title.slice(0, 36) + '...'}
-                    </td>
-                    <td>{data.priority.name}</td>
-                    <td>{data.program}</td>
-                    <td className='blue-grey-text  text-darken-4 font-medium'>
-                      {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
-                    </td>
                     <td>
                       <i
                         className={classnames('fa fa-circle', {
@@ -391,6 +361,36 @@ class Projects extends React.Component {
                         </Button>
                       </Link>
                     </td>
+                    <td className='blue-grey-text  text-darken-4 font-medium'>
+                      {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
+                    </td>
+                    <td>
+                      <div className='d-flex no-block align-items-center'>
+                        <div className='mr-2'>
+                          <img
+                            src={`https:${data.pic.avatar}`}
+                            alt='user'
+                            className='rounded-circle'
+                            width='45'
+                          />
+                        </div>
+                        <div className=''>
+                          <h5 className='mb-0 font-16 font-medium'>
+                            {data.pic.name}
+                          </h5>
+                          <span>{data.pic.division.name}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{data.type.name}</td>
+                    <td>
+                      {data.title.length < 36
+                        ? data.title
+                        : data.title.slice(0, 36) + '...'}
+                    </td>
+                    <td>{data.priority.name}</td>
+                    <td>{data.program}</td>
+                    <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
                   </tr>
                 );
               })}

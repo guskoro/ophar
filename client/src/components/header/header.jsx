@@ -277,20 +277,70 @@ class Header extends React.Component {
                     />
                   </DropdownToggle>
                   <DropdownMenu right className='user-dd'>
-                    {(currentUser.role === 'manager' ||
-                      currentUser.role === 'supervisor') && (
-                      <Link to='/newWO'>
-                        <DropdownItem className='dropdown-item-custom'>
-                          New Work Orders
-                        </DropdownItem>
-                      </Link>
-                    )}
                     {currentUser.role === 'admin' && (
                       <Link to='/register'>
                         <DropdownItem className='dropdown-item-custom'>
                           List Users
                         </DropdownItem>
                       </Link>
+                    )}
+                    {(currentUser.role === 'manager' ||
+                      currentUser.role === 'supervisor') && (
+                      <React.Fragment>
+                        <Link to='/newWO'>
+                          <DropdownItem className='dropdown-item-custom'>
+                            New Work Orders
+                          </DropdownItem>
+                        </Link>
+                        <Link to='/onprogressWO'>
+                          <DropdownItem className='dropdown-item-custom'>
+                            On Progress Work Orders
+                          </DropdownItem>
+                        </Link>
+                        <Link to='/completeWO'>
+                          <DropdownItem className='dropdown-item-custom'>
+                            Complete Work Orders
+                          </DropdownItem>
+                        </Link>
+                      </React.Fragment>
+                    )}
+                    {currentUser.role === 'engineer' && (
+                      <React.Fragment>
+                        <Link to='/onprogressWO'>
+                          <DropdownItem className='dropdown-item-custom'>
+                            On Progress Work Orders
+                          </DropdownItem>
+                        </Link>
+                        <Link to='/rejectedWO'>
+                          <DropdownItem className='dropdown-item-custom'>
+                            Rejected Work Orders
+                          </DropdownItem>
+                        </Link>
+                        <Link to='/completeWO'>
+                          <DropdownItem className='dropdown-item-custom'>
+                            Complete Work Orders
+                          </DropdownItem>
+                        </Link>
+                      </React.Fragment>
+                    )}
+                    {currentUser.role === 'field support' && (
+                      <React.Fragment>
+                        <Link to='/newWO'>
+                          <DropdownItem className='dropdown-item-custom'>
+                            Your Work Orders
+                          </DropdownItem>
+                        </Link>
+                        <Link to='/rejectedWO'>
+                          <DropdownItem className='dropdown-item-custom'>
+                            Rejected Work Orders
+                          </DropdownItem>
+                        </Link>
+                        <Link to='/completeWO'>
+                          <DropdownItem className='dropdown-item-custom'>
+                            Complete Work Orders
+                          </DropdownItem>
+                        </Link>
+                      </React.Fragment>
                     )}
                     <DropdownItem
                       className='dropdown-item-custom'
