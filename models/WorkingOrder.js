@@ -29,6 +29,7 @@ const workingOrderSchema = new Schema({
       done: Boolean
     }
   ],
+  plans_string: String,
   users: [
     {
       type: Schema.Types.ObjectId,
@@ -97,7 +98,8 @@ const workingOrderSchema = new Schema({
   created_at: {
     type: Date,
     default: Date.now
-  }
+  },
+  report: String
 });
 
 module.exports = WorkingOrder = mongoose.model(

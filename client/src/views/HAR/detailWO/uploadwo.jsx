@@ -10,10 +10,18 @@ import {
   Input,
   FormFeedback
 } from 'reactstrap';
+import autosize from 'autosize';
+import DayPicker from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
 import CreatableSelect from 'react-select/lib/Creatable';
 import Select from 'react-select';
 import swal from 'sweetalert';
 import axios from 'axios';
+
+import MomentLocaleUtils, {
+  formatDate,
+  parseDate
+} from 'react-day-picker/moment';
 
 const components = {
   DropdownIndicator: null
@@ -47,13 +55,19 @@ export default class Example extends Component {
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
+    this.handleDayClick = this.handleDayClick.bind(this);
   }
 
   componentDidMount = async () => {
     await this.getPriorities();
     await this.getTypes();
     await this.getUsers();
+    await autosize(this.textarea);
   };
+
+  handleDayClick(day) {
+    this.setState({ deadline: day });
+  }
 
   getPriorities = async () => {
     await axios
@@ -162,14 +176,14 @@ export default class Example extends Component {
         this.setState({
           errors: [],
           inputValue: '',
-          plans: [],
+          plans: '',
           users: [],
           type: '',
           priority: '',
           title: '',
           description: '',
           program: '',
-          deadline: ''
+          deadline: undefined
         });
       })
       .catch(err => {
@@ -245,8 +259,18 @@ export default class Example extends Component {
               <FormFeedback>{errors.description}</FormFeedback>
             </FormGroup>
             <FormGroup>
-              <Label for='exampleEmail'>Work Order Plans</Label>
-              <CreatableSelect
+              <Label for='plans'>Work Order Plans</Label>
+              <Input
+                invalid={errors.plans ? true : false}
+                type='textarea'
+                name='plans'
+                id='plans'
+                rows={9}
+                placeholder='Input plans'
+                value={plans}
+                onChange={this.onChange}
+              />
+              {/* <CreatableSelect
                 components={components}
                 inputValue={inputValue}
                 isClearable
@@ -257,7 +281,20 @@ export default class Example extends Component {
                 onKeyDown={this.handleKeyDown}
                 placeholder='Type plan and press enter...'
                 value={plans}
+              /> */}
+            </FormGroup>
+            <FormGroup>
+              <Label for='deadline' className='block-display'>
+                Work Order Deadline
+              </Label>
+              <DayPicker
+                id='deadline'
+                formatDate={formatDate}
+                parseDate={parseDate}
+                onDayClick={this.handleDayClick}
+                selectedDays={this.state.deadline}
               />
+              <FormFeedback>{errors.deadline}</FormFeedback>
             </FormGroup>
             <FormGroup>
               <Label for='priority'>Work Order Priority</Label>
@@ -319,18 +356,6 @@ export default class Example extends Component {
                 <option value='Rutin'>Rutin</option>
               </Input>
               <FormFeedback>{errors.program}</FormFeedback>
-            </FormGroup>
-            <FormGroup>
-              <Label for='deadline'>Work Order Deadline</Label>
-              <Input
-                invalid={errors.deadline ? true : false}
-                type='date'
-                name='deadline'
-                id='deadline'
-                value={deadline}
-                onChange={this.onChange}
-              />
-              <FormFeedback>{errors.deadline}</FormFeedback>
             </FormGroup>
             <FormGroup>
               <Label for='users'>Work Order users</Label>

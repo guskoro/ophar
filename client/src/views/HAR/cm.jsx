@@ -8,7 +8,6 @@ import {
   Col,
   Input,
   InputGroup,
-  InputGroupAddon,
   Pagination,
   PaginationItem,
   PaginationLink,
@@ -38,7 +37,9 @@ class Projects extends React.Component {
 
     this.handlePageChanged = this.handlePageChanged.bind(this);
     this.handleChangeSearch = this.handleChangeSearch.bind(this);
+    this.handleChangeFilterSearch = this.handleChangeFilterSearch.bind(this);
     this.handleChangeFilter = this.handleChangeFilter.bind(this);
+    this.toggleDropDown = this.toggleDropDown.bind(this);
     this.pageSize = 5;
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -48,11 +49,13 @@ class Projects extends React.Component {
       WOs: [],
       filtered: [],
       query: 0,
+      searchBy: '',
       currentPage: 0,
       pagesCount: 0,
       total: 11,
       current: 7,
-      visiblePage: 3
+      visiblePage: 3,
+      dropdownOpen: false
     };
   }
 
@@ -61,9 +64,26 @@ class Projects extends React.Component {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
-      currentList = this.state.WOs;
+      currentList = this.state.filtered;
       newList = currentList.filter(item => {
-        const lc = item.title.toLowerCase();
+        let lc = item.title.toLowerCase();
+        switch (this.state.searchBy) {
+          case 'title':
+            lc = item.title.toLowerCase();
+            break;
+          case 'type':
+            lc = item.type.name.toLowerCase();
+            break;
+          case 'priority':
+            lc = item.priority.name.toLowerCase();
+            break;
+          case 'program':
+            lc = item.program.toLowerCase();
+            break;
+          default:
+            lc = item.title.toLowerCase();
+            break;
+        }
         const filter = e.target.value.toLowerCase();
         return lc.includes(filter);
       });
@@ -76,12 +96,24 @@ class Projects extends React.Component {
     });
   };
 
+  toggleDropDown = () => {
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
+    });
+  };
+
   // Filter
+  handleChangeFilterSearch = e => {
+    this.setState({
+      searchBy: e.target.value
+    });
+  };
+
   handleChangeFilter = e => {
     let currentList = [];
     let newList = [];
     if (e.target.value !== '') {
-      currentList = this.state.WOs;
+      currentList = this.state.filtered;
       newList = currentList.filter(item => {
         switch (e.target.value) {
           case 'pending-approval':
@@ -96,7 +128,20 @@ class Projects extends React.Component {
           case 'rejected':
             return item.rejected;
           case 'done':
-            return item.done;
+            return item.done && item.approved_by_engineer;
+          case 'rejected-by-engineer':
+            return (
+              item.approved_by_spv &&
+              item.approved_by_manager &&
+              !item.approved_by_engineer &&
+              item.rejected_by_engineer
+            );
+          case 'pending-approval-engineer':
+            return (
+              item.done &&
+              !item.approved_by_engineer &&
+              !item.rejected_by_engineer
+            );
           default:
             return item;
         }
@@ -317,8 +362,14 @@ class Projects extends React.Component {
                   onChange={this.handleChangeFilter}>
                   <option value=''>All</option>
                   <option value='pending-approval'>Pending Approval</option>
+                  <option value='pending-approval-engineer'>
+                    Pending Approval Engineer
+                  </option>
                   <option value='on-progress'>On Progress</option>
                   <option value='rejected'>Rejected</option>
+                  <option value='rejected-by-engineer'>
+                    Rejected by Engineer
+                  </option>
                   <option value='done'>Done</option>
                 </Input>
               </div>
@@ -339,11 +390,16 @@ class Projects extends React.Component {
                     onChange={this.handleChangeSearch}
                     placeholder='Search..'
                   />
-                  <InputGroupAddon addonType='append'>
-                    <Button color='biruicon'>
-                      <i className='mdi mdi-magnify' />
-                    </Button>
-                  </InputGroupAddon>
+                  <Input
+                    type='select'
+                    name='filter'
+                    className='custom-select'
+                    onChange={this.handleChangeFilterSearch}>
+                    <option value='title'>Title</option>
+                    <option value='type'>Type</option>
+                    <option value='priority'>Priority</option>
+                    <option value='program'>Program</option>
+                  </Input>
                 </InputGroup>
               </div>
             </div>
@@ -352,17 +408,18 @@ class Projects extends React.Component {
             <thead>
               <tr className='border-0'>
                 <th className='border-0'>ID</th>
-                <th className='border-0'>PIC</th>
-                <th className='border-0'>Type</th>
-                <th className='border-0'>Description</th>
-                <th className='border-0'>Priority</th>
-                <th className='border-0'>Program</th>
-                <th className='border-0'>Deadline</th>
                 <th className='border-0'>Status</th>
                 <th className='border-0'>Details</th>
                 {this.state.division === 'Corrective Maintenance' && (
                   <th className='border-0'>Action</th>
                 )}
+                <th className='border-0'>Type</th>
+                <th className='border-0'>Title</th>
+                <th className='border-0'>Priority</th>
+                <th className='border-0'>Program</th>
+                <th className='border-0'>Created At</th>
+                <th className='border-0'>Deadline</th>
+                <th className='border-0'>PIC</th>
               </tr>
             </thead>
             <tbody>
@@ -375,6 +432,112 @@ class Projects extends React.Component {
                   return (
                     <tr key={id}>
                       <td>{data.wo_id}</td>
+                      <td>
+                        <i
+                          className={classnames('fa fa-circle', {
+                            'text-danger':
+                              data.rejected ||
+                              (data.approved_by_spv &&
+                                data.approved_by_manager &&
+                                !data.approved_by_engineer &&
+                                data.rejected_by_engineer),
+                            'text-warning':
+                              !(
+                                data.approved_by_spv ||
+                                data.approved_by_manager ||
+                                data.rejected
+                              ) ||
+                              (data.approved_by_spv &&
+                                !data.approved_by_manager &&
+                                !data.done &&
+                                !data.rejected) ||
+                              (data.done &&
+                                !data.approved_by_engineer &&
+                                !data.rejected_by_engineer),
+                            'text-success':
+                              data.approved_by_spv &&
+                              data.approved_by_manager &&
+                              !data.done &&
+                              !data.approved_by_engineer &&
+                              !data.rejected_by_engineer,
+                            'text-biruicon':
+                              data.done && data.approved_by_engineer
+                          })}
+                          id={`indicator-${id}`}
+                        />
+                        <Tooltip
+                          placement='top'
+                          isOpen={this.isToolTipOpen(`indicator-${id}`)}
+                          target={`indicator-${id}`}
+                          toggle={() => this.toggle(`indicator-${id}`)}>
+                          {data.rejected && 'Rejected'}
+                          {!(
+                            (data.approved_by_spv &&
+                              data.approved_by_manager) ||
+                            data.rejected
+                          ) && 'Pending Approval'}
+                          {data.approved_by_spv &&
+                            !data.approved_by_manager &&
+                            !data.done &&
+                            !data.rejected &&
+                            'Approved by Supervisor'}
+                          {data.approved_by_spv &&
+                            data.approved_by_spv &&
+                            data.approved_by_manager &&
+                            !data.done &&
+                            !data.approved_by_engineer &&
+                            !data.rejected_by_engineer &&
+                            'On Progress'}
+                          {data.approved_by_spv &&
+                            data.approved_by_manager &&
+                            !data.approved_by_engineer &&
+                            data.rejected_by_engineer &&
+                            'Rejected by Engineer'}
+                          {data.done &&
+                            !data.approved_by_engineer &&
+                            !data.rejected_by_engineer &&
+                            'Pending Approval Engineer'}
+                          {data.done && data.approved_by_engineer && 'Done'}
+                        </Tooltip>
+                      </td>
+                      <td>
+                        <Link to={{ pathname: `/detailWO/${data._id}` }}>
+                          <Button className='btn' outline color='success'>
+                            Show
+                          </Button>
+                        </Link>
+                      </td>
+                      {this.state.division === data.division && (
+                        <td>
+                          <Button
+                            disabled={
+                              data.approved_by_spv &&
+                              data.approved_by_manager &&
+                              !data.done &&
+                              !data.rejected_by_engineer
+                            }
+                            onClick={this.onDelete.bind(this, data)}
+                            className='profile-time-approved'
+                            outline
+                            color='danger'>
+                            <i className='mdi mdi-delete' />
+                          </Button>
+                        </td>
+                      )}
+                      <td>{data.type.name}</td>
+                      <td>
+                        {data.title.length < 36
+                          ? data.title
+                          : data.title.slice(0, 36) + '...'}
+                      </td>
+                      <td>{data.priority.name}</td>
+                      <td>{data.program}</td>
+                      <td className='blue-grey-text  text-darken-4 font-medium'>
+                        {moment(data.created_at).format('DD-MM-YYYY HH:mm')}
+                      </td>
+                      <td className='blue-grey-text  text-darken-4 font-medium'>
+                        {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
+                      </td>
                       <td>
                         <div className='d-flex no-block align-items-center'>
                           <div className='mr-2'>
@@ -393,75 +556,6 @@ class Projects extends React.Component {
                           </div>
                         </div>
                       </td>
-                      <td>{data.type.name}</td>
-                      <td>
-                        {data.title.length < 36
-                          ? data.title
-                          : data.title.slice(0, 36) + '...'}
-                      </td>
-                      <td>{data.priority.name}</td>
-                      <td>{data.program}</td>
-                      <td className='blue-grey-text  text-darken-4 font-medium'>
-                        {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
-                      </td>
-                      <td>
-                        <i
-                          className={classnames('fa fa-circle', {
-                            'text-danger': data.rejected,
-                            'text-warning': !(
-                              (data.approved_by_spv &&
-                                data.approved_by_manager) ||
-                              data.rejected
-                            ),
-                            'text-success':
-                              data.approved_by_spv &&
-                              data.approved_by_manager &&
-                              !data.done,
-                            'text-biruicon': data.done
-                          })}
-                          id={`indicator-${id}`}
-                        />
-                        <Tooltip
-                          placement='top'
-                          isOpen={this.isToolTipOpen(`indicator-${id}`)}
-                          target={`indicator-${id}`}
-                          toggle={() => this.toggle(`indicator-${id}`)}>
-                          {data.rejected && 'Rejected'}
-                          {!(
-                            (data.approved_by_spv &&
-                              data.approved_by_manager) ||
-                            data.rejected
-                          ) && 'Pending Approval'}
-                          {data.approved_by_spv &&
-                            data.approved_by_manager &&
-                            !data.done &&
-                            'On Progress'}
-                          {data.done && 'Done'}
-                        </Tooltip>
-                      </td>
-                      <td>
-                        <Link to={{ pathname: `/detailWO/${data._id}` }}>
-                          <Button className='btn' outline color='success'>
-                            Show
-                          </Button>
-                        </Link>
-                      </td>
-                      {this.state.division === data.division && (
-                        <td>
-                          <Button
-                            disabled={
-                              data.approved_by_spv &&
-                              data.approved_by_manager &&
-                              !data.done
-                            }
-                            onClick={this.onDelete.bind(this, data)}
-                            className='profile-time-approved'
-                            outline
-                            color='danger'>
-                            <i className='mdi mdi-delete' />
-                          </Button>
-                        </td>
-                      )}
                     </tr>
                   );
                 })}
@@ -497,18 +591,6 @@ class Projects extends React.Component {
                   </PaginationItem>
                 </Pagination>
               </CardBody>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs='12' md='12'>
-              <Pager
-                total={this.state.total}
-                current={this.state.current}
-                visiblePages={this.state.visiblePage}
-                titles={{ first: '<|', last: '>|' }}
-                className='pagination-sm pull-right'
-                onPageChanged={this.handlePageChanged}
-              />
             </Col>
           </Row>
         </CardBody>

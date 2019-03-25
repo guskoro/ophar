@@ -9,7 +9,7 @@ module.exports = validateWorkingOrderInput = data => {
   data.priority = !isEmpty(data.priority) ? data.priority : '';
   data.type = !isEmpty(data.type) ? data.type : '';
   data.program = !isEmpty(data.program) ? data.program : '';
-  // data.users = !isEmpty(data.users) ? data.users : '';
+  data.users = !isEmpty(data.users) ? data.users : '';
   data.deadline = !isEmpty(data.deadline) ? data.deadline : '';
 
   if (Validator.isEmpty(data.title)) errors.title = 'Title is required';
