@@ -48,10 +48,7 @@ class Projects extends React.Component {
       pagesCount: 0,
       modal: false,
       role: '',
-      NewWorkOrders: this.props.match.params.NewWorkOrders,
-      OnProgressOrders: this.props.match.params.OnProgressWorkOrders,
-      RejectedWorkOrders: this.props.match.params.RejectedWorkOrders,
-      CompleteWorkOrders: this.props.match.params.CompleteWorkOrders
+      workorders: this.props.match.params.workorders
     };
   }
 
@@ -257,16 +254,9 @@ class Projects extends React.Component {
   };
 
   render() {
-    const {
-      currentPage,
-      currentUser,
-      NewWorkOrders,
-      RejectedWorkOrders,
-      CompleteWorkOrders,
-      OnProgressOrders
-    } = this.state;
+    const { currentPage, currentUser, workorders } = this.state;
 
-    console.log(this.state.note);
+    console.log(this.state.workorders);
 
     return (
       /*--------------------------------------------------------------------------------*/
@@ -275,10 +265,30 @@ class Projects extends React.Component {
       <Card>
         <CardBody>
           <div className='d-flex align-items-center'>
-            <div>
-              <CardTitle>New Work Orders</CardTitle>
-              <CardSubtitle>HAR</CardSubtitle>
-            </div>
+            {workorders === 'NewWorkOrders' && (
+              <div>
+                <CardTitle>New Work Orders</CardTitle>
+                <CardSubtitle>HAR</CardSubtitle>
+              </div>
+            )}
+            {workorders === 'RejectedWorkOrders' && (
+              <div>
+                <CardTitle>Rejected Work Orders</CardTitle>
+                <CardSubtitle>HAR</CardSubtitle>
+              </div>
+            )}
+            {workorders === 'CompleteWorkOrders' && (
+              <div>
+                <CardTitle>Complete Work Orders</CardTitle>
+                <CardSubtitle>HAR</CardSubtitle>
+              </div>
+            )}
+            {workorders === 'OnProgressWorkOrders' && (
+              <div>
+                <CardTitle>On Progress Work Orders</CardTitle>
+                <CardSubtitle>HAR</CardSubtitle>
+              </div>
+            )}
             <div className='ml-auto d-flex no-block align-items-center'>
               {(currentUser.role === 'manager' ||
                 currentUser.role === 'supervisor') && (

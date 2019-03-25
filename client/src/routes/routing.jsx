@@ -83,8 +83,14 @@ var ThemeRoutes = [
     icon: 'mdi mdi-database',
     component: DetailWo
   },
+  // {
+  //   path: '/newWO',
+  //   name: 'New WO',
+  //   icon: 'mdi mdi-database',
+  //   component: NewWo
+  // },
   {
-    path: '/newWO',
+    path: '/newWO/:workorders',
     name: 'New WO',
     icon: 'mdi mdi-database',
     component: NewWo

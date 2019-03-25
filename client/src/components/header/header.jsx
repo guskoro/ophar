@@ -156,15 +156,7 @@ class Header extends React.Component {
   }
 
   render() {
-    const {
-      errors,
-      currentUser,
-      isAuthenticated,
-      NewWorkOrders,
-      OnProgressWorkOrders,
-      RejectedWorkOrders,
-      CompleteWorkOrders
-    } = this.state;
+    const { errors, currentUser, isAuthenticated } = this.state;
 
     return (
       <header className='topbar navbarbg' data-navbarbg='skin1'>
@@ -295,18 +287,17 @@ class Header extends React.Component {
                     {(currentUser.role === 'manager' ||
                       currentUser.role === 'supervisor') && (
                       <React.Fragment>
-                        <Link to={{ pathname: `/newWO/${NewWorkOrders}` }}>
+                        <Link to={{ pathname: `/newWO/NewWorkOrders` }}>
                           <DropdownItem className='dropdown-item-custom'>
                             New Work Orders
                           </DropdownItem>
                         </Link>
-                        <Link
-                          to={{ pathname: `/newWO/${OnProgressWorkOrders}` }}>
+                        <Link to={{ pathname: `/newWO/OnProgressWorkOrders` }}>
                           <DropdownItem className='dropdown-item-custom'>
                             On Progress Work Orders
                           </DropdownItem>
                         </Link>
-                        <Link to={{ pathname: `/newWO/${CompleteWorkOrders}` }}>
+                        <Link to={{ pathname: `/newWO/CompleteWorkOrders` }}>
                           <DropdownItem className='dropdown-item-custom'>
                             Complete Work Orders
                           </DropdownItem>
@@ -315,18 +306,17 @@ class Header extends React.Component {
                     )}
                     {currentUser.role === 'engineer' && (
                       <React.Fragment>
-                        <Link
-                          to={{ pathname: `/newWO/${OnProgressWorkOrders}` }}>
+                        <Link to={{ pathname: `/newWO/OnProgressWorkOrders` }}>
                           <DropdownItem className='dropdown-item-custom'>
                             On Progress Work Orders
                           </DropdownItem>
                         </Link>
-                        <Link to={{ pathname: `/newWO/${RejectedWorkOrders}` }}>
+                        <Link to={{ pathname: `/newWO/RejectedWorkOrders` }}>
                           <DropdownItem className='dropdown-item-custom'>
                             Rejected Work Orders
                           </DropdownItem>
                         </Link>
-                        <Link to={{ pathname: `/newWO/${CompleteWorkOrders}` }}>
+                        <Link to={{ pathname: `/newWO/CompleteWorkOrders` }}>
                           <DropdownItem className='dropdown-item-custom'>
                             Complete Work Orders
                           </DropdownItem>
@@ -335,17 +325,17 @@ class Header extends React.Component {
                     )}
                     {currentUser.role === 'field support' && (
                       <React.Fragment>
-                        <Link to={{ pathname: `/newWO/${NewWorkOrders}` }}>
+                        <Link to={{ pathname: `/newWO/NewWorkOrders` }}>
                           <DropdownItem className='dropdown-item-custom'>
                             Your Work Orders
                           </DropdownItem>
                         </Link>
-                        <Link to={{ pathname: `/newWO/${RejectedWorkOrders}` }}>
+                        <Link to={{ pathname: `/newWO/RejectedWorkOrders` }}>
                           <DropdownItem className='dropdown-item-custom'>
                             Rejected Work Orders
                           </DropdownItem>
                         </Link>
-                        <Link to={{ pathname: `/newWO/${CompleteWorkOrders}` }}>
+                        <Link to={{ pathname: `/newWO/CompleteWorkOrders` }}>
                           <DropdownItem className='dropdown-item-custom'>
                             Complete Work Orders
                           </DropdownItem>
