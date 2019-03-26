@@ -37,17 +37,17 @@ export default class Example extends Component {
     super(props);
     this.state = {
       errors: [],
-      priorities: [],
       inputValue: '',
-      plans: [],
-      types: [],
       list_users: [],
       users: [],
-      type: '',
       priority: '',
       title: '',
       description: '',
+      plans: [],
       program: '',
+      type: '',
+      types: [],
+      priorities: [],
       deadline: '',
       errorAccess: false
     };

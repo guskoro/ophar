@@ -256,10 +256,9 @@ class Divisions extends Component {
             </Card>
           </Col>
         </Row>
-        <Row>
+        {/* <Row>
           <Col xs='12' md='3'>
             <Card>
-              {/* <CardImg top width="100%" src={img1} /> */}
               <CardBody>
                 <CardTitle>Current Offline Assets</CardTitle>
                 <h1 className='display-3'>
@@ -274,7 +273,6 @@ class Divisions extends Component {
           </Col>
           <Col xs='12' md='3'>
             <Card>
-              {/* <CardImg top width="100%" src={img2} /> */}
               <CardBody>
                 <CardTitle>High Priority Work Orders</CardTitle>
                 <h1 className='display-3'>
@@ -289,7 +287,6 @@ class Divisions extends Component {
           </Col>
           <Col xs='12' md='3'>
             <Card>
-              {/* <CardImg top width="100%" src={img3} /> */}
               <CardBody>
                 <CardTitle>Workorders Backlog</CardTitle>
                 <h1 className='display-3'>
@@ -304,7 +301,6 @@ class Divisions extends Component {
           </Col>
           <Col xs='12' md='3'>
             <Card>
-              {/* <CardImg top width="100%" src={img4} /> */}
               <CardBody>
                 <CardTitle>MTTR (FROM AVAILABILITY TRACKER)</CardTitle>
                 <h1 className='display-3'>
@@ -343,7 +339,7 @@ class Divisions extends Component {
               </CardBody>
             </Card>
           </Col>
-        </Row>
+        </Row> */}
       </div>
     );
   }

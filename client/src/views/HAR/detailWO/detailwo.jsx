@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   Badge,
   Button,
   Card,
@@ -15,6 +16,10 @@ import {
   ListGroupItem,
   ListGroupItemHeading,
   ListGroupItemText,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Nav,
   NavItem,
   NavLink,
@@ -33,6 +38,13 @@ import moment from 'moment';
 import classnames from 'classnames';
 import { FilePond } from 'react-filepond';
 import 'filepond/dist/filepond.min.css';
+import Select from 'react-select';
+import DayPicker from 'react-day-picker';
+
+import MomentLocaleUtils, {
+  formatDate,
+  parseDate
+} from 'react-day-picker/moment';
 
 const pusher = new Pusher('12f41be129ba1c0d7a3c', {
   cluster: 'ap1',
@@ -49,6 +61,7 @@ export default class Example extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.onChangeCheckbox = this.onChangeCheckbox.bind(this);
     this.downloadReport = this.downloadReport.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
 
     this.state = {
       currentUser: {},
@@ -61,8 +74,76 @@ export default class Example extends React.Component {
       users: [],
       notes: [],
       plan: '',
-      note: ''
+      note: '',
+      modal: false,
+      priority: '',
+      title: '',
+      description: '',
+      plans: [],
+      program: '',
+      type: '',
+      types: [],
+      priorities: []
     };
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+
+    const {
+      type,
+      priority,
+      title,
+      plans,
+      users,
+      description,
+      program,
+      deadline
+    } = this.state;
+
+    const newWO = {
+      type: type,
+      priority: priority,
+      title: title,
+      plans: plans,
+      users: users,
+      description: description,
+      program: program,
+      deadline: deadline
+    };
+
+    console.log(newWO);
+    axios
+      .post('/api/working-order', newWO)
+      .then(() => {
+        swal({
+          title: 'Success!',
+          text: 'You added a new work order!',
+          icon: 'success',
+          button: 'OK!'
+        });
+        this.setState({
+          errors: [],
+          inputValue: '',
+          plans: '',
+          users: [],
+          type: '',
+          priority: '',
+          title: '',
+          description: '',
+          program: '',
+          deadline: undefined
+        });
+      })
+      .catch(err => {
+        if (err.response.status === 401) {
+          this.setState({
+            errorAccess: true
+          });
+        } else {
+          this.setState({ errors: err.response.data });
+        }
+      });
   }
 
   componentDidMount = async () => {
@@ -472,6 +553,12 @@ export default class Example extends React.Component {
     }
   };
 
+  toggleModal() {
+    this.setState(prevState => ({
+      modal: !prevState.modal
+    }));
+  }
+
   onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -500,7 +587,23 @@ export default class Example extends React.Component {
   };
 
   render() {
-    const { detailWO, users, currentUser, errors, note, notes } = this.state;
+    const {
+      detailWO,
+      users,
+      currentUser,
+      errors,
+      note,
+      notes,
+      priorities,
+      types,
+      type,
+      priority,
+      title,
+      plans,
+      list_users,
+      description,
+      program
+    } = this.state;
 
     return (
       <Card>
@@ -528,6 +631,194 @@ export default class Example extends React.Component {
                         {moment(detailWO.created_at).format('DD/MM/YYYY')}
                       </Badge>
                     </h4>
+                  </div>
+                  <div className='batas-kiri'>
+                    {currentUser.role === 'field support' && (
+                      <td>
+                        <Button
+                          outline
+                          color='danger'
+                          onClick={this.toggleModal}>
+                          <i className='mdi mdi-pencil' />
+                          {this.props.buttonLabel}
+                        </Button>
+                        <Modal
+                          isOpen={this.state.modal}
+                          toggle={this.toggleModal}
+                          className={this.props.className}>
+                          <ModalHeader toggle={this.toggleModal}>
+                            Edit Work Order
+                          </ModalHeader>
+                          <ModalBody>
+                            <Form onSubmit={this.onSubmit}>
+                              <FormGroup>
+                                <Input
+                                  invalid={errors.access ? true : false}
+                                  hidden
+                                />
+                                <FormFeedback>{errors.access}</FormFeedback>
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='title'>Work Order Title</Label>
+                                <Input
+                                  invalid={errors.title ? true : false}
+                                  type='text'
+                                  name='title'
+                                  id='title'
+                                  placeholder='Input title'
+                                  value={title}
+                                  onChange={this.onChange}
+                                />
+                                <FormFeedback>{errors.title}</FormFeedback>
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='description'>
+                                  Work Order Description
+                                </Label>
+                                <Input
+                                  invalid={errors.description ? true : false}
+                                  type='textarea'
+                                  name='description'
+                                  id='description'
+                                  placeholder='Input description'
+                                  value={description}
+                                  onChange={this.onChange}
+                                />
+                                <FormFeedback>
+                                  {errors.description}
+                                </FormFeedback>
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='plans'>Work Order Plans</Label>
+                                <Input
+                                  invalid={errors.plans ? true : false}
+                                  type='textarea'
+                                  name='plans'
+                                  id='plans'
+                                  rows={9}
+                                  placeholder='Input plans'
+                                  value={plans}
+                                  onChange={this.onChange}
+                                />
+                                {/* <CreatableSelect
+                components={components}
+                inputValue={inputValue}
+                isClearable
+                isMulti
+                menuIsOpen={false}
+                onChange={this.handleChange}
+                onInputChange={this.handleInputChange}
+                onKeyDown={this.handleKeyDown}
+                placeholder='Type plan and press enter...'
+                value={plans}
+              /> */}
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='deadline' className='block-display'>
+                                  Work Order Deadline
+                                </Label>
+                                <DayPicker
+                                  id='deadline'
+                                  formatDate={formatDate}
+                                  parseDate={parseDate}
+                                  onDayClick={this.handleDayClick}
+                                  selectedDays={this.state.deadline}
+                                />
+                                <FormFeedback>{errors.deadline}</FormFeedback>
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='priority'>
+                                  Work Order Priority
+                                </Label>
+                                <Input
+                                  invalid={errors.priority ? true : false}
+                                  type='select'
+                                  name='priority'
+                                  id='priority'
+                                  value={priority}
+                                  onChange={this.onChange}>
+                                  <option value='' disabled>
+                                    Select priority
+                                  </option>
+                                  {priorities.map((priority, id) => {
+                                    return (
+                                      <option key={id} value={priority._id}>
+                                        {priority.name}
+                                      </option>
+                                    );
+                                  })}
+                                </Input>
+                                <FormFeedback>{errors.priority}</FormFeedback>
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='type'>Work Order Type</Label>
+                                <Input
+                                  invalid={errors.type ? true : false}
+                                  type='select'
+                                  name='type'
+                                  id='type'
+                                  value={type}
+                                  onChange={this.onChange}>
+                                  <option value='' disabled>
+                                    Select type
+                                  </option>
+                                  {types.map((type, id) => {
+                                    return (
+                                      <option key={id} value={type._id}>
+                                        {type.name}
+                                      </option>
+                                    );
+                                  })}
+                                </Input>
+                                <FormFeedback>{errors.type}</FormFeedback>
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='program'>Work Order Program</Label>
+                                <Input
+                                  invalid={errors.program ? true : false}
+                                  type='select'
+                                  name='program'
+                                  id='program'
+                                  value={program}
+                                  onChange={this.onChange}>
+                                  <option value='' disabled>
+                                    Select program
+                                  </option>
+                                  <option value='Non-rutin'>Non Rutin</option>
+                                  <option value='Rutin'>Rutin</option>
+                                </Input>
+                                <FormFeedback>{errors.program}</FormFeedback>
+                              </FormGroup>
+                              <FormGroup>
+                                <Label for='users'>Work Order users</Label>
+                                <Select
+                                  isMulti
+                                  name='colors'
+                                  options={list_users}
+                                  onChange={this.handleChangeSelect}
+                                  className='basic-multi-select'
+                                  classNamePrefix='select'
+                                  value={users}
+                                />
+                              </FormGroup>
+                              <Button type='submit' color='biruicon'>
+                                Submit
+                              </Button>
+                            </Form>
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button color='primary' onClick={this.toggleModal}>
+                              Save
+                            </Button>{' '}
+                            <Button
+                              color='secondary'
+                              onClick={this.toggleModal}>
+                              Cancel
+                            </Button>
+                          </ModalFooter>
+                        </Modal>
+                      </td>
+                    )}
                   </div>
                 </div>
               </div>

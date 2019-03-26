@@ -304,7 +304,6 @@ class Projects extends React.Component {
                 <th className='border-0'>Status</th>
                 <th className='border-0'>Deadline</th>
                 <th className='border-0'>Details</th>
-                <th className='border-0'>Action</th>
                 <th className='border-0'>PIC</th>
                 <th className='border-0'>Type</th>
                 <th className='border-0'>Description</th>
@@ -368,49 +367,6 @@ class Projects extends React.Component {
                           </Button>
                         </Link>
                       </td>
-                      {(currentUser.role === 'manager' ||
-                        currentUser.role === 'supervisor') && (
-                        <td>
-                          <React.Fragment>
-                            <Button
-                              className='btn'
-                              outline
-                              color='biruicon'
-                              onClick={this.onApprove.bind(this, data)}>
-                              <i className='mdi mdi-check' />
-                            </Button>
-                            <Button
-                              className='profile-time-approved'
-                              outline
-                              color='danger'
-                              onClick={this.onReject.bind(this, data)}>
-                              <i className='mdi mdi-close' />
-                            </Button>
-                          </React.Fragment>
-                        </td>
-                      )}
-                      {currentUser.role === 'engineer' && (
-                        <td>
-                          <Button
-                            className='btn'
-                            outline
-                            color='biruicon'
-                            onClick={this.onDone.bind(this, data)}>
-                            <i className='mdi mdi-check' />
-                          </Button>
-                        </td>
-                      )}
-                      {currentUser.role === 'field support' && (
-                        <td>
-                          <Button
-                            className='btn'
-                            outline
-                            color='biruicon'
-                            onClick={this.onDone.bind(this, data)}>
-                            <i className='mdi mdi-check' />
-                          </Button>
-                        </td>
-                      )}
                       <td>
                         <div className='d-flex no-block align-items-center'>
                           <div className='mr-2'>

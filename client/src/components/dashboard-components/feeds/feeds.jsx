@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardBody, CardTitle } from 'reactstrap';
 import axios from 'axios';
 import Pusher from 'pusher-js';
+import { Link } from 'react-router-dom';
 
 const pusher = new Pusher('12f41be129ba1c0d7a3c', {
   cluster: 'ap1',
@@ -15,6 +16,7 @@ class Feeds extends React.Component {
     super(props);
 
     this.state = {
+      currentUser: {},
       requests: [],
       all: [],
       overdue: [],
@@ -126,19 +128,52 @@ class Feeds extends React.Component {
       .catch(err => console.log(err));
   }
 
+  getCurrentUser = () => {
+    axios
+      .get('/api/user/current')
+      .then(res => {
+        this.setState({
+          role: res.data.role,
+          currentUser: res.data
+        });
+      })
+      .catch(err => {
+        if (err.response.status === 401) this.setState({ currentUser: {} });
+      });
+  };
+
   render() {
+    const { currentUser } = this.state;
+
     return (
       <Card>
         <CardBody>
           <CardTitle>Overview</CardTitle>
           <div className='feed-widget'>
             <ul className='list-style-none feed-body m-0 pb-3'>
-              <li className='feed-item'>
-                <div className='feed-icon bg-konengpeteng'>
-                  <i className='far fa-envelope' />
-                </div>{' '}
-                Hi, you have {this.state.requests.length} Work Order requests.
-              </li>
+              {(currentUser.role === 'manager' ||
+                currentUser.role === 'supervisor') && (
+                <Link to='/newWO'>
+                  <li className='feed-item'>
+                    <div className='feed-icon bg-konengpeteng'>
+                      <i className='far fa-envelope' />
+                    </div>{' '}
+                    Hi, you have {this.state.requests.length} Work Order
+                    requests.
+                  </li>
+                </Link>
+              )}
+              {currentUser.role === 'field support' && (
+                <Link to='/newWO'>
+                  <li className='feed-item'>
+                    <div className='feed-icon bg-konengpeteng'>
+                      <i className='far fa-envelope' />
+                    </div>{' '}
+                    Hi, there are {this.state.requests.length} Work Order for
+                    you.
+                  </li>
+                </Link>
+              )}
               <li className='feed-item'>
                 <div className='feed-icon bg-biruicon'>
                   <i className='ti-server' />
