@@ -123,13 +123,29 @@ class Projects extends React.Component {
   };
 
   getWO = async () => {
-    // let query = 'approved_by_spv=false&rejected=false';
-    // if (this.state.role === 'manager') {
-    //   query = 'approved_by_spv=true&approved_by_manager=false&rejected=false';
-    // } ?${query}
+    let division = '';
+    switch (this.state.currentUser.division) {
+      case 'Corrective Maintenance':
+        division = 'corrective+maintenance';
+        break;
+      case 'Preventive Maintenance':
+        division = 'preventive+maintenance';
+        break;
+      case 'Assets':
+        division = 'assets';
+        break;
+      case 'Patrols and Controls':
+        division = 'patrols+and+controls';
+        break;
+      default:
+        division = '';
+        break;
+    }
 
     await axios
-      .get(`/api/working-order`)
+      .get(
+        `/api/working-order?division=${division}&done=true&approved_by_engineer=true`
+      )
       .then(res => {
         this.setState({
           WOs: res.data,
@@ -265,7 +281,7 @@ class Projects extends React.Component {
         <CardBody>
           <div className='d-flex align-items-center'>
             <div>
-              <CardTitle>Complete Work Orders</CardTitle>
+              <CardTitle>Completed Work Orders</CardTitle>
               <CardSubtitle>HAR</CardSubtitle>
             </div>
             <div className='ml-auto d-flex no-block align-items-center'>
