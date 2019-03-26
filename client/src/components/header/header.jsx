@@ -289,7 +289,7 @@ class Header extends React.Component {
                       <React.Fragment>
                         <Link to='/newWO'>
                           <DropdownItem className='dropdown-item-custom'>
-                            New Work Orders
+                            Work Order Requests
                           </DropdownItem>
                         </Link>
                         <Link to='/onprogressWO'>
@@ -299,16 +299,16 @@ class Header extends React.Component {
                         </Link>
                         <Link to='/completeWO'>
                           <DropdownItem className='dropdown-item-custom'>
-                            Complete Work Orders
+                            Completed Work Orders
                           </DropdownItem>
                         </Link>
                       </React.Fragment>
                     )}
                     {currentUser.role === 'engineer' && (
                       <React.Fragment>
-                        <Link to='/onprogressWO'>
+                        <Link to='/newWO'>
                           <DropdownItem className='dropdown-item-custom'>
-                            On Progress Work Orders
+                            Work Orders Requests
                           </DropdownItem>
                         </Link>
                         <Link to='/rejectedWO'>
@@ -316,9 +316,14 @@ class Header extends React.Component {
                             Rejected Work Orders
                           </DropdownItem>
                         </Link>
+                        <Link to='/onprogressWO'>
+                          <DropdownItem className='dropdown-item-custom'>
+                            On Progress Work Orders
+                          </DropdownItem>
+                        </Link>
                         <Link to='/completeWO'>
                           <DropdownItem className='dropdown-item-custom'>
-                            Complete Work Orders
+                            Completed Work Orders
                           </DropdownItem>
                         </Link>
                       </React.Fragment>
@@ -327,17 +332,17 @@ class Header extends React.Component {
                       <React.Fragment>
                         <Link to='/newWO'>
                           <DropdownItem className='dropdown-item-custom'>
-                            Your Work Orders
+                            Your Work Order
                           </DropdownItem>
                         </Link>
                         <Link to='/rejectedWO'>
                           <DropdownItem className='dropdown-item-custom'>
-                            Rejected Work Orders
+                            Your Rejected Work Orders
                           </DropdownItem>
                         </Link>
                         <Link to='/completeWO'>
                           <DropdownItem className='dropdown-item-custom'>
-                            Complete Work Orders
+                            Your Completed Work Orders
                           </DropdownItem>
                         </Link>
                       </React.Fragment>

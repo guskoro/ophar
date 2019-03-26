@@ -112,8 +112,7 @@ class Projects extends React.Component {
     await axios
       .get('/api/user/current')
       .then(res => {
-        this.setState({
-          role: res.data.role,
+        return this.setState({
           currentUser: res.data
         });
       })
@@ -123,9 +122,10 @@ class Projects extends React.Component {
   };
 
   getWO = async () => {
+    const { currentUser } = this.state;
     let query = '';
 
-    switch (this.state.currentUser.role) {
+    switch (currentUser.role) {
       case 'manager':
         query = 'approved_by_spv=true&approved_by_manager=false';
         break;
@@ -134,8 +134,13 @@ class Projects extends React.Component {
         break;
       case 'field support':
         query = `approved_by_spv=true&approved_by_manager=true&approved_by_engineer=false&user=${
-          this.state.currentUser._id
+          currentUser._id
         }`;
+        break;
+      case 'engineer':
+        query = `division=${
+          currentUser.division
+        }&done=true&approved_by_engineer=false`;
         break;
       default:
         query = '';

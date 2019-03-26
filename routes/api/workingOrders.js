@@ -25,7 +25,6 @@ const pusher = new Pusher({
 
 router.get('/', (req, res) => {
   let query = {};
-  let user = '';
 
   if (req.query.approved_by_manager)
     query.approved_by_manager = req.query.approved_by_manager;
@@ -35,13 +34,17 @@ router.get('/', (req, res) => {
     query.approved_by_engineer = req.query.approved_by_engineer;
   if (req.query.done) query.done = req.query.done;
   if (req.query.rejected) query.rejected = req.query.rejected;
+  if (req.query.rejected_by_engineer)
+    query.rejected_by_engineer = req.query.rejected_by_engineer;
   if (req.query.division)
     query.division = {
       $regex: req.query.division,
       $options: 'i'
     };
   if (req.query.overdue) query.deadline = { $lte: new Date() };
-  if (req.query.user) user = req.query.user;
+  if (req.query.user) query.users = req.query.user;
+
+  console.log(query);
 
   WorkingOrder.find(query)
     .populate({
@@ -54,21 +57,8 @@ router.get('/', (req, res) => {
     .populate('users', 'name')
     .populate('type', 'name-_id')
     .populate('priority', 'name-_id')
-    .then(workingOrders => {
-      let wo = workingOrders;
-
-      if (user) {
-        wo = workingOrders.filter(wo => {
-          return wo.users.filter(userData => {
-            return userData._id.toString() === user;
-          });
-        });
-      }
-
-      return res.json(wo);
-    })
+    .then(workingOrders => res.json(workingOrders))
     .catch(err => {
-      console.log('lolo');
       res.status(404).json(err);
     });
 });

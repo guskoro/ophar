@@ -108,12 +108,11 @@ class Projects extends React.Component {
     });
   };
 
-  getCurrentUser = () => {
-    axios
+  getCurrentUser = async () => {
+    await axios
       .get('/api/user/current')
       .then(res => {
         this.setState({
-          role: res.data.role,
           currentUser: res.data
         });
       })
@@ -124,6 +123,10 @@ class Projects extends React.Component {
 
   getWO = async () => {
     let division = '';
+    let rejected = true;
+    let user = '';
+    let rejected_by_engineer = false;
+
     switch (this.state.currentUser.division) {
       case 'Corrective Maintenance':
         division = 'corrective+maintenance';
@@ -141,8 +144,17 @@ class Projects extends React.Component {
         division = '';
         break;
     }
+
+    if (this.state.currentUser.role === 'field support') {
+      user = this.state.currentUser._id;
+      rejected = false;
+      rejected_by_engineer = true;
+    }
+
     await axios
-      .get(`/api/working-order?division=${division}&rejected=true`)
+      .get(
+        `/api/working-order?division=${division}&user=${user}&rejected=${rejected}&rejected_by_engineer=${rejected_by_engineer}`
+      )
       .then(res => {
         this.setState({
           WOs: res.data,
@@ -267,8 +279,6 @@ class Projects extends React.Component {
 
   render() {
     const { currentPage, currentUser, workorders } = this.state;
-
-    console.log(this.state.workorders);
 
     return (
       /*--------------------------------------------------------------------------------*/

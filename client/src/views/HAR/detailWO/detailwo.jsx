@@ -600,7 +600,7 @@ export default class Example extends React.Component {
                   <div className='profile'>
                     <h4>
                       <Badge color='warning' className='ml-0' pill>
-                        Pending approval engineer
+                        Pending Approval Engineer
                       </Badge>
                     </h4>
                   </div>
@@ -697,7 +697,7 @@ export default class Example extends React.Component {
                     <FilePond
                       className='batas-atas'
                       server={{
-                        url: `http://10.14.36.48:5000/api/working-order/upload-report/${
+                        url: `http://localhost:5000/api/working-order/upload-report/${
                           this.state.id
                         }`,
                         process: {
@@ -883,11 +883,8 @@ export default class Example extends React.Component {
                 detailWO.approved_by_spv &&
                 !detailWO.approved_by_engineer) ||
               (currentUser.role === 'supervisor' &&
-                !detailWO.approved_by_spv &&
                 !detailWO.approved_by_engineer) ||
               (currentUser._id === detailWO.pic_id &&
-                detailWO.approved_by_manager &&
-                detailWO.approved_by_spv &&
                 !detailWO.approved_by_engineer) ||
               (users.filter(user => {
                 return user._id === currentUser._id;

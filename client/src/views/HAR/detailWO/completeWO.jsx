@@ -124,6 +124,8 @@ class Projects extends React.Component {
 
   getWO = async () => {
     let division = '';
+    let user = '';
+
     switch (this.state.currentUser.division) {
       case 'Corrective Maintenance':
         division = 'corrective+maintenance';
@@ -142,9 +144,12 @@ class Projects extends React.Component {
         break;
     }
 
+    if (this.state.currentUser.role === 'field support')
+      user = this.state.currentUser._id;
+
     await axios
       .get(
-        `/api/working-order?division=${division}&done=true&approved_by_engineer=true`
+        `/api/working-order?division=${division}&user=${user}&done=true&approved_by_engineer=true`
       )
       .then(res => {
         this.setState({
