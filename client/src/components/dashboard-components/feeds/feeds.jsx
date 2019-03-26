@@ -25,6 +25,7 @@ class Feeds extends React.Component {
   }
 
   async componentDidMount() {
+    await this.getCurrentUser();
     await this.getRequests();
     await this.getAll();
     await this.getOverdue();
@@ -128,12 +129,11 @@ class Feeds extends React.Component {
       .catch(err => console.log(err));
   }
 
-  getCurrentUser = () => {
-    axios
+  getCurrentUser = async () => {
+    await axios
       .get('/api/user/current')
       .then(res => {
         this.setState({
-          role: res.data.role,
           currentUser: res.data
         });
       })
@@ -151,26 +151,18 @@ class Feeds extends React.Component {
           <CardTitle>Overview</CardTitle>
           <div className='feed-widget'>
             <ul className='list-style-none feed-body m-0 pb-3'>
-              {(currentUser.role === 'manager' ||
-                currentUser.role === 'supervisor') && (
+              {currentUser && (
                 <Link to='/newWO'>
                   <li className='feed-item'>
                     <div className='feed-icon bg-konengpeteng'>
                       <i className='far fa-envelope' />
                     </div>{' '}
-                    Hi, you have {this.state.requests.length} Work Order
-                    requests.
-                  </li>
-                </Link>
-              )}
-              {currentUser.role === 'field support' && (
-                <Link to='/newWO'>
-                  <li className='feed-item'>
-                    <div className='feed-icon bg-konengpeteng'>
-                      <i className='far fa-envelope' />
-                    </div>{' '}
-                    Hi, there are {this.state.requests.length} Work Order for
-                    you.
+                    Hi, there are {this.state.requests.length} Work Order
+                    {currentUser.role === 'manager' ||
+                    currentUser.role === 'supervisor' ||
+                    currentUser.role === 'engineer'
+                      ? 'requests.'
+                      : currentUser.role === 'field support' && 'for you.'}
                   </li>
                 </Link>
               )}

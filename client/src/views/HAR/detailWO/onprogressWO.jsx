@@ -108,8 +108,8 @@ class Projects extends React.Component {
     });
   };
 
-  getCurrentUser = () => {
-    axios
+  getCurrentUser = async () => {
+    await axios
       .get('/api/user/current')
       .then(res => {
         this.setState({
@@ -124,6 +124,8 @@ class Projects extends React.Component {
   getWO = async () => {
     let division = '';
     let user = '';
+
+    console.log(this.state.currentUser);
 
     switch (this.state.currentUser.division) {
       case 'Corrective Maintenance':

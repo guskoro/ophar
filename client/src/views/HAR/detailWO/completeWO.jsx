@@ -108,12 +108,11 @@ class Projects extends React.Component {
     });
   };
 
-  getCurrentUser = () => {
-    axios
+  getCurrentUser = async () => {
+    await axios
       .get('/api/user/current')
       .then(res => {
         this.setState({
-          role: res.data.role,
           currentUser: res.data
         });
       })

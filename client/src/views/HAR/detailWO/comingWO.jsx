@@ -127,10 +127,10 @@ class Projects extends React.Component {
 
     switch (currentUser.role) {
       case 'manager':
-        query = 'approved_by_spv=true&approved_by_manager=false';
+        query = 'approved_by_spv=true&approved_by_manager=false&rejected=false';
         break;
       case 'supervisor':
-        query = 'approved_by_spv=false&done=false';
+        query = 'approved_by_spv=false&done=false&rejected=false';
         break;
       case 'field support':
         query = `approved_by_spv=true&approved_by_manager=true&approved_by_engineer=false&user=${

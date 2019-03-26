@@ -632,7 +632,7 @@ export default class Example extends React.Component {
                       </Badge>
                     </h4>
                   </div>
-                  <div className='batas-kiri'>
+                  <div>
                     {currentUser.role === 'field support' && (
                       <td>
                         <Button
