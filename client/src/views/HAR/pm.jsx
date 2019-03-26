@@ -307,8 +307,14 @@ class Projects extends React.Component {
                   onChange={this.handleChangeFilter}>
                   <option value=''>All</option>
                   <option value='pending-approval'>Pending Approval</option>
+                  <option value='pending-approval-engineer'>
+                    Pending Approval Engineer
+                  </option>
                   <option value='on-progress'>On Progress</option>
                   <option value='rejected'>Rejected</option>
+                  <option value='rejected-by-engineer'>
+                    Rejected by Engineer
+                  </option>
                   <option value='done'>Done</option>
                 </Input>
               </div>
@@ -329,11 +335,16 @@ class Projects extends React.Component {
                     onChange={this.handleChangeSearch}
                     placeholder='Search..'
                   />
-                  <InputGroupAddon addonType='append'>
-                    <Button color='biruicon'>
-                      <i className='mdi mdi-magnify' />
-                    </Button>
-                  </InputGroupAddon>
+                  <Input
+                    type='select'
+                    name='filter'
+                    className='custom-select'
+                    onChange={this.handleChangeFilterSearch}>
+                    <option value='title'>Title</option>
+                    <option value='type'>Type</option>
+                    <option value='priority'>Priority</option>
+                    <option value='program'>Program</option>
+                  </Input>
                 </InputGroup>
               </div>
             </div>
@@ -341,18 +352,19 @@ class Projects extends React.Component {
           <Table className='no-wrap v-middle' responsive>
             <thead>
               <tr className='border-0'>
-                <th className='border-0'>Code</th>
-                <th className='border-0'>PIC</th>
-                <th className='border-0'>Type</th>
-                <th className='border-0'>Description</th>
-                <th className='border-0'>Priority</th>
-                <th className='border-0'>Program</th>
-                <th className='border-0'>Deadline</th>
+                <th className='border-0'>ID</th>
                 <th className='border-0'>Status</th>
                 <th className='border-0'>Details</th>
                 {this.state.division === 'Preventive Maintenance' && (
                   <th className='border-0'>Action</th>
                 )}
+                <th className='border-0'>Type</th>
+                <th className='border-0'>Title</th>
+                <th className='border-0'>Priority</th>
+                <th className='border-0'>Program</th>
+                <th className='border-0'>Created At</th>
+                <th className='border-0'>Deadline</th>
+                <th className='border-0'>PIC</th>
               </tr>
             </thead>
             <tbody>
@@ -364,7 +376,113 @@ class Projects extends React.Component {
                 .map((data, id) => {
                   return (
                     <tr key={id}>
-                      <td>{data._id.slice(0, 9).toUpperCase() + '...'}</td>
+                      <td>{data.wo_id}</td>
+                      <td>
+                        <i
+                          className={classnames('fa fa-circle', {
+                            'text-danger':
+                              data.rejected ||
+                              (data.approved_by_spv &&
+                                data.approved_by_manager &&
+                                !data.approved_by_engineer &&
+                                data.rejected_by_engineer),
+                            'text-warning':
+                              !(
+                                data.approved_by_spv ||
+                                data.approved_by_manager ||
+                                data.rejected
+                              ) ||
+                              (data.approved_by_spv &&
+                                !data.approved_by_manager &&
+                                !data.done &&
+                                !data.rejected) ||
+                              (data.done &&
+                                !data.approved_by_engineer &&
+                                !data.rejected_by_engineer),
+                            'text-success':
+                              data.approved_by_spv &&
+                              data.approved_by_manager &&
+                              !data.done &&
+                              !data.approved_by_engineer &&
+                              !data.rejected_by_engineer,
+                            'text-biruicon':
+                              data.done && data.approved_by_engineer
+                          })}
+                          id={`indicator-${id}`}
+                        />
+                        <Tooltip
+                          placement='top'
+                          isOpen={this.isToolTipOpen(`indicator-${id}`)}
+                          target={`indicator-${id}`}
+                          toggle={() => this.toggle(`indicator-${id}`)}>
+                          {data.rejected && 'Rejected'}
+                          {!(
+                            (data.approved_by_spv &&
+                              data.approved_by_manager) ||
+                            data.rejected
+                          ) && 'Pending Approval'}
+                          {data.approved_by_spv &&
+                            !data.approved_by_manager &&
+                            !data.done &&
+                            !data.rejected &&
+                            'Approved by Supervisor'}
+                          {data.approved_by_spv &&
+                            data.approved_by_spv &&
+                            data.approved_by_manager &&
+                            !data.done &&
+                            !data.approved_by_engineer &&
+                            !data.rejected_by_engineer &&
+                            'On Progress'}
+                          {data.approved_by_spv &&
+                            data.approved_by_manager &&
+                            !data.approved_by_engineer &&
+                            data.rejected_by_engineer &&
+                            'Rejected by Engineer'}
+                          {data.done &&
+                            !data.approved_by_engineer &&
+                            !data.rejected_by_engineer &&
+                            'Pending Approval Engineer'}
+                          {data.done && data.approved_by_engineer && 'Done'}
+                        </Tooltip>
+                      </td>
+                      <td>
+                        <Link to={{ pathname: `/detailWO/${data._id}` }}>
+                          <Button className='btn' outline color='success'>
+                            Show
+                          </Button>
+                        </Link>
+                      </td>
+                      {this.state.division === data.division && (
+                        <td>
+                          <Button
+                            disabled={
+                              data.approved_by_spv &&
+                              data.approved_by_manager &&
+                              !data.done &&
+                              !data.rejected_by_engineer
+                            }
+                            onClick={this.onDelete.bind(this, data)}
+                            className='profile-time-approved'
+                            outline
+                            color='danger'>
+                            <i className='mdi mdi-delete' />
+                          </Button>
+                        </td>
+                      )}
+                      <td>{data.type.name}</td>
+                      <td>
+                        {data.title.length < 36
+                          ? data.title
+                          : data.title.slice(0, 36) + '...'}
+                      </td>
+                      <td>{data.priority.name}</td>
+                      <td>{data.program}</td>
+                      <td className='blue-grey-text  text-darken-4 font-medium'>
+                        {moment(data.created_at).format('DD-MM-YYYY HH:mm')}
+                      </td>
+                      <td className='blue-grey-text  text-darken-4 font-medium'>
+                        {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
+                      </td>
                       <td>
                         <div className='d-flex no-block align-items-center'>
                           <div className='mr-2'>
@@ -383,75 +501,6 @@ class Projects extends React.Component {
                           </div>
                         </div>
                       </td>
-                      <td>{data.type.name}</td>
-                      <td>
-                        {data.title.length < 36
-                          ? data.title
-                          : data.title.slice(0, 36) + '...'}
-                      </td>
-                      <td>{data.priority.name}</td>
-                      <td>{data.program}</td>
-                      <td className='blue-grey-text  text-darken-4 font-medium'>
-                        {moment(data.deadline).format('DD-MM-YYYY HH:mm')}
-                      </td>
-                      <td>
-                        <i
-                          className={classnames('fa fa-circle', {
-                            'text-danger': data.rejected,
-                            'text-warning': !(
-                              (data.approved_by_spv &&
-                                data.approved_by_manager) ||
-                              data.rejected
-                            ),
-                            'text-success':
-                              data.approved_by_spv &&
-                              data.approved_by_manager &&
-                              !data.done,
-                            'text-biruicon': data.done
-                          })}
-                          id={`indicator-${id}`}
-                        />
-                        <Tooltip
-                          placement='top'
-                          isOpen={this.isToolTipOpen(`indicator-${id}`)}
-                          target={`indicator-${id}`}
-                          toggle={() => this.toggle(`indicator-${id}`)}>
-                          {data.rejected && 'Rejected'}
-                          {!(
-                            (data.approved_by_spv &&
-                              data.approved_by_manager) ||
-                            data.rejected
-                          ) && 'Pending Approval'}
-                          {data.approved_by_spv &&
-                            data.approved_by_manager &&
-                            !data.done &&
-                            'On Progress'}
-                          {data.done && 'Done'}
-                        </Tooltip>
-                      </td>
-                      <td>
-                        <Link to={{ pathname: `/detailWO/${data._id}` }}>
-                          <Button className='btn' outline color='success'>
-                            Show
-                          </Button>
-                        </Link>
-                      </td>
-                      {this.state.division === 'Preventive Maintenance' && (
-                        <td>
-                          <Button
-                            disabled={
-                              data.approved_by_spv &&
-                              data.approved_by_manager &&
-                              !data.done
-                            }
-                            onClick={this.onDelete.bind(this, data)}
-                            className='profile-time-approved'
-                            outline
-                            color='danger'>
-                            <i className='mdi mdi-delete' />
-                          </Button>
-                        </td>
-                      )}
                     </tr>
                   );
                 })}

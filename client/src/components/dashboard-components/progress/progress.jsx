@@ -739,7 +739,7 @@ class DivisionProgress extends Component {
             </div>
           </CardBody>
         </Card>
-        <Card>
+        {/* <Card>
           <CardBody>
             <div>
               <CardTitle>MTTR Scada Progress</CardTitle>
@@ -758,7 +758,7 @@ class DivisionProgress extends Component {
               <Line ref='chart' data={data2} height='40em' />
             </div>
           </CardBody>
-        </Card>
+        </Card> */}
       </div>
     );
   }
